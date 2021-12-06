@@ -78,3 +78,4 @@ venv.bak/
 .atom-build.yml
 tox.ini
 .old
+.errors_log

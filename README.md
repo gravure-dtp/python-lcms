@@ -20,11 +20,14 @@ setuptools package
 
 ## Developper
 
+./setup.py develop --user
+
 # deployment of the project in your local environnement:
 
 
 # creating a source distribution:
 
+python -m build
 
 ## License
 

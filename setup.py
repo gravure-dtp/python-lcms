@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#
 # -*- coding: utf-8 -*-
 #
 #       Copyright (c) Gilles Coissac 2021 <info@gillescoissac.fr>
@@ -17,90 +19,161 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
-import os
 import sys
-import subprocess as sp
 from pathlib import Path
-import multiprocessing as mp
-
-from setuptools import Extension, setup, find_namespace_packages
-
-
-def get_pkg_lib(lib):
-    args = ["pkg-config", "--short-errors", "--libs-only-l", lib]
-    try:
-        cp = sp.run(args + [lib], shell=False, check=True, text=True)
-    except sp.CalledProcessError as e:
-        print(f"pkg-config error: {e.stderr}")
-        name = ""
-    else:
-        name = cp.stdout.replace("-l", "")
-    return name
+import subprocess as sp
+from pkg_resources import parse_version
+from setuptools import setup, Extension, find_namespace_packages
+from setuptools_scm import get_version as scm_get_version
 
 
 def get_root():
     return Path(__file__).parent.resolve().absolute()
 
 
-def get_version():
-    with open(get_root() / "VERSION", "r") as file:
-        version = file.read().strip()
-    return version
-
-
 def get_description():
-    return open("README.txt").read()
+    with open("README.md", "r") as f:
+        long_description = f.read()
+    return long_description
 
 
-# Redirection of cython compilation errors in file
-sys.stderr = open(".errors_log", "w")
+def get_version():
+    return scm_get_version(
+        root=".",
+        version_scheme="guess-next-dev",
+        local_scheme="no-local-version",
+    )
 
 
-# COMPILATION PATHS
-SRC_DIR = "src"
-INCLUDE_DIRS = ["/usr/include", "include", SRC_DIR]
-DYN_LIBRARY_DIRS = ["/usr/lib", "/usr/lib/x86_64-linux-gnu"]
-LIBRARIES = []
-EXTRA_OBJECTS = ["/usr/lib/x86_64-linux-gnu/liblcms2.so"]
-COMPILE_ARGS = []
-X_LINK_ARGS = []
-CYTHON_DIRECTIVES = {"language_level": 3, "embedsignature": False}
+def get_pkg_lib(lib):
+    args = ["pkg-config", "--short-errors", "--libs-only-l", lib]
+    try:
+        cp = sp.run(args, shell=False, check=True, text=True, capture_output=True)
+    except sp.CalledProcessError as e:
+        print(f"pkg-config error: {e.stderr}")
+        name = ""
+    else:
+        name = cp.stdout.replace("-l", "")
+    print(f"pkg-config lib:{name}")
+    return name
 
 
-# CYTHON EXTENSIONS
-extensions = [
-    Extension(
-        "cms",
-        sources=[os.path.join(SRC_DIR, "cms.pyx")],
-        include_dirs=INCLUDE_DIRS,
-        libraries=LIBRARIES,
-        runtime_library_dirs=DYN_LIBRARY_DIRS,
-        extra_objects=EXTRA_OBJECTS,
-        cython_directives=CYTHON_DIRECTIVES,
-        extra_compile_args=["-Wall"],
-    ),
-]
+def get_pkg_includedir(lib):
+    args = ["pkg-config", "--variable=includedir", lib]
+    try:
+        cp = sp.run(args, shell=False, check=True, text=True, capture_output=True)
+    except sp.CalledProcessError as e:
+        print(f"pkg-config error: {e.stderr}")
+        name = ""
+    else:
+        name = cp.stdout
+    print(f"pkg-config includedir:{name}")
+    return name
 
 
-# SETUP
+def get_pkg_libdir(lib):
+    args = ["pkg-config", "--variable=libdir", lib]
+    try:
+        cp = sp.run(args, shell=False, check=True, text=True, capture_output=True)
+    except sp.CalledProcessError as e:
+        print(f"pkg-config error: {e.stderr}")
+        name = ""
+    else:
+        name = cp.stdout
+    print(f"pkg-config libdir:{name}")
+    return name
+
+
+def create_c_files():
+    Options.docstrings = True
+    Options.annotate = False
+    # Redirection of cython compilation errors in file
+    save_stderr = sys.stderr
+    sys.stderr = open(".errors_log", "w")
+    try:
+        cythonize(
+            ["src/gravure/lcms2/cms.pyx"],
+            nthreads=mp.cpu_count(),
+            compiler_directives={
+                "language_level": 3,
+                "binding": False,
+                "boundscheck": True,
+                "wraparound": True,
+                "overflowcheck": True,
+                "initializedcheck": True,
+                "nonecheck": False,
+                "embedsignature": True,
+                "optimize.use_switch": False,
+                "optimize.unpack_method_calls": True,
+                "warn.undeclared": True,
+                "warn.unreachable": True,
+                "warn.maybe_uninitialized": True,
+                "warn.unused": True,
+                "warn.unused_arg": True,
+                "warn.unused_result": True,
+                "warn.multiple_declarators": True,
+            },
+        )
+    except Cython.Compiler.Errors.CompileError as e:
+        print(
+            f"Errors when generating c source files '{e}', look at '.errors_log'"
+            " files in your project directory for details."
+        )
+        raise (e)
+    sys.stderr = save_stderr
+
+
+# Cython requierement
+try:
+    import Cython
+except:
+    print("Cython is not detected")
+else:
+    min_cython = "0.29.21"
+    if parse_version(Cython.__version__) >= parse_version(min_cython):
+        from Cython.Build import cythonize
+        from Cython.Compiler import Options
+        import multiprocessing as mp
+
+        print(f"Cython version {Cython.__version__} found")
+        print("Cythonyzing source files ...")
+        create_c_files()
+    else:
+        print(
+            f"Need cython version {min_cython} to generate c files, found version {Cython.__version__}"
+        )
+
+
+def get_extensions():
+    return [
+        Extension(
+            "cms",
+            sources=["src/gravure/lcms2/cms.c"],
+            # libraries=[get_pkg_lib("lcms2")],
+            include_dirs=[get_pkg_includedir("lcms2")],
+            library_dirs=[get_pkg_libdir("lcms2")],
+            extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+        ),
+    ]
+
+
 setup(
+    #
     name="gravure.lcms2",
     version=get_version(),
     #
-    package_dir={"": SRC_DIR},
+    package_dir={"": "src"},
     packages=find_namespace_packages(
-        where=SRC_DIR, include=["gravure.lcms2"], exclude=[]
+        where="src",
+        include=["gravure.lcms2"],
     ),
     ext_package="gravure.lcms2",
-    ext_modules=extensions,
-    package_data={"gravure/lcms2": ["*.pxd"]},
-    zip_safe=False,  # for use off cimport *.pxd
+    ext_modules=get_extensions(),
+    # for use of cimport *.pxd
+    # package_data={"gravure/lcms2": ["*.pxd"]},
+    zip_safe=False,
     #
-    python_requires=[">=3.6"],
-    install_requires=[],  # ['sphinx>=1.1'] # Project uses reStructuredText and sphinx 1.1
-    extra_require=[],
-    # test_suite = '',
-    # tests_require = 'nose'
+    python_requires=">=3.6",
     #
     description="a Python binding to the little cms 2 library",
     long_description=get_description(),
@@ -114,22 +187,20 @@ setup(
     url="https://github.com/gravure-dtp/python-lcms2",
     download_url="https://github.com/gravure-dtp/python-lcms2",
     #
-    keywords="print rip printer driver gutenprint",
+    keywords="lcms color icc cms print",
     classifiers=[
-        "Environment :: X11 Applications :: Gnome",
-        "Environment :: X11 Applications :: GTK",
-        "Intended Audience :: End Users/Desktop",
-        "Natural Language :: English",
+        "Environment :: Console",
         "Operating System :: POSIX :: Linux",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
         "Programming Language :: C",
         "Programming Language :: Cython",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
-        "Topic :: Artistic Software",
-        "Topic :: Desktop Environment :: Gnome",
-        "Topic :: Printing",
+        "Topic :: Multimedia :: Graphics :: Graphics Conversion" "Topic :: Printing",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
+
 
 # END

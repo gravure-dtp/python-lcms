@@ -1,8 +1,9 @@
 [build-system]
-requires = ["setuptools>=52", "wheel", "cython>=0.29.21", "setuptools_scm>=5.0.1"]
+requires = ["setuptools>=52", "wheel", "setuptools_scm>=5.0.1"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "VERSION.txt"
 root = "."
-local_scheme = "node-and-timestamp"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
