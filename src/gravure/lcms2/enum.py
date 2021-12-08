@@ -17,21 +17,25 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
-from enum import Enum, IntEnum, IntFlag, unique
-from gravure.lcms2.enum import TagEnum
-
-import cython
-cimport cython
-
-include "constant.pxi"
-include "colortype.pxi"
-include "icctag.pxi"
+from enum import Enum, EnumMeta
 
 
-__all__ = ['VERSION',
-           'D50X', 'D50Y', 'D50Z',
-           'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y', 'PERCEPTUAL_BLACK_Z',
-           'ICCDef', 'TYPE', 'TagTypeSignature', 'TagSignature',
-           'TechnologySignature', 'ColorSpaceSignature',
-           'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
-           'ColorimetricIntentImageStateTag']
+class TagEnumMeta(EnumMeta):
+    def __getitem__(cls, name):
+        try:
+            ret = super().__getitem__(name)
+        except KeyError as ke:
+            try:
+                ret = cls(cls.from_tag(name))
+            except ValueError:
+                raise (ke)
+        return ret
+
+    def from_tag(cls, name):
+        name = "{:<4}".format(name[:4])
+        return int.from_bytes(name.encode(), byteorder="big")
+
+
+class TagEnum(Enum, metaclass=TagEnumMeta):
+    def to_string(self):
+        return self.value.to_bytes(4, byteorder="big").decode()

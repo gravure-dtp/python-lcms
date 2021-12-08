@@ -1,4 +1,3 @@
-from enum import Enum
 
 cdef extern from "lcms2.h":
     cdef enum:

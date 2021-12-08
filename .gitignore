@@ -73,9 +73,13 @@ ENV/
 env.bak/
 venv.bak/
 
-#
+# IDE
 .ropeproject/
 .atom-build.yml
 tox.ini
 .old
+
+# CYTHON
+*.o
+*.so
 .errors_log

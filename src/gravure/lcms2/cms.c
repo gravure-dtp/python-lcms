@@ -828,7 +828,9 @@ static const char *__pyx_filename;
 
 static const char *__pyx_f[] = {
   "src/gravure/lcms2/cms.pyx",
+  "src/gravure/lcms2/constant.pxi",
   "src/gravure/lcms2/colortype.pxi",
+  "src/gravure/lcms2/icctag.pxi",
 };
 
 /*--- Type declarations ---*/
@@ -980,6 +982,54 @@ static PyObject *__Pyx_Py3MetaclassPrepare(PyObject *metaclass, PyObject *bases,
 static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObject *bases, PyObject *dict,
                                       PyObject *mkw, int calculate_metaclass, int allow_py2_metaclass);
 
+/* PyCFunctionFastCall.proto */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
+#else
+#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
+#endif
+
+/* PyFunctionFastCall.proto */
+#if CYTHON_FAST_PYCALL
+#define __Pyx_PyFunction_FastCall(func, args, nargs)\
+    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, Py_ssize_t nargs, PyObject *kwargs);
+#else
+#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
+#endif
+#define __Pyx_BUILD_ASSERT_EXPR(cond)\
+    (sizeof(char [1 - 2*!(cond)]) - 1)
+#ifndef Py_MEMBER_SIZE
+#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
+#endif
+  static size_t __pyx_pyframe_localsplus_offset = 0;
+  #include "frameobject.h"
+  #define __Pxy_PyFrame_Initialize_Offsets()\
+    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
+     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
+  #define __Pyx_PyFrame_GetLocalsplus(frame)\
+    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
+#endif
+
+/* PyObjectCall.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
+
+/* PyObjectCall2Args.proto */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+
+/* PyObjectCallMethO.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1046,6 +1096,24 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTagTypeSignature(cmsTagTypeSignature value);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTagSignature(cmsTagSignature value);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTechnologySignature(cmsTechnologySignature value);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsColorSpaceSignature(cmsColorSpaceSignature value);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsProfileClassSignature(cmsProfileClassSignature value);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsPlatformSignature(cmsPlatformSignature value);
+
+/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
@@ -1082,8 +1150,12 @@ extern int __pyx_module_is_main_lcms2__cms;
 int __pyx_module_is_main_lcms2__cms = 0;
 
 /* Implementation of 'lcms2.cms' */
+static const char __pyx_k_SGI[] = "SGI";
 static const char __pyx_k_all[] = "__all__";
 static const char __pyx_k_doc[] = "__doc__";
+static const char __pyx_k_D50X[] = "D50X";
+static const char __pyx_k_D50Y[] = "D50Y";
+static const char __pyx_k_D50Z[] = "D50Z";
 static const char __pyx_k_Enum[] = "Enum";
 static const char __pyx_k_TYPE[] = "TYPE";
 static const char __pyx_k_enum[] = "enum";
@@ -1107,17 +1179,20 @@ static const char __pyx_k_CMY_16[] = "CMY_16";
 static const char __pyx_k_GRAY_8[] = "GRAY_8";
 static const char __pyx_k_HLS_16[] = "HLS_16";
 static const char __pyx_k_HSV_16[] = "HSV_16";
+static const char __pyx_k_ICCDef[] = "ICCDef";
 static const char __pyx_k_KCMY_8[] = "KCMY_8";
 static const char __pyx_k_KYMC_8[] = "KYMC_8";
 static const char __pyx_k_Lab_16[] = "Lab_16";
 static const char __pyx_k_RGBA_8[] = "RGBA_8";
 static const char __pyx_k_RGB_16[] = "RGB_16";
+static const char __pyx_k_Unices[] = "Unices";
 static const char __pyx_k_XYZ_16[] = "XYZ_16";
 static const char __pyx_k_YUVK_8[] = "YUVK_8";
 static const char __pyx_k_YUV_16[] = "YUV_16";
 static const char __pyx_k_Yxy_16[] = "Yxy_16";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_module[] = "__module__";
+static const char __pyx_k_unique[] = "unique";
 static const char __pyx_k_ABGR_16[] = "ABGR_16";
 static const char __pyx_k_ARGB_16[] = "ARGB_16";
 static const char __pyx_k_BGRA_16[] = "BGRA_16";
@@ -1130,29 +1205,58 @@ static const char __pyx_k_CMYK8_8[] = "CMYK8_8";
 static const char __pyx_k_CMYK9_8[] = "CMYK9_8";
 static const char __pyx_k_CMYKA_8[] = "CMYKA_8";
 static const char __pyx_k_CMYK_16[] = "CMYK_16";
+static const char __pyx_k_CmyData[] = "CmyData";
+static const char __pyx_k_DataTag[] = "DataTag";
 static const char __pyx_k_GRAYA_8[] = "GRAYA_8";
 static const char __pyx_k_GRAY_16[] = "GRAY_16";
+static const char __pyx_k_Gravure[] = "Gravure";
+static const char __pyx_k_HlsData[] = "HlsData";
+static const char __pyx_k_HsvData[] = "HsvData";
+static const char __pyx_k_IntEnum[] = "IntEnum";
+static const char __pyx_k_IntFlag[] = "IntFlag";
 static const char __pyx_k_KCMY_16[] = "KCMY_16";
 static const char __pyx_k_KYMC5_8[] = "KYMC5_8";
 static const char __pyx_k_KYMC7_8[] = "KYMC7_8";
 static const char __pyx_k_KYMC8_8[] = "KYMC8_8";
 static const char __pyx_k_KYMC9_8[] = "KYMC9_8";
 static const char __pyx_k_KYMC_16[] = "KYMC_16";
+static const char __pyx_k_LabData[] = "LabData";
 static const char __pyx_k_LabV2_8[] = "LabV2_8";
 static const char __pyx_k_Lab_DBL[] = "Lab_DBL";
 static const char __pyx_k_Lab_FLT[] = "Lab_FLT";
+static const char __pyx_k_LuvData[] = "LuvData";
+static const char __pyx_k_MetaTag[] = "MetaTag";
+static const char __pyx_k_PhotoCD[] = "PhotoCD";
 static const char __pyx_k_RGBA_16[] = "RGBA_16";
 static const char __pyx_k_RGB_DBL[] = "RGB_DBL";
 static const char __pyx_k_RGB_FLT[] = "RGB_FLT";
+static const char __pyx_k_RgbData[] = "RgbData";
+static const char __pyx_k_Solaris[] = "Solaris";
+static const char __pyx_k_TagEnum[] = "TagEnum";
+static const char __pyx_k_VERSION[] = "VERSION";
+static const char __pyx_k_VcgtTag[] = "VcgtTag";
+static const char __pyx_k_XYZData[] = "XYZData";
+static const char __pyx_k_XYZType[] = "XYZType";
 static const char __pyx_k_XYZ_DBL[] = "XYZ_DBL";
 static const char __pyx_k_XYZ_FLT[] = "XYZ_FLT";
 static const char __pyx_k_YCbCr_8[] = "YCbCr_8";
 static const char __pyx_k_YUVK_16[] = "YUVK_16";
+static const char __pyx_k_YxyData[] = "YxyData";
 static const char __pyx_k_prepare[] = "__prepare__";
 static const char __pyx_k_ABGR_FLT[] = "ABGR_FLT";
 static const char __pyx_k_ALabV2_8[] = "ALabV2_8";
 static const char __pyx_k_ARGB_FLT[] = "ARGB_FLT";
+static const char __pyx_k_AToB0Tag[] = "AToB0Tag";
+static const char __pyx_k_AToB1Tag[] = "AToB1Tag";
+static const char __pyx_k_AToB2Tag[] = "AToB2Tag";
 static const char __pyx_k_BGRA_FLT[] = "BGRA_FLT";
+static const char __pyx_k_BToA0Tag[] = "BToA0Tag";
+static const char __pyx_k_BToA1Tag[] = "BToA1Tag";
+static const char __pyx_k_BToA2Tag[] = "BToA2Tag";
+static const char __pyx_k_BToD0Tag[] = "BToD0Tag";
+static const char __pyx_k_BToD1Tag[] = "BToD1Tag";
+static const char __pyx_k_BToD2Tag[] = "BToD2Tag";
+static const char __pyx_k_BToD3Tag[] = "BToD3Tag";
 static const char __pyx_k_CMYK10_8[] = "CMYK10_8";
 static const char __pyx_k_CMYK11_8[] = "CMYK11_8";
 static const char __pyx_k_CMYK12_8[] = "CMYK12_8";
@@ -1163,9 +1267,18 @@ static const char __pyx_k_CMYK8_16[] = "CMYK8_16";
 static const char __pyx_k_CMYK9_16[] = "CMYK9_16";
 static const char __pyx_k_CMYK_DBL[] = "CMYK_DBL";
 static const char __pyx_k_CMYK_FLT[] = "CMYK_FLT";
+static const char __pyx_k_CmykData[] = "CmykData";
+static const char __pyx_k_DToB0Tag[] = "DToB0Tag";
+static const char __pyx_k_DToB1Tag[] = "DToB1Tag";
+static const char __pyx_k_DToB2Tag[] = "DToB2Tag";
+static const char __pyx_k_DToB3Tag[] = "DToB3Tag";
+static const char __pyx_k_DataType[] = "DataType";
+static const char __pyx_k_DictType[] = "DictType";
 static const char __pyx_k_GRAYA_16[] = "GRAYA_16";
 static const char __pyx_k_GRAY_DBL[] = "GRAY_DBL";
 static const char __pyx_k_GRAY_FLT[] = "GRAY_FLT";
+static const char __pyx_k_GamutTag[] = "GamutTag";
+static const char __pyx_k_GrayData[] = "GrayData";
 static const char __pyx_k_KYMC10_8[] = "KYMC10_8";
 static const char __pyx_k_KYMC11_8[] = "KYMC11_8";
 static const char __pyx_k_KYMC12_8[] = "KYMC12_8";
@@ -1175,46 +1288,117 @@ static const char __pyx_k_KYMC8_16[] = "KYMC8_16";
 static const char __pyx_k_KYMC9_16[] = "KYMC9_16";
 static const char __pyx_k_LabA_FLT[] = "LabA_FLT";
 static const char __pyx_k_LabV2_16[] = "LabV2_16";
+static const char __pyx_k_Lut8Type[] = "Lut8Type";
+static const char __pyx_k_LuvKData[] = "LuvKData";
+static const char __pyx_k_MCH1Data[] = "MCH1Data";
+static const char __pyx_k_MCH2Data[] = "MCH2Data";
+static const char __pyx_k_MCH3Data[] = "MCH3Data";
+static const char __pyx_k_MCH4Data[] = "MCH4Data";
+static const char __pyx_k_MCH5Data[] = "MCH5Data";
+static const char __pyx_k_MCH6Data[] = "MCH6Data";
+static const char __pyx_k_MCH7Data[] = "MCH7Data";
+static const char __pyx_k_MCH8Data[] = "MCH8Data";
+static const char __pyx_k_MCH9Data[] = "MCH9Data";
+static const char __pyx_k_MCHAData[] = "MCHAData";
+static const char __pyx_k_MCHBData[] = "MCHBData";
+static const char __pyx_k_MCHCData[] = "MCHCData";
+static const char __pyx_k_MCHDData[] = "MCHDData";
+static const char __pyx_k_MCHEData[] = "MCHEData";
+static const char __pyx_k_MCHFData[] = "MCHFData";
 static const char __pyx_k_RGBA_FLT[] = "RGBA_FLT";
+static const char __pyx_k_Taligent[] = "Taligent";
+static const char __pyx_k_TextType[] = "TextType";
+static const char __pyx_k_UcrBgTag[] = "UcrBgTag";
+static const char __pyx_k_VcgtType[] = "VcgtType";
 static const char __pyx_k_YCbCr_16[] = "YCbCr_16";
 static const char __pyx_k_qualname[] = "__qualname__";
+static const char __pyx_k_AMDisplay[] = "AMDisplay";
 static const char __pyx_k_BGR_16_SE[] = "BGR_16_SE";
 static const char __pyx_k_CMYK10_16[] = "CMYK10_16";
 static const char __pyx_k_CMYK11_16[] = "CMYK11_16";
 static const char __pyx_k_CMYK12_16[] = "CMYK12_16";
 static const char __pyx_k_CMY_16_SE[] = "CMY_16_SE";
+static const char __pyx_k_CurveType[] = "CurveType";
 static const char __pyx_k_HLS_16_SE[] = "HLS_16_SE";
 static const char __pyx_k_HSV_16_SE[] = "HSV_16_SE";
 static const char __pyx_k_KYMC10_16[] = "KYMC10_16";
 static const char __pyx_k_KYMC11_16[] = "KYMC11_16";
 static const char __pyx_k_KYMC12_16[] = "KYMC12_16";
+static const char __pyx_k_LinkClass[] = "LinkClass";
+static const char __pyx_k_Lut16Type[] = "Lut16Type";
+static const char __pyx_k_Macintosh[] = "Macintosh";
+static const char __pyx_k_Microsoft[] = "Microsoft";
+static const char __pyx_k_NamedData[] = "NamedData";
+static const char __pyx_k_PMDisplay[] = "PMDisplay";
+static const char __pyx_k_Ps2CSATag[] = "Ps2CSATag";
 static const char __pyx_k_RGB_16_SE[] = "RGB_16_SE";
+static const char __pyx_k_RedTRCTag[] = "RedTRCTag";
+static const char __pyx_k_UcrBgType[] = "UcrBgType";
+static const char __pyx_k_YCbCrData[] = "YCbCrData";
 static const char __pyx_k_YUV_16_SE[] = "YUV_16_SE";
 static const char __pyx_k_lcms2_cms[] = "lcms2.cms";
 static const char __pyx_k_metaclass[] = "__metaclass__";
+static const char __pyx_k_1colorData[] = "_1colorData";
+static const char __pyx_k_2colorData[] = "_2colorData";
+static const char __pyx_k_3colorData[] = "_3colorData";
+static const char __pyx_k_4colorData[] = "_4colorData";
+static const char __pyx_k_5colorData[] = "_5colorData";
+static const char __pyx_k_6colorData[] = "_6colorData";
+static const char __pyx_k_7colorData[] = "_7colorData";
+static const char __pyx_k_8colorData[] = "_8colorData";
+static const char __pyx_k_9colorData[] = "_9colorData";
 static const char __pyx_k_ABGR_16_SE[] = "ABGR_16_SE";
 static const char __pyx_k_BGRA_16_SE[] = "BGRA_16_SE";
+static const char __pyx_k_BlueTRCTag[] = "BlueTRCTag";
 static const char __pyx_k_CMYK_16_SE[] = "CMYK_16_SE";
 static const char __pyx_k_CMYK_8_REV[] = "CMYK_8_REV";
+static const char __pyx_k_CRTDisplay[] = "CRTDisplay";
+static const char __pyx_k_CrdInfoTag[] = "CrdInfoTag";
+static const char __pyx_k_FilmWriter[] = "FilmWriter";
 static const char __pyx_k_GRAY_16_SE[] = "GRAY_16_SE";
 static const char __pyx_k_GRAY_8_REV[] = "GRAY_8_REV";
+static const char __pyx_k_GrayTRCTag[] = "GrayTRCTag";
+static const char __pyx_k_InputClass[] = "InputClass";
 static const char __pyx_k_KCMY_16_SE[] = "KCMY_16_SE";
 static const char __pyx_k_KCMY_8_REV[] = "KCMY_8_REV";
 static const char __pyx_k_KYMC_16_SE[] = "KYMC_16_SE";
+static const char __pyx_k_Ps2CRD0Tag[] = "Ps2CRD0Tag";
+static const char __pyx_k_Ps2CRD1Tag[] = "Ps2CRD1Tag";
+static const char __pyx_k_Ps2CRD2Tag[] = "Ps2CRD2Tag";
+static const char __pyx_k_Ps2CRD3Tag[] = "Ps2CRD3Tag";
 static const char __pyx_k_RGBA_16_SE[] = "RGBA_16_SE";
+static const char __pyx_k_Silkscreen[] = "Silkscreen";
+static const char __pyx_k_10colorData[] = "_10colorData";
+static const char __pyx_k_11colorData[] = "_11colorData";
+static const char __pyx_k_12colorData[] = "_12colorData";
+static const char __pyx_k_13colorData[] = "_13colorData";
+static const char __pyx_k_14colorData[] = "_14colorData";
+static const char __pyx_k_15colorData[] = "_15colorData";
 static const char __pyx_k_CMYK5_16_SE[] = "CMYK5_16_SE";
 static const char __pyx_k_CMYK6_16_SE[] = "CMYK6_16_SE";
 static const char __pyx_k_CMYK7_16_SE[] = "CMYK7_16_SE";
 static const char __pyx_k_CMYK8_16_SE[] = "CMYK8_16_SE";
 static const char __pyx_k_CMYK9_16_SE[] = "CMYK9_16_SE";
 static const char __pyx_k_CMYK_16_REV[] = "CMYK_16_REV";
+static const char __pyx_k_CrdInfoType[] = "CrdInfoType";
+static const char __pyx_k_DateTimeTag[] = "DateTimeTag";
+static const char __pyx_k_FilmScanner[] = "FilmScanner";
+static const char __pyx_k_Flexography[] = "Flexography";
 static const char __pyx_k_GRAYA_16_SE[] = "GRAYA_16_SE";
 static const char __pyx_k_GRAY_16_REV[] = "GRAY_16_REV";
+static const char __pyx_k_GreenTRCTag[] = "GreenTRCTag";
 static const char __pyx_k_KCMY_16_REV[] = "KCMY_16_REV";
 static const char __pyx_k_KYMC5_16_SE[] = "KYMC5_16_SE";
 static const char __pyx_k_KYMC7_16_SE[] = "KYMC7_16_SE";
 static const char __pyx_k_KYMC8_16_SE[] = "KYMC8_16_SE";
 static const char __pyx_k_KYMC9_16_SE[] = "KYMC9_16_SE";
+static const char __pyx_k_LutAtoBType[] = "LutAtoBType";
+static const char __pyx_k_LutBtoAType[] = "LutBtoAType";
+static const char __pyx_k_OutputClass[] = "OutputClass";
+static const char __pyx_k_Preview0Tag[] = "Preview0Tag";
+static const char __pyx_k_Preview1Tag[] = "Preview1Tag";
+static const char __pyx_k_Preview2Tag[] = "Preview2Tag";
+static const char __pyx_k_VideoCamera[] = "VideoCamera";
 static const char __pyx_k_YCbCr_16_SE[] = "YCbCr_16_SE";
 static const char __pyx_k_BGR_8_PLANAR[] = "BGR_8_PLANAR";
 static const char __pyx_k_BGR_HALF_FLT[] = "BGR_HALF_FLT";
@@ -1222,42 +1406,167 @@ static const char __pyx_k_CMYK10_16_SE[] = "CMYK10_16_SE";
 static const char __pyx_k_CMYK11_16_SE[] = "CMYK11_16_SE";
 static const char __pyx_k_CMYK12_16_SE[] = "CMYK12_16_SE";
 static const char __pyx_k_CMY_8_PLANAR[] = "CMY_8_PLANAR";
+static const char __pyx_k_CopyrightTag[] = "CopyrightTag";
+static const char __pyx_k_DateTimeType[] = "DateTimeType";
+static const char __pyx_k_DisplayClass[] = "DisplayClass";
 static const char __pyx_k_HLS_8_PLANAR[] = "HLS_8_PLANAR";
 static const char __pyx_k_HSV_8_PLANAR[] = "HSV_8_PLANAR";
 static const char __pyx_k_KYMC10_16_SE[] = "KYMC10_16_SE";
 static const char __pyx_k_KYMC11_16_SE[] = "KYMC11_16_SE";
 static const char __pyx_k_KYMC12_16_SE[] = "KYMC12_16_SE";
+static const char __pyx_k_LuminanceTag[] = "LuminanceTag";
 static const char __pyx_k_RGB_8_PLANAR[] = "RGB_8_PLANAR";
 static const char __pyx_k_RGB_HALF_FLT[] = "RGB_HALF_FLT";
+static const char __pyx_k_ScreeningTag[] = "ScreeningTag";
+static const char __pyx_k_TagSignature[] = "TagSignature";
+static const char __pyx_k_VideoMonitor[] = "VideoMonitor";
 static const char __pyx_k_YUV_8_PLANAR[] = "YUV_8_PLANAR";
 static const char __pyx_k_ABGR_8_PLANAR[] = "ABGR_8_PLANAR";
 static const char __pyx_k_ABGR_HALF_FLT[] = "ABGR_HALF_FLT";
 static const char __pyx_k_ARGB_8_PLANAR[] = "ARGB_8_PLANAR";
 static const char __pyx_k_ARGB_HALF_FLT[] = "ARGB_HALF_FLT";
+static const char __pyx_k_AbstractClass[] = "AbstractClass";
+static const char __pyx_k_ArgyllArtsTag[] = "ArgyllArtsTag";
 static const char __pyx_k_BGRA_8_PLANAR[] = "BGRA_8_PLANAR";
 static const char __pyx_k_BGRA_HALF_FLT[] = "BGRA_HALF_FLT";
 static const char __pyx_k_BGR_16_PLANAR[] = "BGR_16_PLANAR";
 static const char __pyx_k_CMYK_8_PLANAR[] = "CMYK_8_PLANAR";
 static const char __pyx_k_CMYK_HALF_FLT[] = "CMYK_HALF_FLT";
 static const char __pyx_k_CMY_16_PLANAR[] = "CMY_16_PLANAR";
+static const char __pyx_k_CharTargetTag[] = "CharTargetTag";
+static const char __pyx_k_DigitalCamera[] = "DigitalCamera";
 static const char __pyx_k_GRAY_HALF_FLT[] = "GRAY_HALF_FLT";
 static const char __pyx_k_HLS_16_PLANAR[] = "HLS_16_PLANAR";
 static const char __pyx_k_HSV_16_PLANAR[] = "HSV_16_PLANAR";
+static const char __pyx_k_ICC_Platforms[] = "ICC Platforms.\n    ";
+static const char __pyx_k_InkJetPrinter[] = "InkJetPrinter";
+static const char __pyx_k_NamedColorTag[] = "NamedColorTag";
 static const char __pyx_k_RGBA_8_PLANAR[] = "RGBA_8_PLANAR";
 static const char __pyx_k_RGBA_HALF_FLT[] = "RGBA_HALF_FLT";
 static const char __pyx_k_RGB_16_PLANAR[] = "RGB_16_PLANAR";
+static const char __pyx_k_ScreeningType[] = "ScreeningType";
+static const char __pyx_k_SignatureType[] = "SignatureType";
+static const char __pyx_k_TechnologyTag[] = "TechnologyTag";
 static const char __pyx_k_YUV_16_PLANAR[] = "YUV_16_PLANAR";
+static const char __pyx_k_lcmsSignature[] = "lcmsSignature";
 static const char __pyx_k_ABGR_16_PLANAR[] = "ABGR_16_PLANAR";
 static const char __pyx_k_CMYK6_8_PLANAR[] = "CMYK6_8_PLANAR";
 static const char __pyx_k_CMYK_16_PLANAR[] = "CMYK_16_PLANAR";
 static const char __pyx_k_GRAYA_8_PLANAR[] = "GRAYA_8_PLANAR";
+static const char __pyx_k_MeasurementTag[] = "MeasurementTag";
+static const char __pyx_k_NamedColor2Tag[] = "NamedColor2Tag";
+static const char __pyx_k_NamedColorType[] = "NamedColorType";
 static const char __pyx_k_RGBA_16_PLANAR[] = "RGBA_16_PLANAR";
+static const char __pyx_k_RedColorantTag[] = "RedColorantTag";
+static const char __pyx_k_Referencegamut[] = "Referencegamut";
+static const char __pyx_k_UInt8ArrayType[] = "UInt8ArrayType";
 static const char __pyx_k_YCbCr_8_PLANAR[] = "YCbCr_8_PLANAR";
+static const char __pyx_k_cmsMagicNumber[] = "cmsMagicNumber";
+static const char __pyx_k_BlueColorantTag[] = "BlueColorantTag";
 static const char __pyx_k_CMYK6_16_PLANAR[] = "CMYK6_16_PLANAR";
+static const char __pyx_k_ChromaticityTag[] = "ChromaticityTag";
+static const char __pyx_k_ColorSpaceClass[] = "ColorSpaceClass";
 static const char __pyx_k_GRAYA_16_PLANAR[] = "GRAYA_16_PLANAR";
+static const char __pyx_k_MeasurementType[] = "MeasurementType";
+static const char __pyx_k_NamedColor2Type[] = "NamedColor2Type";
+static const char __pyx_k_NamedColorClass[] = "NamedColorClass";
+static const char __pyx_k_Reference_gamut[] = "Reference gamut.\n    ";
+static const char __pyx_k_UInt16ArrayType[] = "UInt16ArrayType";
+static const char __pyx_k_UInt32ArrayType[] = "UInt32ArrayType";
+static const char __pyx_k_UInt64ArrayType[] = "UInt64ArrayType";
 static const char __pyx_k_YCbCr_16_PLANAR[] = "YCbCr_16_PLANAR";
+static const char __pyx_k_ChromaticityType[] = "ChromaticityType";
+static const char __pyx_k_ColorantOrderTag[] = "ColorantOrderTag";
+static const char __pyx_k_ColorantTableTag[] = "ColorantTableTag";
+static const char __pyx_k_DeviceMfgDescTag[] = "DeviceMfgDescTag";
+static const char __pyx_k_GreenColorantTag[] = "GreenColorantTag";
+static const char __pyx_k_ICC_Color_spaces[] = "ICC Color spaces.\n    ";
+static const char __pyx_k_PhotoImageSetter[] = "PhotoImageSetter";
+static const char __pyx_k_ScreeningDescTag[] = "ScreeningDescTag";
+static const char __pyx_k_TagTypeSignature[] = "TagTypeSignature";
+static const char __pyx_k_ColorantOrderType[] = "ColorantOrderType";
+static const char __pyx_k_ColorantTableType[] = "ColorantTableType";
+static const char __pyx_k_DeviceSettingsTag[] = "DeviceSettingsTag";
+static const char __pyx_k_ICC_Profile_Class[] = "ICC Profile Class.\n    ";
 static const char __pyx_k_NAMED_COLOR_INDEX[] = "NAMED_COLOR_INDEX";
+static const char __pyx_k_OffsetLithography[] = "OffsetLithography";
+static const char __pyx_k_OutputResponseTag[] = "OutputResponseTag";
+static const char __pyx_k_PlatformSignature[] = "PlatformSignature";
+static const char __pyx_k_ReflectiveScanner[] = "ReflectiveScanner";
+static const char __pyx_k_ThermalWaxPrinter[] = "ThermalWaxPrinter";
+static const char __pyx_k_DeviceModelDescTag[] = "DeviceModelDescTag";
+static const char __pyx_k_DeviceSettingsType[] = "DeviceSettingsType";
+static const char __pyx_k_ICC_Technology_tag[] = "ICC Technology tag.\n    ";
+static const char __pyx_k_MediaBlackPointTag[] = "MediaBlackPointTag";
+static const char __pyx_k_MediaWhitePointTag[] = "MediaWhitePointTag";
+static const char __pyx_k_PERCEPTUAL_BLACK_X[] = "PERCEPTUAL_BLACK_X";
+static const char __pyx_k_PERCEPTUAL_BLACK_Y[] = "PERCEPTUAL_BLACK_Y";
+static const char __pyx_k_PERCEPTUAL_BLACK_Z[] = "PERCEPTUAL_BLACK_Z";
+static const char __pyx_k_RedMatrixColumnTag[] = "RedMatrixColumnTag";
+static const char __pyx_k_ViewingCondDescTag[] = "ViewingCondDescTag";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_gravure_lcms2_enum[] = "gravure.lcms2.enum";
+static const char __pyx_k_BlueMatrixColumnTag[] = "BlueMatrixColumnTag";
+static const char __pyx_k_ColorSpaceSignature[] = "ColorSpaceSignature";
+static const char __pyx_k_ColorantTableOutTag[] = "ColorantTableOutTag";
+static const char __pyx_k_ParametricCurveType[] = "ParametricCurveType";
+static const char __pyx_k_S15Fixed16ArrayType[] = "S15Fixed16ArrayType";
+static const char __pyx_k_TechnologySignature[] = "TechnologySignature";
+static const char __pyx_k_TextDescriptionType[] = "TextDescriptionType";
+static const char __pyx_k_U16Fixed16ArrayType[] = "U16Fixed16ArrayType";
+static const char __pyx_k_ElectrostaticPrinter[] = "ElectrostaticPrinter";
+static const char __pyx_k_GreenMatrixColumnTag[] = "GreenMatrixColumnTag";
+static const char __pyx_k_ProfileSequenceIdTag[] = "ProfileSequenceIdTag";
+static const char __pyx_k_ProjectionTelevision[] = "ProjectionTelevision";
+static const char __pyx_k_ViewingConditionsTag[] = "ViewingConditionsTag";
+static const char __pyx_k_DyeSublimationPrinter[] = "DyeSublimationPrinter";
+static const char __pyx_k_ProfileClassSignature[] = "ProfileClassSignature";
+static const char __pyx_k_ProfileDescriptionTag[] = "ProfileDescriptionTag";
+static const char __pyx_k_ProfileSequenceIdType[] = "ProfileSequenceIdType";
+static const char __pyx_k_Ps2RenderingIntentTag[] = "Ps2RenderingIntentTag";
+static const char __pyx_k_ViewingConditionsType[] = "ViewingConditionsType";
+static const char __pyx_k_CalibrationDateTimeTag[] = "CalibrationDateTimeTag";
+static const char __pyx_k_ChromaticAdaptationTag[] = "ChromaticAdaptationTag";
+static const char __pyx_k_DigitalCinemaProjector[] = "DigitalCinemaProjector";
+static const char __pyx_k_ProfileSequenceDescTag[] = "ProfileSequenceDescTag";
+static const char __pyx_k_ResponseCurveSet16Type[] = "ResponseCurveSet16Type";
+static const char __pyx_k_Definitions_in_ICC_spec[] = "Definitions in ICC spec.\n    ";
+static const char __pyx_k_MultiProcessElementType[] = "MultiProcessElementType";
+static const char __pyx_k_ProfileDescriptionMLTag[] = "ProfileDescriptionMLTag";
+static const char __pyx_k_ProfileSequenceDescType[] = "ProfileSequenceDescType";
+static const char __pyx_k_Base_ICC_tag_definitions[] = "Base ICC tag definitions.\n    ";
+static const char __pyx_k_MotionPictureFilmScanner[] = "MotionPictureFilmScanner";
+static const char __pyx_k_PhotographicPaperPrinter[] = "PhotographicPaperPrinter";
+static const char __pyx_k_SceneAppearanceEstimates[] = "SceneAppearanceEstimates";
+static const char __pyx_k_Base_ICC_type_definitions[] = "Base ICC type definitions.\n    ";
+static const char __pyx_k_MotionPictureFilmRecorder[] = "MotionPictureFilmRecorder";
+static const char __pyx_k_MultiLocalizedUnicodeType[] = "MultiLocalizedUnicodeType";
+static const char __pyx_k_SceneColorimetryEstimates[] = "SceneColorimetryEstimates";
+static const char __pyx_k_DigitalMotionPictureCamera[] = "DigitalMotionPictureCamera";
+static const char __pyx_k_ElectrophotographicPrinter[] = "ElectrophotographicPrinter";
+static const char __pyx_k_FocalPlaneColorimetryEstimates[] = "FocalPlaneColorimetryEstimates";
+static const char __pyx_k_PerceptualReferenceMediumGamut[] = "PerceptualReferenceMediumGamut";
+static const char __pyx_k_ColorimetricIntentImageStateTag[] = "ColorimetricIntentImageStateTag";
+static const char __pyx_k_For_TagSignature_ColorimetricInt[] = "For TagSignature.ColorimetricIntentImageStateTag.\n    ";
+static const char __pyx_k_PerceptualRenderingIntentGamutTa[] = "PerceptualRenderingIntentGamutTag";
+static const char __pyx_k_ReflectionHardcopyOriginalColori[] = "ReflectionHardcopyOriginalColorimetry";
+static const char __pyx_k_ReflectionPrintOutputColorimetry[] = "ReflectionPrintOutputColorimetry";
+static const char __pyx_k_SaturationRenderingIntentGamutTa[] = "SaturationRenderingIntentGamutTag";
+static PyObject *__pyx_n_s_10colorData;
+static PyObject *__pyx_n_s_11colorData;
+static PyObject *__pyx_n_s_12colorData;
+static PyObject *__pyx_n_s_13colorData;
+static PyObject *__pyx_n_s_14colorData;
+static PyObject *__pyx_n_s_15colorData;
+static PyObject *__pyx_n_s_1colorData;
+static PyObject *__pyx_n_s_2colorData;
+static PyObject *__pyx_n_s_3colorData;
+static PyObject *__pyx_n_s_4colorData;
+static PyObject *__pyx_n_s_5colorData;
+static PyObject *__pyx_n_s_6colorData;
+static PyObject *__pyx_n_s_7colorData;
+static PyObject *__pyx_n_s_8colorData;
+static PyObject *__pyx_n_s_9colorData;
 static PyObject *__pyx_n_s_ABGR_16;
 static PyObject *__pyx_n_s_ABGR_16_PLANAR;
 static PyObject *__pyx_n_s_ABGR_16_SE;
@@ -1267,11 +1576,17 @@ static PyObject *__pyx_n_s_ABGR_FLT;
 static PyObject *__pyx_n_s_ABGR_HALF_FLT;
 static PyObject *__pyx_n_s_ALabV2_8;
 static PyObject *__pyx_n_s_ALab_8;
+static PyObject *__pyx_n_s_AMDisplay;
 static PyObject *__pyx_n_s_ARGB_16;
 static PyObject *__pyx_n_s_ARGB_8;
 static PyObject *__pyx_n_s_ARGB_8_PLANAR;
 static PyObject *__pyx_n_s_ARGB_FLT;
 static PyObject *__pyx_n_s_ARGB_HALF_FLT;
+static PyObject *__pyx_n_s_AToB0Tag;
+static PyObject *__pyx_n_s_AToB1Tag;
+static PyObject *__pyx_n_s_AToB2Tag;
+static PyObject *__pyx_n_s_AbstractClass;
+static PyObject *__pyx_n_s_ArgyllArtsTag;
 static PyObject *__pyx_n_s_BGRA_16;
 static PyObject *__pyx_n_s_BGRA_16_SE;
 static PyObject *__pyx_n_s_BGRA_8;
@@ -1286,6 +1601,18 @@ static PyObject *__pyx_n_s_BGR_8_PLANAR;
 static PyObject *__pyx_n_s_BGR_DBL;
 static PyObject *__pyx_n_s_BGR_FLT;
 static PyObject *__pyx_n_s_BGR_HALF_FLT;
+static PyObject *__pyx_n_s_BToA0Tag;
+static PyObject *__pyx_n_s_BToA1Tag;
+static PyObject *__pyx_n_s_BToA2Tag;
+static PyObject *__pyx_n_s_BToD0Tag;
+static PyObject *__pyx_n_s_BToD1Tag;
+static PyObject *__pyx_n_s_BToD2Tag;
+static PyObject *__pyx_n_s_BToD3Tag;
+static PyObject *__pyx_kp_s_Base_ICC_tag_definitions;
+static PyObject *__pyx_kp_s_Base_ICC_type_definitions;
+static PyObject *__pyx_n_s_BlueColorantTag;
+static PyObject *__pyx_n_s_BlueMatrixColumnTag;
+static PyObject *__pyx_n_s_BlueTRCTag;
 static PyObject *__pyx_n_s_CMYK10_16;
 static PyObject *__pyx_n_s_CMYK10_16_SE;
 static PyObject *__pyx_n_s_CMYK10_8;
@@ -1328,7 +1655,61 @@ static PyObject *__pyx_n_s_CMY_16_PLANAR;
 static PyObject *__pyx_n_s_CMY_16_SE;
 static PyObject *__pyx_n_s_CMY_8;
 static PyObject *__pyx_n_s_CMY_8_PLANAR;
+static PyObject *__pyx_n_s_CRTDisplay;
+static PyObject *__pyx_n_s_CalibrationDateTimeTag;
+static PyObject *__pyx_n_s_CharTargetTag;
+static PyObject *__pyx_n_s_ChromaticAdaptationTag;
+static PyObject *__pyx_n_s_ChromaticityTag;
+static PyObject *__pyx_n_s_ChromaticityType;
+static PyObject *__pyx_n_s_CmyData;
+static PyObject *__pyx_n_s_CmykData;
+static PyObject *__pyx_n_s_ColorSpaceClass;
+static PyObject *__pyx_n_s_ColorSpaceSignature;
+static PyObject *__pyx_n_u_ColorSpaceSignature;
+static PyObject *__pyx_n_s_ColorantOrderTag;
+static PyObject *__pyx_n_s_ColorantOrderType;
+static PyObject *__pyx_n_s_ColorantTableOutTag;
+static PyObject *__pyx_n_s_ColorantTableTag;
+static PyObject *__pyx_n_s_ColorantTableType;
+static PyObject *__pyx_n_s_ColorimetricIntentImageStateTag;
+static PyObject *__pyx_n_u_ColorimetricIntentImageStateTag;
+static PyObject *__pyx_n_s_CopyrightTag;
+static PyObject *__pyx_n_s_CrdInfoTag;
+static PyObject *__pyx_n_s_CrdInfoType;
+static PyObject *__pyx_n_s_CurveType;
+static PyObject *__pyx_n_s_D50X;
+static PyObject *__pyx_n_u_D50X;
+static PyObject *__pyx_n_s_D50Y;
+static PyObject *__pyx_n_u_D50Y;
+static PyObject *__pyx_n_s_D50Z;
+static PyObject *__pyx_n_u_D50Z;
+static PyObject *__pyx_n_s_DToB0Tag;
+static PyObject *__pyx_n_s_DToB1Tag;
+static PyObject *__pyx_n_s_DToB2Tag;
+static PyObject *__pyx_n_s_DToB3Tag;
+static PyObject *__pyx_n_s_DataTag;
+static PyObject *__pyx_n_s_DataType;
+static PyObject *__pyx_n_s_DateTimeTag;
+static PyObject *__pyx_n_s_DateTimeType;
+static PyObject *__pyx_kp_s_Definitions_in_ICC_spec;
+static PyObject *__pyx_n_s_DeviceMfgDescTag;
+static PyObject *__pyx_n_s_DeviceModelDescTag;
+static PyObject *__pyx_n_s_DeviceSettingsTag;
+static PyObject *__pyx_n_s_DeviceSettingsType;
+static PyObject *__pyx_n_s_DictType;
+static PyObject *__pyx_n_s_DigitalCamera;
+static PyObject *__pyx_n_s_DigitalCinemaProjector;
+static PyObject *__pyx_n_s_DigitalMotionPictureCamera;
+static PyObject *__pyx_n_s_DisplayClass;
+static PyObject *__pyx_n_s_DyeSublimationPrinter;
+static PyObject *__pyx_n_s_ElectrophotographicPrinter;
+static PyObject *__pyx_n_s_ElectrostaticPrinter;
 static PyObject *__pyx_n_s_Enum;
+static PyObject *__pyx_n_s_FilmScanner;
+static PyObject *__pyx_n_s_FilmWriter;
+static PyObject *__pyx_n_s_Flexography;
+static PyObject *__pyx_n_s_FocalPlaneColorimetryEstimates;
+static PyObject *__pyx_kp_s_For_TagSignature_ColorimetricInt;
 static PyObject *__pyx_n_s_GRAYA_16;
 static PyObject *__pyx_n_s_GRAYA_16_PLANAR;
 static PyObject *__pyx_n_s_GRAYA_16_SE;
@@ -1342,6 +1723,13 @@ static PyObject *__pyx_n_s_GRAY_8_REV;
 static PyObject *__pyx_n_s_GRAY_DBL;
 static PyObject *__pyx_n_s_GRAY_FLT;
 static PyObject *__pyx_n_s_GRAY_HALF_FLT;
+static PyObject *__pyx_n_s_GamutTag;
+static PyObject *__pyx_n_s_Gravure;
+static PyObject *__pyx_n_s_GrayData;
+static PyObject *__pyx_n_s_GrayTRCTag;
+static PyObject *__pyx_n_s_GreenColorantTag;
+static PyObject *__pyx_n_s_GreenMatrixColumnTag;
+static PyObject *__pyx_n_s_GreenTRCTag;
 static PyObject *__pyx_n_s_HLS_16;
 static PyObject *__pyx_n_s_HLS_16_PLANAR;
 static PyObject *__pyx_n_s_HLS_16_SE;
@@ -1352,6 +1740,18 @@ static PyObject *__pyx_n_s_HSV_16_PLANAR;
 static PyObject *__pyx_n_s_HSV_16_SE;
 static PyObject *__pyx_n_s_HSV_8;
 static PyObject *__pyx_n_s_HSV_8_PLANAR;
+static PyObject *__pyx_n_s_HlsData;
+static PyObject *__pyx_n_s_HsvData;
+static PyObject *__pyx_n_s_ICCDef;
+static PyObject *__pyx_n_u_ICCDef;
+static PyObject *__pyx_kp_s_ICC_Color_spaces;
+static PyObject *__pyx_kp_s_ICC_Platforms;
+static PyObject *__pyx_kp_s_ICC_Profile_Class;
+static PyObject *__pyx_kp_s_ICC_Technology_tag;
+static PyObject *__pyx_n_s_InkJetPrinter;
+static PyObject *__pyx_n_s_InputClass;
+static PyObject *__pyx_n_s_IntEnum;
+static PyObject *__pyx_n_s_IntFlag;
 static PyObject *__pyx_n_s_KCMY_16;
 static PyObject *__pyx_n_s_KCMY_16_REV;
 static PyObject *__pyx_n_s_KCMY_16_SE;
@@ -1382,13 +1782,90 @@ static PyObject *__pyx_n_s_KYMC_16;
 static PyObject *__pyx_n_s_KYMC_16_SE;
 static PyObject *__pyx_n_s_KYMC_8;
 static PyObject *__pyx_n_s_LabA_FLT;
+static PyObject *__pyx_n_s_LabData;
 static PyObject *__pyx_n_s_LabV2_16;
 static PyObject *__pyx_n_s_LabV2_8;
 static PyObject *__pyx_n_s_Lab_16;
 static PyObject *__pyx_n_s_Lab_8;
 static PyObject *__pyx_n_s_Lab_DBL;
 static PyObject *__pyx_n_s_Lab_FLT;
+static PyObject *__pyx_n_s_LinkClass;
+static PyObject *__pyx_n_s_LuminanceTag;
+static PyObject *__pyx_n_s_Lut16Type;
+static PyObject *__pyx_n_s_Lut8Type;
+static PyObject *__pyx_n_s_LutAtoBType;
+static PyObject *__pyx_n_s_LutBtoAType;
+static PyObject *__pyx_n_s_LuvData;
+static PyObject *__pyx_n_s_LuvKData;
+static PyObject *__pyx_n_s_MCH1Data;
+static PyObject *__pyx_n_s_MCH2Data;
+static PyObject *__pyx_n_s_MCH3Data;
+static PyObject *__pyx_n_s_MCH4Data;
+static PyObject *__pyx_n_s_MCH5Data;
+static PyObject *__pyx_n_s_MCH6Data;
+static PyObject *__pyx_n_s_MCH7Data;
+static PyObject *__pyx_n_s_MCH8Data;
+static PyObject *__pyx_n_s_MCH9Data;
+static PyObject *__pyx_n_s_MCHAData;
+static PyObject *__pyx_n_s_MCHBData;
+static PyObject *__pyx_n_s_MCHCData;
+static PyObject *__pyx_n_s_MCHDData;
+static PyObject *__pyx_n_s_MCHEData;
+static PyObject *__pyx_n_s_MCHFData;
+static PyObject *__pyx_n_s_Macintosh;
+static PyObject *__pyx_n_s_MeasurementTag;
+static PyObject *__pyx_n_s_MeasurementType;
+static PyObject *__pyx_n_s_MediaBlackPointTag;
+static PyObject *__pyx_n_s_MediaWhitePointTag;
+static PyObject *__pyx_n_s_MetaTag;
+static PyObject *__pyx_n_s_Microsoft;
+static PyObject *__pyx_n_s_MotionPictureFilmRecorder;
+static PyObject *__pyx_n_s_MotionPictureFilmScanner;
+static PyObject *__pyx_n_s_MultiLocalizedUnicodeType;
+static PyObject *__pyx_n_s_MultiProcessElementType;
 static PyObject *__pyx_n_s_NAMED_COLOR_INDEX;
+static PyObject *__pyx_n_s_NamedColor2Tag;
+static PyObject *__pyx_n_s_NamedColor2Type;
+static PyObject *__pyx_n_s_NamedColorClass;
+static PyObject *__pyx_n_s_NamedColorTag;
+static PyObject *__pyx_n_s_NamedColorType;
+static PyObject *__pyx_n_s_NamedData;
+static PyObject *__pyx_n_s_OffsetLithography;
+static PyObject *__pyx_n_s_OutputClass;
+static PyObject *__pyx_n_s_OutputResponseTag;
+static PyObject *__pyx_n_s_PERCEPTUAL_BLACK_X;
+static PyObject *__pyx_n_u_PERCEPTUAL_BLACK_X;
+static PyObject *__pyx_n_s_PERCEPTUAL_BLACK_Y;
+static PyObject *__pyx_n_u_PERCEPTUAL_BLACK_Y;
+static PyObject *__pyx_n_s_PERCEPTUAL_BLACK_Z;
+static PyObject *__pyx_n_u_PERCEPTUAL_BLACK_Z;
+static PyObject *__pyx_n_s_PMDisplay;
+static PyObject *__pyx_n_s_ParametricCurveType;
+static PyObject *__pyx_n_s_PerceptualReferenceMediumGamut;
+static PyObject *__pyx_n_s_PerceptualRenderingIntentGamutTa;
+static PyObject *__pyx_n_s_PhotoCD;
+static PyObject *__pyx_n_s_PhotoImageSetter;
+static PyObject *__pyx_n_s_PhotographicPaperPrinter;
+static PyObject *__pyx_n_s_PlatformSignature;
+static PyObject *__pyx_n_u_PlatformSignature;
+static PyObject *__pyx_n_s_Preview0Tag;
+static PyObject *__pyx_n_s_Preview1Tag;
+static PyObject *__pyx_n_s_Preview2Tag;
+static PyObject *__pyx_n_s_ProfileClassSignature;
+static PyObject *__pyx_n_u_ProfileClassSignature;
+static PyObject *__pyx_n_s_ProfileDescriptionMLTag;
+static PyObject *__pyx_n_s_ProfileDescriptionTag;
+static PyObject *__pyx_n_s_ProfileSequenceDescTag;
+static PyObject *__pyx_n_s_ProfileSequenceDescType;
+static PyObject *__pyx_n_s_ProfileSequenceIdTag;
+static PyObject *__pyx_n_s_ProfileSequenceIdType;
+static PyObject *__pyx_n_s_ProjectionTelevision;
+static PyObject *__pyx_n_s_Ps2CRD0Tag;
+static PyObject *__pyx_n_s_Ps2CRD1Tag;
+static PyObject *__pyx_n_s_Ps2CRD2Tag;
+static PyObject *__pyx_n_s_Ps2CRD3Tag;
+static PyObject *__pyx_n_s_Ps2CSATag;
+static PyObject *__pyx_n_s_Ps2RenderingIntentTag;
 static PyObject *__pyx_n_s_RGBA_16;
 static PyObject *__pyx_n_s_RGBA_16_PLANAR;
 static PyObject *__pyx_n_s_RGBA_16_SE;
@@ -1404,11 +1881,65 @@ static PyObject *__pyx_n_s_RGB_8_PLANAR;
 static PyObject *__pyx_n_s_RGB_DBL;
 static PyObject *__pyx_n_s_RGB_FLT;
 static PyObject *__pyx_n_s_RGB_HALF_FLT;
+static PyObject *__pyx_n_s_RedColorantTag;
+static PyObject *__pyx_n_s_RedMatrixColumnTag;
+static PyObject *__pyx_n_s_RedTRCTag;
+static PyObject *__pyx_kp_s_Reference_gamut;
+static PyObject *__pyx_n_s_Referencegamut;
+static PyObject *__pyx_n_u_Referencegamut;
+static PyObject *__pyx_n_s_ReflectionHardcopyOriginalColori;
+static PyObject *__pyx_n_s_ReflectionPrintOutputColorimetry;
+static PyObject *__pyx_n_s_ReflectiveScanner;
+static PyObject *__pyx_n_s_ResponseCurveSet16Type;
+static PyObject *__pyx_n_s_RgbData;
+static PyObject *__pyx_n_s_S15Fixed16ArrayType;
+static PyObject *__pyx_n_s_SGI;
+static PyObject *__pyx_n_s_SaturationRenderingIntentGamutTa;
+static PyObject *__pyx_n_s_SceneAppearanceEstimates;
+static PyObject *__pyx_n_s_SceneColorimetryEstimates;
+static PyObject *__pyx_n_s_ScreeningDescTag;
+static PyObject *__pyx_n_s_ScreeningTag;
+static PyObject *__pyx_n_s_ScreeningType;
+static PyObject *__pyx_n_s_SignatureType;
+static PyObject *__pyx_n_s_Silkscreen;
+static PyObject *__pyx_n_s_Solaris;
 static PyObject *__pyx_n_s_TYPE;
 static PyObject *__pyx_n_u_TYPE;
+static PyObject *__pyx_n_s_TagEnum;
+static PyObject *__pyx_n_s_TagSignature;
+static PyObject *__pyx_n_u_TagSignature;
+static PyObject *__pyx_n_s_TagTypeSignature;
+static PyObject *__pyx_n_u_TagTypeSignature;
+static PyObject *__pyx_n_s_Taligent;
+static PyObject *__pyx_n_s_TechnologySignature;
+static PyObject *__pyx_n_u_TechnologySignature;
+static PyObject *__pyx_n_s_TechnologyTag;
+static PyObject *__pyx_n_s_TextDescriptionType;
+static PyObject *__pyx_n_s_TextType;
+static PyObject *__pyx_n_s_ThermalWaxPrinter;
+static PyObject *__pyx_n_s_U16Fixed16ArrayType;
+static PyObject *__pyx_n_s_UInt16ArrayType;
+static PyObject *__pyx_n_s_UInt32ArrayType;
+static PyObject *__pyx_n_s_UInt64ArrayType;
+static PyObject *__pyx_n_s_UInt8ArrayType;
+static PyObject *__pyx_n_s_UcrBgTag;
+static PyObject *__pyx_n_s_UcrBgType;
+static PyObject *__pyx_n_s_Unices;
+static PyObject *__pyx_n_s_VERSION;
+static PyObject *__pyx_n_u_VERSION;
+static PyObject *__pyx_n_s_VcgtTag;
+static PyObject *__pyx_n_s_VcgtType;
+static PyObject *__pyx_n_s_VideoCamera;
+static PyObject *__pyx_n_s_VideoMonitor;
+static PyObject *__pyx_n_s_ViewingCondDescTag;
+static PyObject *__pyx_n_s_ViewingConditionsTag;
+static PyObject *__pyx_n_s_ViewingConditionsType;
+static PyObject *__pyx_n_s_XYZData;
+static PyObject *__pyx_n_s_XYZType;
 static PyObject *__pyx_n_s_XYZ_16;
 static PyObject *__pyx_n_s_XYZ_DBL;
 static PyObject *__pyx_n_s_XYZ_FLT;
+static PyObject *__pyx_n_s_YCbCrData;
 static PyObject *__pyx_n_s_YCbCr_16;
 static PyObject *__pyx_n_s_YCbCr_16_PLANAR;
 static PyObject *__pyx_n_s_YCbCr_16_SE;
@@ -1421,13 +1952,17 @@ static PyObject *__pyx_n_s_YUV_16_PLANAR;
 static PyObject *__pyx_n_s_YUV_16_SE;
 static PyObject *__pyx_n_s_YUV_8;
 static PyObject *__pyx_n_s_YUV_8_PLANAR;
+static PyObject *__pyx_n_s_YxyData;
 static PyObject *__pyx_n_s_Yxy_16;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_cline_in_traceback;
+static PyObject *__pyx_n_s_cmsMagicNumber;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_enum;
+static PyObject *__pyx_n_s_gravure_lcms2_enum;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_lcms2_cms;
+static PyObject *__pyx_n_s_lcmsSignature;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_module;
@@ -1435,6 +1970,7 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_n_s_unique;
 /* Late includes */
 
 static PyMethodDef __pyx_methods[] = {
@@ -1483,6 +2019,21 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_s_10colorData, __pyx_k_10colorData, sizeof(__pyx_k_10colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_11colorData, __pyx_k_11colorData, sizeof(__pyx_k_11colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_12colorData, __pyx_k_12colorData, sizeof(__pyx_k_12colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_13colorData, __pyx_k_13colorData, sizeof(__pyx_k_13colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_14colorData, __pyx_k_14colorData, sizeof(__pyx_k_14colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_15colorData, __pyx_k_15colorData, sizeof(__pyx_k_15colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_1colorData, __pyx_k_1colorData, sizeof(__pyx_k_1colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_2colorData, __pyx_k_2colorData, sizeof(__pyx_k_2colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_3colorData, __pyx_k_3colorData, sizeof(__pyx_k_3colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_4colorData, __pyx_k_4colorData, sizeof(__pyx_k_4colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_5colorData, __pyx_k_5colorData, sizeof(__pyx_k_5colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_6colorData, __pyx_k_6colorData, sizeof(__pyx_k_6colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_7colorData, __pyx_k_7colorData, sizeof(__pyx_k_7colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_8colorData, __pyx_k_8colorData, sizeof(__pyx_k_8colorData), 0, 0, 1, 1},
+  {&__pyx_n_s_9colorData, __pyx_k_9colorData, sizeof(__pyx_k_9colorData), 0, 0, 1, 1},
   {&__pyx_n_s_ABGR_16, __pyx_k_ABGR_16, sizeof(__pyx_k_ABGR_16), 0, 0, 1, 1},
   {&__pyx_n_s_ABGR_16_PLANAR, __pyx_k_ABGR_16_PLANAR, sizeof(__pyx_k_ABGR_16_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_ABGR_16_SE, __pyx_k_ABGR_16_SE, sizeof(__pyx_k_ABGR_16_SE), 0, 0, 1, 1},
@@ -1492,11 +2043,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ABGR_HALF_FLT, __pyx_k_ABGR_HALF_FLT, sizeof(__pyx_k_ABGR_HALF_FLT), 0, 0, 1, 1},
   {&__pyx_n_s_ALabV2_8, __pyx_k_ALabV2_8, sizeof(__pyx_k_ALabV2_8), 0, 0, 1, 1},
   {&__pyx_n_s_ALab_8, __pyx_k_ALab_8, sizeof(__pyx_k_ALab_8), 0, 0, 1, 1},
+  {&__pyx_n_s_AMDisplay, __pyx_k_AMDisplay, sizeof(__pyx_k_AMDisplay), 0, 0, 1, 1},
   {&__pyx_n_s_ARGB_16, __pyx_k_ARGB_16, sizeof(__pyx_k_ARGB_16), 0, 0, 1, 1},
   {&__pyx_n_s_ARGB_8, __pyx_k_ARGB_8, sizeof(__pyx_k_ARGB_8), 0, 0, 1, 1},
   {&__pyx_n_s_ARGB_8_PLANAR, __pyx_k_ARGB_8_PLANAR, sizeof(__pyx_k_ARGB_8_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_ARGB_FLT, __pyx_k_ARGB_FLT, sizeof(__pyx_k_ARGB_FLT), 0, 0, 1, 1},
   {&__pyx_n_s_ARGB_HALF_FLT, __pyx_k_ARGB_HALF_FLT, sizeof(__pyx_k_ARGB_HALF_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_AToB0Tag, __pyx_k_AToB0Tag, sizeof(__pyx_k_AToB0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_AToB1Tag, __pyx_k_AToB1Tag, sizeof(__pyx_k_AToB1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_AToB2Tag, __pyx_k_AToB2Tag, sizeof(__pyx_k_AToB2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_AbstractClass, __pyx_k_AbstractClass, sizeof(__pyx_k_AbstractClass), 0, 0, 1, 1},
+  {&__pyx_n_s_ArgyllArtsTag, __pyx_k_ArgyllArtsTag, sizeof(__pyx_k_ArgyllArtsTag), 0, 0, 1, 1},
   {&__pyx_n_s_BGRA_16, __pyx_k_BGRA_16, sizeof(__pyx_k_BGRA_16), 0, 0, 1, 1},
   {&__pyx_n_s_BGRA_16_SE, __pyx_k_BGRA_16_SE, sizeof(__pyx_k_BGRA_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_BGRA_8, __pyx_k_BGRA_8, sizeof(__pyx_k_BGRA_8), 0, 0, 1, 1},
@@ -1511,6 +2068,18 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_BGR_DBL, __pyx_k_BGR_DBL, sizeof(__pyx_k_BGR_DBL), 0, 0, 1, 1},
   {&__pyx_n_s_BGR_FLT, __pyx_k_BGR_FLT, sizeof(__pyx_k_BGR_FLT), 0, 0, 1, 1},
   {&__pyx_n_s_BGR_HALF_FLT, __pyx_k_BGR_HALF_FLT, sizeof(__pyx_k_BGR_HALF_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_BToA0Tag, __pyx_k_BToA0Tag, sizeof(__pyx_k_BToA0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToA1Tag, __pyx_k_BToA1Tag, sizeof(__pyx_k_BToA1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToA2Tag, __pyx_k_BToA2Tag, sizeof(__pyx_k_BToA2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToD0Tag, __pyx_k_BToD0Tag, sizeof(__pyx_k_BToD0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToD1Tag, __pyx_k_BToD1Tag, sizeof(__pyx_k_BToD1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToD2Tag, __pyx_k_BToD2Tag, sizeof(__pyx_k_BToD2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_BToD3Tag, __pyx_k_BToD3Tag, sizeof(__pyx_k_BToD3Tag), 0, 0, 1, 1},
+  {&__pyx_kp_s_Base_ICC_tag_definitions, __pyx_k_Base_ICC_tag_definitions, sizeof(__pyx_k_Base_ICC_tag_definitions), 0, 0, 1, 0},
+  {&__pyx_kp_s_Base_ICC_type_definitions, __pyx_k_Base_ICC_type_definitions, sizeof(__pyx_k_Base_ICC_type_definitions), 0, 0, 1, 0},
+  {&__pyx_n_s_BlueColorantTag, __pyx_k_BlueColorantTag, sizeof(__pyx_k_BlueColorantTag), 0, 0, 1, 1},
+  {&__pyx_n_s_BlueMatrixColumnTag, __pyx_k_BlueMatrixColumnTag, sizeof(__pyx_k_BlueMatrixColumnTag), 0, 0, 1, 1},
+  {&__pyx_n_s_BlueTRCTag, __pyx_k_BlueTRCTag, sizeof(__pyx_k_BlueTRCTag), 0, 0, 1, 1},
   {&__pyx_n_s_CMYK10_16, __pyx_k_CMYK10_16, sizeof(__pyx_k_CMYK10_16), 0, 0, 1, 1},
   {&__pyx_n_s_CMYK10_16_SE, __pyx_k_CMYK10_16_SE, sizeof(__pyx_k_CMYK10_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_CMYK10_8, __pyx_k_CMYK10_8, sizeof(__pyx_k_CMYK10_8), 0, 0, 1, 1},
@@ -1553,7 +2122,61 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_CMY_16_SE, __pyx_k_CMY_16_SE, sizeof(__pyx_k_CMY_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_CMY_8, __pyx_k_CMY_8, sizeof(__pyx_k_CMY_8), 0, 0, 1, 1},
   {&__pyx_n_s_CMY_8_PLANAR, __pyx_k_CMY_8_PLANAR, sizeof(__pyx_k_CMY_8_PLANAR), 0, 0, 1, 1},
+  {&__pyx_n_s_CRTDisplay, __pyx_k_CRTDisplay, sizeof(__pyx_k_CRTDisplay), 0, 0, 1, 1},
+  {&__pyx_n_s_CalibrationDateTimeTag, __pyx_k_CalibrationDateTimeTag, sizeof(__pyx_k_CalibrationDateTimeTag), 0, 0, 1, 1},
+  {&__pyx_n_s_CharTargetTag, __pyx_k_CharTargetTag, sizeof(__pyx_k_CharTargetTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ChromaticAdaptationTag, __pyx_k_ChromaticAdaptationTag, sizeof(__pyx_k_ChromaticAdaptationTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ChromaticityTag, __pyx_k_ChromaticityTag, sizeof(__pyx_k_ChromaticityTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ChromaticityType, __pyx_k_ChromaticityType, sizeof(__pyx_k_ChromaticityType), 0, 0, 1, 1},
+  {&__pyx_n_s_CmyData, __pyx_k_CmyData, sizeof(__pyx_k_CmyData), 0, 0, 1, 1},
+  {&__pyx_n_s_CmykData, __pyx_k_CmykData, sizeof(__pyx_k_CmykData), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorSpaceClass, __pyx_k_ColorSpaceClass, sizeof(__pyx_k_ColorSpaceClass), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorSpaceSignature, __pyx_k_ColorSpaceSignature, sizeof(__pyx_k_ColorSpaceSignature), 0, 0, 1, 1},
+  {&__pyx_n_u_ColorSpaceSignature, __pyx_k_ColorSpaceSignature, sizeof(__pyx_k_ColorSpaceSignature), 0, 1, 0, 1},
+  {&__pyx_n_s_ColorantOrderTag, __pyx_k_ColorantOrderTag, sizeof(__pyx_k_ColorantOrderTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorantOrderType, __pyx_k_ColorantOrderType, sizeof(__pyx_k_ColorantOrderType), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorantTableOutTag, __pyx_k_ColorantTableOutTag, sizeof(__pyx_k_ColorantTableOutTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorantTableTag, __pyx_k_ColorantTableTag, sizeof(__pyx_k_ColorantTableTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorantTableType, __pyx_k_ColorantTableType, sizeof(__pyx_k_ColorantTableType), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorimetricIntentImageStateTag, __pyx_k_ColorimetricIntentImageStateTag, sizeof(__pyx_k_ColorimetricIntentImageStateTag), 0, 0, 1, 1},
+  {&__pyx_n_u_ColorimetricIntentImageStateTag, __pyx_k_ColorimetricIntentImageStateTag, sizeof(__pyx_k_ColorimetricIntentImageStateTag), 0, 1, 0, 1},
+  {&__pyx_n_s_CopyrightTag, __pyx_k_CopyrightTag, sizeof(__pyx_k_CopyrightTag), 0, 0, 1, 1},
+  {&__pyx_n_s_CrdInfoTag, __pyx_k_CrdInfoTag, sizeof(__pyx_k_CrdInfoTag), 0, 0, 1, 1},
+  {&__pyx_n_s_CrdInfoType, __pyx_k_CrdInfoType, sizeof(__pyx_k_CrdInfoType), 0, 0, 1, 1},
+  {&__pyx_n_s_CurveType, __pyx_k_CurveType, sizeof(__pyx_k_CurveType), 0, 0, 1, 1},
+  {&__pyx_n_s_D50X, __pyx_k_D50X, sizeof(__pyx_k_D50X), 0, 0, 1, 1},
+  {&__pyx_n_u_D50X, __pyx_k_D50X, sizeof(__pyx_k_D50X), 0, 1, 0, 1},
+  {&__pyx_n_s_D50Y, __pyx_k_D50Y, sizeof(__pyx_k_D50Y), 0, 0, 1, 1},
+  {&__pyx_n_u_D50Y, __pyx_k_D50Y, sizeof(__pyx_k_D50Y), 0, 1, 0, 1},
+  {&__pyx_n_s_D50Z, __pyx_k_D50Z, sizeof(__pyx_k_D50Z), 0, 0, 1, 1},
+  {&__pyx_n_u_D50Z, __pyx_k_D50Z, sizeof(__pyx_k_D50Z), 0, 1, 0, 1},
+  {&__pyx_n_s_DToB0Tag, __pyx_k_DToB0Tag, sizeof(__pyx_k_DToB0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_DToB1Tag, __pyx_k_DToB1Tag, sizeof(__pyx_k_DToB1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_DToB2Tag, __pyx_k_DToB2Tag, sizeof(__pyx_k_DToB2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_DToB3Tag, __pyx_k_DToB3Tag, sizeof(__pyx_k_DToB3Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_DataTag, __pyx_k_DataTag, sizeof(__pyx_k_DataTag), 0, 0, 1, 1},
+  {&__pyx_n_s_DataType, __pyx_k_DataType, sizeof(__pyx_k_DataType), 0, 0, 1, 1},
+  {&__pyx_n_s_DateTimeTag, __pyx_k_DateTimeTag, sizeof(__pyx_k_DateTimeTag), 0, 0, 1, 1},
+  {&__pyx_n_s_DateTimeType, __pyx_k_DateTimeType, sizeof(__pyx_k_DateTimeType), 0, 0, 1, 1},
+  {&__pyx_kp_s_Definitions_in_ICC_spec, __pyx_k_Definitions_in_ICC_spec, sizeof(__pyx_k_Definitions_in_ICC_spec), 0, 0, 1, 0},
+  {&__pyx_n_s_DeviceMfgDescTag, __pyx_k_DeviceMfgDescTag, sizeof(__pyx_k_DeviceMfgDescTag), 0, 0, 1, 1},
+  {&__pyx_n_s_DeviceModelDescTag, __pyx_k_DeviceModelDescTag, sizeof(__pyx_k_DeviceModelDescTag), 0, 0, 1, 1},
+  {&__pyx_n_s_DeviceSettingsTag, __pyx_k_DeviceSettingsTag, sizeof(__pyx_k_DeviceSettingsTag), 0, 0, 1, 1},
+  {&__pyx_n_s_DeviceSettingsType, __pyx_k_DeviceSettingsType, sizeof(__pyx_k_DeviceSettingsType), 0, 0, 1, 1},
+  {&__pyx_n_s_DictType, __pyx_k_DictType, sizeof(__pyx_k_DictType), 0, 0, 1, 1},
+  {&__pyx_n_s_DigitalCamera, __pyx_k_DigitalCamera, sizeof(__pyx_k_DigitalCamera), 0, 0, 1, 1},
+  {&__pyx_n_s_DigitalCinemaProjector, __pyx_k_DigitalCinemaProjector, sizeof(__pyx_k_DigitalCinemaProjector), 0, 0, 1, 1},
+  {&__pyx_n_s_DigitalMotionPictureCamera, __pyx_k_DigitalMotionPictureCamera, sizeof(__pyx_k_DigitalMotionPictureCamera), 0, 0, 1, 1},
+  {&__pyx_n_s_DisplayClass, __pyx_k_DisplayClass, sizeof(__pyx_k_DisplayClass), 0, 0, 1, 1},
+  {&__pyx_n_s_DyeSublimationPrinter, __pyx_k_DyeSublimationPrinter, sizeof(__pyx_k_DyeSublimationPrinter), 0, 0, 1, 1},
+  {&__pyx_n_s_ElectrophotographicPrinter, __pyx_k_ElectrophotographicPrinter, sizeof(__pyx_k_ElectrophotographicPrinter), 0, 0, 1, 1},
+  {&__pyx_n_s_ElectrostaticPrinter, __pyx_k_ElectrostaticPrinter, sizeof(__pyx_k_ElectrostaticPrinter), 0, 0, 1, 1},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
+  {&__pyx_n_s_FilmScanner, __pyx_k_FilmScanner, sizeof(__pyx_k_FilmScanner), 0, 0, 1, 1},
+  {&__pyx_n_s_FilmWriter, __pyx_k_FilmWriter, sizeof(__pyx_k_FilmWriter), 0, 0, 1, 1},
+  {&__pyx_n_s_Flexography, __pyx_k_Flexography, sizeof(__pyx_k_Flexography), 0, 0, 1, 1},
+  {&__pyx_n_s_FocalPlaneColorimetryEstimates, __pyx_k_FocalPlaneColorimetryEstimates, sizeof(__pyx_k_FocalPlaneColorimetryEstimates), 0, 0, 1, 1},
+  {&__pyx_kp_s_For_TagSignature_ColorimetricInt, __pyx_k_For_TagSignature_ColorimetricInt, sizeof(__pyx_k_For_TagSignature_ColorimetricInt), 0, 0, 1, 0},
   {&__pyx_n_s_GRAYA_16, __pyx_k_GRAYA_16, sizeof(__pyx_k_GRAYA_16), 0, 0, 1, 1},
   {&__pyx_n_s_GRAYA_16_PLANAR, __pyx_k_GRAYA_16_PLANAR, sizeof(__pyx_k_GRAYA_16_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_GRAYA_16_SE, __pyx_k_GRAYA_16_SE, sizeof(__pyx_k_GRAYA_16_SE), 0, 0, 1, 1},
@@ -1567,6 +2190,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_GRAY_DBL, __pyx_k_GRAY_DBL, sizeof(__pyx_k_GRAY_DBL), 0, 0, 1, 1},
   {&__pyx_n_s_GRAY_FLT, __pyx_k_GRAY_FLT, sizeof(__pyx_k_GRAY_FLT), 0, 0, 1, 1},
   {&__pyx_n_s_GRAY_HALF_FLT, __pyx_k_GRAY_HALF_FLT, sizeof(__pyx_k_GRAY_HALF_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_GamutTag, __pyx_k_GamutTag, sizeof(__pyx_k_GamutTag), 0, 0, 1, 1},
+  {&__pyx_n_s_Gravure, __pyx_k_Gravure, sizeof(__pyx_k_Gravure), 0, 0, 1, 1},
+  {&__pyx_n_s_GrayData, __pyx_k_GrayData, sizeof(__pyx_k_GrayData), 0, 0, 1, 1},
+  {&__pyx_n_s_GrayTRCTag, __pyx_k_GrayTRCTag, sizeof(__pyx_k_GrayTRCTag), 0, 0, 1, 1},
+  {&__pyx_n_s_GreenColorantTag, __pyx_k_GreenColorantTag, sizeof(__pyx_k_GreenColorantTag), 0, 0, 1, 1},
+  {&__pyx_n_s_GreenMatrixColumnTag, __pyx_k_GreenMatrixColumnTag, sizeof(__pyx_k_GreenMatrixColumnTag), 0, 0, 1, 1},
+  {&__pyx_n_s_GreenTRCTag, __pyx_k_GreenTRCTag, sizeof(__pyx_k_GreenTRCTag), 0, 0, 1, 1},
   {&__pyx_n_s_HLS_16, __pyx_k_HLS_16, sizeof(__pyx_k_HLS_16), 0, 0, 1, 1},
   {&__pyx_n_s_HLS_16_PLANAR, __pyx_k_HLS_16_PLANAR, sizeof(__pyx_k_HLS_16_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_HLS_16_SE, __pyx_k_HLS_16_SE, sizeof(__pyx_k_HLS_16_SE), 0, 0, 1, 1},
@@ -1577,6 +2207,18 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_HSV_16_SE, __pyx_k_HSV_16_SE, sizeof(__pyx_k_HSV_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_HSV_8, __pyx_k_HSV_8, sizeof(__pyx_k_HSV_8), 0, 0, 1, 1},
   {&__pyx_n_s_HSV_8_PLANAR, __pyx_k_HSV_8_PLANAR, sizeof(__pyx_k_HSV_8_PLANAR), 0, 0, 1, 1},
+  {&__pyx_n_s_HlsData, __pyx_k_HlsData, sizeof(__pyx_k_HlsData), 0, 0, 1, 1},
+  {&__pyx_n_s_HsvData, __pyx_k_HsvData, sizeof(__pyx_k_HsvData), 0, 0, 1, 1},
+  {&__pyx_n_s_ICCDef, __pyx_k_ICCDef, sizeof(__pyx_k_ICCDef), 0, 0, 1, 1},
+  {&__pyx_n_u_ICCDef, __pyx_k_ICCDef, sizeof(__pyx_k_ICCDef), 0, 1, 0, 1},
+  {&__pyx_kp_s_ICC_Color_spaces, __pyx_k_ICC_Color_spaces, sizeof(__pyx_k_ICC_Color_spaces), 0, 0, 1, 0},
+  {&__pyx_kp_s_ICC_Platforms, __pyx_k_ICC_Platforms, sizeof(__pyx_k_ICC_Platforms), 0, 0, 1, 0},
+  {&__pyx_kp_s_ICC_Profile_Class, __pyx_k_ICC_Profile_Class, sizeof(__pyx_k_ICC_Profile_Class), 0, 0, 1, 0},
+  {&__pyx_kp_s_ICC_Technology_tag, __pyx_k_ICC_Technology_tag, sizeof(__pyx_k_ICC_Technology_tag), 0, 0, 1, 0},
+  {&__pyx_n_s_InkJetPrinter, __pyx_k_InkJetPrinter, sizeof(__pyx_k_InkJetPrinter), 0, 0, 1, 1},
+  {&__pyx_n_s_InputClass, __pyx_k_InputClass, sizeof(__pyx_k_InputClass), 0, 0, 1, 1},
+  {&__pyx_n_s_IntEnum, __pyx_k_IntEnum, sizeof(__pyx_k_IntEnum), 0, 0, 1, 1},
+  {&__pyx_n_s_IntFlag, __pyx_k_IntFlag, sizeof(__pyx_k_IntFlag), 0, 0, 1, 1},
   {&__pyx_n_s_KCMY_16, __pyx_k_KCMY_16, sizeof(__pyx_k_KCMY_16), 0, 0, 1, 1},
   {&__pyx_n_s_KCMY_16_REV, __pyx_k_KCMY_16_REV, sizeof(__pyx_k_KCMY_16_REV), 0, 0, 1, 1},
   {&__pyx_n_s_KCMY_16_SE, __pyx_k_KCMY_16_SE, sizeof(__pyx_k_KCMY_16_SE), 0, 0, 1, 1},
@@ -1607,13 +2249,90 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_KYMC_16_SE, __pyx_k_KYMC_16_SE, sizeof(__pyx_k_KYMC_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_KYMC_8, __pyx_k_KYMC_8, sizeof(__pyx_k_KYMC_8), 0, 0, 1, 1},
   {&__pyx_n_s_LabA_FLT, __pyx_k_LabA_FLT, sizeof(__pyx_k_LabA_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_LabData, __pyx_k_LabData, sizeof(__pyx_k_LabData), 0, 0, 1, 1},
   {&__pyx_n_s_LabV2_16, __pyx_k_LabV2_16, sizeof(__pyx_k_LabV2_16), 0, 0, 1, 1},
   {&__pyx_n_s_LabV2_8, __pyx_k_LabV2_8, sizeof(__pyx_k_LabV2_8), 0, 0, 1, 1},
   {&__pyx_n_s_Lab_16, __pyx_k_Lab_16, sizeof(__pyx_k_Lab_16), 0, 0, 1, 1},
   {&__pyx_n_s_Lab_8, __pyx_k_Lab_8, sizeof(__pyx_k_Lab_8), 0, 0, 1, 1},
   {&__pyx_n_s_Lab_DBL, __pyx_k_Lab_DBL, sizeof(__pyx_k_Lab_DBL), 0, 0, 1, 1},
   {&__pyx_n_s_Lab_FLT, __pyx_k_Lab_FLT, sizeof(__pyx_k_Lab_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_LinkClass, __pyx_k_LinkClass, sizeof(__pyx_k_LinkClass), 0, 0, 1, 1},
+  {&__pyx_n_s_LuminanceTag, __pyx_k_LuminanceTag, sizeof(__pyx_k_LuminanceTag), 0, 0, 1, 1},
+  {&__pyx_n_s_Lut16Type, __pyx_k_Lut16Type, sizeof(__pyx_k_Lut16Type), 0, 0, 1, 1},
+  {&__pyx_n_s_Lut8Type, __pyx_k_Lut8Type, sizeof(__pyx_k_Lut8Type), 0, 0, 1, 1},
+  {&__pyx_n_s_LutAtoBType, __pyx_k_LutAtoBType, sizeof(__pyx_k_LutAtoBType), 0, 0, 1, 1},
+  {&__pyx_n_s_LutBtoAType, __pyx_k_LutBtoAType, sizeof(__pyx_k_LutBtoAType), 0, 0, 1, 1},
+  {&__pyx_n_s_LuvData, __pyx_k_LuvData, sizeof(__pyx_k_LuvData), 0, 0, 1, 1},
+  {&__pyx_n_s_LuvKData, __pyx_k_LuvKData, sizeof(__pyx_k_LuvKData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH1Data, __pyx_k_MCH1Data, sizeof(__pyx_k_MCH1Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH2Data, __pyx_k_MCH2Data, sizeof(__pyx_k_MCH2Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH3Data, __pyx_k_MCH3Data, sizeof(__pyx_k_MCH3Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH4Data, __pyx_k_MCH4Data, sizeof(__pyx_k_MCH4Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH5Data, __pyx_k_MCH5Data, sizeof(__pyx_k_MCH5Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH6Data, __pyx_k_MCH6Data, sizeof(__pyx_k_MCH6Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH7Data, __pyx_k_MCH7Data, sizeof(__pyx_k_MCH7Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH8Data, __pyx_k_MCH8Data, sizeof(__pyx_k_MCH8Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCH9Data, __pyx_k_MCH9Data, sizeof(__pyx_k_MCH9Data), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHAData, __pyx_k_MCHAData, sizeof(__pyx_k_MCHAData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHBData, __pyx_k_MCHBData, sizeof(__pyx_k_MCHBData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHCData, __pyx_k_MCHCData, sizeof(__pyx_k_MCHCData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHDData, __pyx_k_MCHDData, sizeof(__pyx_k_MCHDData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHEData, __pyx_k_MCHEData, sizeof(__pyx_k_MCHEData), 0, 0, 1, 1},
+  {&__pyx_n_s_MCHFData, __pyx_k_MCHFData, sizeof(__pyx_k_MCHFData), 0, 0, 1, 1},
+  {&__pyx_n_s_Macintosh, __pyx_k_Macintosh, sizeof(__pyx_k_Macintosh), 0, 0, 1, 1},
+  {&__pyx_n_s_MeasurementTag, __pyx_k_MeasurementTag, sizeof(__pyx_k_MeasurementTag), 0, 0, 1, 1},
+  {&__pyx_n_s_MeasurementType, __pyx_k_MeasurementType, sizeof(__pyx_k_MeasurementType), 0, 0, 1, 1},
+  {&__pyx_n_s_MediaBlackPointTag, __pyx_k_MediaBlackPointTag, sizeof(__pyx_k_MediaBlackPointTag), 0, 0, 1, 1},
+  {&__pyx_n_s_MediaWhitePointTag, __pyx_k_MediaWhitePointTag, sizeof(__pyx_k_MediaWhitePointTag), 0, 0, 1, 1},
+  {&__pyx_n_s_MetaTag, __pyx_k_MetaTag, sizeof(__pyx_k_MetaTag), 0, 0, 1, 1},
+  {&__pyx_n_s_Microsoft, __pyx_k_Microsoft, sizeof(__pyx_k_Microsoft), 0, 0, 1, 1},
+  {&__pyx_n_s_MotionPictureFilmRecorder, __pyx_k_MotionPictureFilmRecorder, sizeof(__pyx_k_MotionPictureFilmRecorder), 0, 0, 1, 1},
+  {&__pyx_n_s_MotionPictureFilmScanner, __pyx_k_MotionPictureFilmScanner, sizeof(__pyx_k_MotionPictureFilmScanner), 0, 0, 1, 1},
+  {&__pyx_n_s_MultiLocalizedUnicodeType, __pyx_k_MultiLocalizedUnicodeType, sizeof(__pyx_k_MultiLocalizedUnicodeType), 0, 0, 1, 1},
+  {&__pyx_n_s_MultiProcessElementType, __pyx_k_MultiProcessElementType, sizeof(__pyx_k_MultiProcessElementType), 0, 0, 1, 1},
   {&__pyx_n_s_NAMED_COLOR_INDEX, __pyx_k_NAMED_COLOR_INDEX, sizeof(__pyx_k_NAMED_COLOR_INDEX), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedColor2Tag, __pyx_k_NamedColor2Tag, sizeof(__pyx_k_NamedColor2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedColor2Type, __pyx_k_NamedColor2Type, sizeof(__pyx_k_NamedColor2Type), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedColorClass, __pyx_k_NamedColorClass, sizeof(__pyx_k_NamedColorClass), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedColorTag, __pyx_k_NamedColorTag, sizeof(__pyx_k_NamedColorTag), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedColorType, __pyx_k_NamedColorType, sizeof(__pyx_k_NamedColorType), 0, 0, 1, 1},
+  {&__pyx_n_s_NamedData, __pyx_k_NamedData, sizeof(__pyx_k_NamedData), 0, 0, 1, 1},
+  {&__pyx_n_s_OffsetLithography, __pyx_k_OffsetLithography, sizeof(__pyx_k_OffsetLithography), 0, 0, 1, 1},
+  {&__pyx_n_s_OutputClass, __pyx_k_OutputClass, sizeof(__pyx_k_OutputClass), 0, 0, 1, 1},
+  {&__pyx_n_s_OutputResponseTag, __pyx_k_OutputResponseTag, sizeof(__pyx_k_OutputResponseTag), 0, 0, 1, 1},
+  {&__pyx_n_s_PERCEPTUAL_BLACK_X, __pyx_k_PERCEPTUAL_BLACK_X, sizeof(__pyx_k_PERCEPTUAL_BLACK_X), 0, 0, 1, 1},
+  {&__pyx_n_u_PERCEPTUAL_BLACK_X, __pyx_k_PERCEPTUAL_BLACK_X, sizeof(__pyx_k_PERCEPTUAL_BLACK_X), 0, 1, 0, 1},
+  {&__pyx_n_s_PERCEPTUAL_BLACK_Y, __pyx_k_PERCEPTUAL_BLACK_Y, sizeof(__pyx_k_PERCEPTUAL_BLACK_Y), 0, 0, 1, 1},
+  {&__pyx_n_u_PERCEPTUAL_BLACK_Y, __pyx_k_PERCEPTUAL_BLACK_Y, sizeof(__pyx_k_PERCEPTUAL_BLACK_Y), 0, 1, 0, 1},
+  {&__pyx_n_s_PERCEPTUAL_BLACK_Z, __pyx_k_PERCEPTUAL_BLACK_Z, sizeof(__pyx_k_PERCEPTUAL_BLACK_Z), 0, 0, 1, 1},
+  {&__pyx_n_u_PERCEPTUAL_BLACK_Z, __pyx_k_PERCEPTUAL_BLACK_Z, sizeof(__pyx_k_PERCEPTUAL_BLACK_Z), 0, 1, 0, 1},
+  {&__pyx_n_s_PMDisplay, __pyx_k_PMDisplay, sizeof(__pyx_k_PMDisplay), 0, 0, 1, 1},
+  {&__pyx_n_s_ParametricCurveType, __pyx_k_ParametricCurveType, sizeof(__pyx_k_ParametricCurveType), 0, 0, 1, 1},
+  {&__pyx_n_s_PerceptualReferenceMediumGamut, __pyx_k_PerceptualReferenceMediumGamut, sizeof(__pyx_k_PerceptualReferenceMediumGamut), 0, 0, 1, 1},
+  {&__pyx_n_s_PerceptualRenderingIntentGamutTa, __pyx_k_PerceptualRenderingIntentGamutTa, sizeof(__pyx_k_PerceptualRenderingIntentGamutTa), 0, 0, 1, 1},
+  {&__pyx_n_s_PhotoCD, __pyx_k_PhotoCD, sizeof(__pyx_k_PhotoCD), 0, 0, 1, 1},
+  {&__pyx_n_s_PhotoImageSetter, __pyx_k_PhotoImageSetter, sizeof(__pyx_k_PhotoImageSetter), 0, 0, 1, 1},
+  {&__pyx_n_s_PhotographicPaperPrinter, __pyx_k_PhotographicPaperPrinter, sizeof(__pyx_k_PhotographicPaperPrinter), 0, 0, 1, 1},
+  {&__pyx_n_s_PlatformSignature, __pyx_k_PlatformSignature, sizeof(__pyx_k_PlatformSignature), 0, 0, 1, 1},
+  {&__pyx_n_u_PlatformSignature, __pyx_k_PlatformSignature, sizeof(__pyx_k_PlatformSignature), 0, 1, 0, 1},
+  {&__pyx_n_s_Preview0Tag, __pyx_k_Preview0Tag, sizeof(__pyx_k_Preview0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Preview1Tag, __pyx_k_Preview1Tag, sizeof(__pyx_k_Preview1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Preview2Tag, __pyx_k_Preview2Tag, sizeof(__pyx_k_Preview2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileClassSignature, __pyx_k_ProfileClassSignature, sizeof(__pyx_k_ProfileClassSignature), 0, 0, 1, 1},
+  {&__pyx_n_u_ProfileClassSignature, __pyx_k_ProfileClassSignature, sizeof(__pyx_k_ProfileClassSignature), 0, 1, 0, 1},
+  {&__pyx_n_s_ProfileDescriptionMLTag, __pyx_k_ProfileDescriptionMLTag, sizeof(__pyx_k_ProfileDescriptionMLTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileDescriptionTag, __pyx_k_ProfileDescriptionTag, sizeof(__pyx_k_ProfileDescriptionTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileSequenceDescTag, __pyx_k_ProfileSequenceDescTag, sizeof(__pyx_k_ProfileSequenceDescTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileSequenceDescType, __pyx_k_ProfileSequenceDescType, sizeof(__pyx_k_ProfileSequenceDescType), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileSequenceIdTag, __pyx_k_ProfileSequenceIdTag, sizeof(__pyx_k_ProfileSequenceIdTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ProfileSequenceIdType, __pyx_k_ProfileSequenceIdType, sizeof(__pyx_k_ProfileSequenceIdType), 0, 0, 1, 1},
+  {&__pyx_n_s_ProjectionTelevision, __pyx_k_ProjectionTelevision, sizeof(__pyx_k_ProjectionTelevision), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2CRD0Tag, __pyx_k_Ps2CRD0Tag, sizeof(__pyx_k_Ps2CRD0Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2CRD1Tag, __pyx_k_Ps2CRD1Tag, sizeof(__pyx_k_Ps2CRD1Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2CRD2Tag, __pyx_k_Ps2CRD2Tag, sizeof(__pyx_k_Ps2CRD2Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2CRD3Tag, __pyx_k_Ps2CRD3Tag, sizeof(__pyx_k_Ps2CRD3Tag), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2CSATag, __pyx_k_Ps2CSATag, sizeof(__pyx_k_Ps2CSATag), 0, 0, 1, 1},
+  {&__pyx_n_s_Ps2RenderingIntentTag, __pyx_k_Ps2RenderingIntentTag, sizeof(__pyx_k_Ps2RenderingIntentTag), 0, 0, 1, 1},
   {&__pyx_n_s_RGBA_16, __pyx_k_RGBA_16, sizeof(__pyx_k_RGBA_16), 0, 0, 1, 1},
   {&__pyx_n_s_RGBA_16_PLANAR, __pyx_k_RGBA_16_PLANAR, sizeof(__pyx_k_RGBA_16_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_RGBA_16_SE, __pyx_k_RGBA_16_SE, sizeof(__pyx_k_RGBA_16_SE), 0, 0, 1, 1},
@@ -1629,11 +2348,65 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_RGB_DBL, __pyx_k_RGB_DBL, sizeof(__pyx_k_RGB_DBL), 0, 0, 1, 1},
   {&__pyx_n_s_RGB_FLT, __pyx_k_RGB_FLT, sizeof(__pyx_k_RGB_FLT), 0, 0, 1, 1},
   {&__pyx_n_s_RGB_HALF_FLT, __pyx_k_RGB_HALF_FLT, sizeof(__pyx_k_RGB_HALF_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_RedColorantTag, __pyx_k_RedColorantTag, sizeof(__pyx_k_RedColorantTag), 0, 0, 1, 1},
+  {&__pyx_n_s_RedMatrixColumnTag, __pyx_k_RedMatrixColumnTag, sizeof(__pyx_k_RedMatrixColumnTag), 0, 0, 1, 1},
+  {&__pyx_n_s_RedTRCTag, __pyx_k_RedTRCTag, sizeof(__pyx_k_RedTRCTag), 0, 0, 1, 1},
+  {&__pyx_kp_s_Reference_gamut, __pyx_k_Reference_gamut, sizeof(__pyx_k_Reference_gamut), 0, 0, 1, 0},
+  {&__pyx_n_s_Referencegamut, __pyx_k_Referencegamut, sizeof(__pyx_k_Referencegamut), 0, 0, 1, 1},
+  {&__pyx_n_u_Referencegamut, __pyx_k_Referencegamut, sizeof(__pyx_k_Referencegamut), 0, 1, 0, 1},
+  {&__pyx_n_s_ReflectionHardcopyOriginalColori, __pyx_k_ReflectionHardcopyOriginalColori, sizeof(__pyx_k_ReflectionHardcopyOriginalColori), 0, 0, 1, 1},
+  {&__pyx_n_s_ReflectionPrintOutputColorimetry, __pyx_k_ReflectionPrintOutputColorimetry, sizeof(__pyx_k_ReflectionPrintOutputColorimetry), 0, 0, 1, 1},
+  {&__pyx_n_s_ReflectiveScanner, __pyx_k_ReflectiveScanner, sizeof(__pyx_k_ReflectiveScanner), 0, 0, 1, 1},
+  {&__pyx_n_s_ResponseCurveSet16Type, __pyx_k_ResponseCurveSet16Type, sizeof(__pyx_k_ResponseCurveSet16Type), 0, 0, 1, 1},
+  {&__pyx_n_s_RgbData, __pyx_k_RgbData, sizeof(__pyx_k_RgbData), 0, 0, 1, 1},
+  {&__pyx_n_s_S15Fixed16ArrayType, __pyx_k_S15Fixed16ArrayType, sizeof(__pyx_k_S15Fixed16ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_SGI, __pyx_k_SGI, sizeof(__pyx_k_SGI), 0, 0, 1, 1},
+  {&__pyx_n_s_SaturationRenderingIntentGamutTa, __pyx_k_SaturationRenderingIntentGamutTa, sizeof(__pyx_k_SaturationRenderingIntentGamutTa), 0, 0, 1, 1},
+  {&__pyx_n_s_SceneAppearanceEstimates, __pyx_k_SceneAppearanceEstimates, sizeof(__pyx_k_SceneAppearanceEstimates), 0, 0, 1, 1},
+  {&__pyx_n_s_SceneColorimetryEstimates, __pyx_k_SceneColorimetryEstimates, sizeof(__pyx_k_SceneColorimetryEstimates), 0, 0, 1, 1},
+  {&__pyx_n_s_ScreeningDescTag, __pyx_k_ScreeningDescTag, sizeof(__pyx_k_ScreeningDescTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ScreeningTag, __pyx_k_ScreeningTag, sizeof(__pyx_k_ScreeningTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ScreeningType, __pyx_k_ScreeningType, sizeof(__pyx_k_ScreeningType), 0, 0, 1, 1},
+  {&__pyx_n_s_SignatureType, __pyx_k_SignatureType, sizeof(__pyx_k_SignatureType), 0, 0, 1, 1},
+  {&__pyx_n_s_Silkscreen, __pyx_k_Silkscreen, sizeof(__pyx_k_Silkscreen), 0, 0, 1, 1},
+  {&__pyx_n_s_Solaris, __pyx_k_Solaris, sizeof(__pyx_k_Solaris), 0, 0, 1, 1},
   {&__pyx_n_s_TYPE, __pyx_k_TYPE, sizeof(__pyx_k_TYPE), 0, 0, 1, 1},
   {&__pyx_n_u_TYPE, __pyx_k_TYPE, sizeof(__pyx_k_TYPE), 0, 1, 0, 1},
+  {&__pyx_n_s_TagEnum, __pyx_k_TagEnum, sizeof(__pyx_k_TagEnum), 0, 0, 1, 1},
+  {&__pyx_n_s_TagSignature, __pyx_k_TagSignature, sizeof(__pyx_k_TagSignature), 0, 0, 1, 1},
+  {&__pyx_n_u_TagSignature, __pyx_k_TagSignature, sizeof(__pyx_k_TagSignature), 0, 1, 0, 1},
+  {&__pyx_n_s_TagTypeSignature, __pyx_k_TagTypeSignature, sizeof(__pyx_k_TagTypeSignature), 0, 0, 1, 1},
+  {&__pyx_n_u_TagTypeSignature, __pyx_k_TagTypeSignature, sizeof(__pyx_k_TagTypeSignature), 0, 1, 0, 1},
+  {&__pyx_n_s_Taligent, __pyx_k_Taligent, sizeof(__pyx_k_Taligent), 0, 0, 1, 1},
+  {&__pyx_n_s_TechnologySignature, __pyx_k_TechnologySignature, sizeof(__pyx_k_TechnologySignature), 0, 0, 1, 1},
+  {&__pyx_n_u_TechnologySignature, __pyx_k_TechnologySignature, sizeof(__pyx_k_TechnologySignature), 0, 1, 0, 1},
+  {&__pyx_n_s_TechnologyTag, __pyx_k_TechnologyTag, sizeof(__pyx_k_TechnologyTag), 0, 0, 1, 1},
+  {&__pyx_n_s_TextDescriptionType, __pyx_k_TextDescriptionType, sizeof(__pyx_k_TextDescriptionType), 0, 0, 1, 1},
+  {&__pyx_n_s_TextType, __pyx_k_TextType, sizeof(__pyx_k_TextType), 0, 0, 1, 1},
+  {&__pyx_n_s_ThermalWaxPrinter, __pyx_k_ThermalWaxPrinter, sizeof(__pyx_k_ThermalWaxPrinter), 0, 0, 1, 1},
+  {&__pyx_n_s_U16Fixed16ArrayType, __pyx_k_U16Fixed16ArrayType, sizeof(__pyx_k_U16Fixed16ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_UInt16ArrayType, __pyx_k_UInt16ArrayType, sizeof(__pyx_k_UInt16ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_UInt32ArrayType, __pyx_k_UInt32ArrayType, sizeof(__pyx_k_UInt32ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_UInt64ArrayType, __pyx_k_UInt64ArrayType, sizeof(__pyx_k_UInt64ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_UInt8ArrayType, __pyx_k_UInt8ArrayType, sizeof(__pyx_k_UInt8ArrayType), 0, 0, 1, 1},
+  {&__pyx_n_s_UcrBgTag, __pyx_k_UcrBgTag, sizeof(__pyx_k_UcrBgTag), 0, 0, 1, 1},
+  {&__pyx_n_s_UcrBgType, __pyx_k_UcrBgType, sizeof(__pyx_k_UcrBgType), 0, 0, 1, 1},
+  {&__pyx_n_s_Unices, __pyx_k_Unices, sizeof(__pyx_k_Unices), 0, 0, 1, 1},
+  {&__pyx_n_s_VERSION, __pyx_k_VERSION, sizeof(__pyx_k_VERSION), 0, 0, 1, 1},
+  {&__pyx_n_u_VERSION, __pyx_k_VERSION, sizeof(__pyx_k_VERSION), 0, 1, 0, 1},
+  {&__pyx_n_s_VcgtTag, __pyx_k_VcgtTag, sizeof(__pyx_k_VcgtTag), 0, 0, 1, 1},
+  {&__pyx_n_s_VcgtType, __pyx_k_VcgtType, sizeof(__pyx_k_VcgtType), 0, 0, 1, 1},
+  {&__pyx_n_s_VideoCamera, __pyx_k_VideoCamera, sizeof(__pyx_k_VideoCamera), 0, 0, 1, 1},
+  {&__pyx_n_s_VideoMonitor, __pyx_k_VideoMonitor, sizeof(__pyx_k_VideoMonitor), 0, 0, 1, 1},
+  {&__pyx_n_s_ViewingCondDescTag, __pyx_k_ViewingCondDescTag, sizeof(__pyx_k_ViewingCondDescTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ViewingConditionsTag, __pyx_k_ViewingConditionsTag, sizeof(__pyx_k_ViewingConditionsTag), 0, 0, 1, 1},
+  {&__pyx_n_s_ViewingConditionsType, __pyx_k_ViewingConditionsType, sizeof(__pyx_k_ViewingConditionsType), 0, 0, 1, 1},
+  {&__pyx_n_s_XYZData, __pyx_k_XYZData, sizeof(__pyx_k_XYZData), 0, 0, 1, 1},
+  {&__pyx_n_s_XYZType, __pyx_k_XYZType, sizeof(__pyx_k_XYZType), 0, 0, 1, 1},
   {&__pyx_n_s_XYZ_16, __pyx_k_XYZ_16, sizeof(__pyx_k_XYZ_16), 0, 0, 1, 1},
   {&__pyx_n_s_XYZ_DBL, __pyx_k_XYZ_DBL, sizeof(__pyx_k_XYZ_DBL), 0, 0, 1, 1},
   {&__pyx_n_s_XYZ_FLT, __pyx_k_XYZ_FLT, sizeof(__pyx_k_XYZ_FLT), 0, 0, 1, 1},
+  {&__pyx_n_s_YCbCrData, __pyx_k_YCbCrData, sizeof(__pyx_k_YCbCrData), 0, 0, 1, 1},
   {&__pyx_n_s_YCbCr_16, __pyx_k_YCbCr_16, sizeof(__pyx_k_YCbCr_16), 0, 0, 1, 1},
   {&__pyx_n_s_YCbCr_16_PLANAR, __pyx_k_YCbCr_16_PLANAR, sizeof(__pyx_k_YCbCr_16_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_YCbCr_16_SE, __pyx_k_YCbCr_16_SE, sizeof(__pyx_k_YCbCr_16_SE), 0, 0, 1, 1},
@@ -1646,13 +2419,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_YUV_16_SE, __pyx_k_YUV_16_SE, sizeof(__pyx_k_YUV_16_SE), 0, 0, 1, 1},
   {&__pyx_n_s_YUV_8, __pyx_k_YUV_8, sizeof(__pyx_k_YUV_8), 0, 0, 1, 1},
   {&__pyx_n_s_YUV_8_PLANAR, __pyx_k_YUV_8_PLANAR, sizeof(__pyx_k_YUV_8_PLANAR), 0, 0, 1, 1},
+  {&__pyx_n_s_YxyData, __pyx_k_YxyData, sizeof(__pyx_k_YxyData), 0, 0, 1, 1},
   {&__pyx_n_s_Yxy_16, __pyx_k_Yxy_16, sizeof(__pyx_k_Yxy_16), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+  {&__pyx_n_s_cmsMagicNumber, __pyx_k_cmsMagicNumber, sizeof(__pyx_k_cmsMagicNumber), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_enum, __pyx_k_enum, sizeof(__pyx_k_enum), 0, 0, 1, 1},
+  {&__pyx_n_s_gravure_lcms2_enum, __pyx_k_gravure_lcms2_enum, sizeof(__pyx_k_gravure_lcms2_enum), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_lcms2_cms, __pyx_k_lcms2_cms, sizeof(__pyx_k_lcms2_cms), 0, 0, 1, 1},
+  {&__pyx_n_s_lcmsSignature, __pyx_k_lcmsSignature, sizeof(__pyx_k_lcmsSignature), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
@@ -1660,6 +2437,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+  {&__pyx_n_s_unique, __pyx_k_unique, sizeof(__pyx_k_unique), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
@@ -1842,6 +2620,9 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_cms(PyObject *__pyx_pyinit_module)
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1949,1999 +2730,5075 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "src/gravure/lcms2/colortype.pxi":1
- * from enum import Enum             # <<<<<<<<<<<<<<
+  /* "lcms2/cms.pyx":20
+ * #       MA 02110-1301, USA.
+ * #
+ * from enum import Enum, IntEnum, IntFlag, unique             # <<<<<<<<<<<<<<
+ * from gravure.lcms2.enum import TagEnum
  * 
- * cdef extern from "lcms2.h":
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Enum);
   __Pyx_GIVEREF(__pyx_n_s_Enum);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Enum);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_n_s_IntEnum);
+  __Pyx_GIVEREF(__pyx_n_s_IntEnum);
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_IntEnum);
+  __Pyx_INCREF(__pyx_n_s_IntFlag);
+  __Pyx_GIVEREF(__pyx_n_s_IntFlag);
+  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_s_IntFlag);
+  __Pyx_INCREF(__pyx_n_s_unique);
+  __Pyx_GIVEREF(__pyx_n_s_unique);
+  PyList_SET_ITEM(__pyx_t_1, 3, __pyx_n_s_unique);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_IntEnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_IntEnum, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_IntFlag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_IntFlag, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_unique); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_unique, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":207
+  /* "lcms2/cms.pyx":21
+ * #
+ * from enum import Enum, IntEnum, IntFlag, unique
+ * from gravure.lcms2.enum import TagEnum             # <<<<<<<<<<<<<<
+ * 
+ * import cython
+ */
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_s_TagEnum);
+  __Pyx_GIVEREF(__pyx_n_s_TagEnum);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_TagEnum);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_gravure_lcms2_enum, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagEnum, __pyx_t_2) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":21
+ * 
+ * 
+ * VERSION = LCMS_VERSION             # <<<<<<<<<<<<<<
+ * D50X = cmsD50X
+ * D50Y = cmsD50Y
+ */
+  __pyx_t_1 = __Pyx_PyInt_From_int(LCMS_VERSION); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_VERSION, __pyx_t_1) < 0) __PYX_ERR(1, 21, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":22
+ * 
+ * VERSION = LCMS_VERSION
+ * D50X = cmsD50X             # <<<<<<<<<<<<<<
+ * D50Y = cmsD50Y
+ * D50Z = cmsD50Z
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsD50X); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 22, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_D50X, __pyx_t_1) < 0) __PYX_ERR(1, 22, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":23
+ * VERSION = LCMS_VERSION
+ * D50X = cmsD50X
+ * D50Y = cmsD50Y             # <<<<<<<<<<<<<<
+ * D50Z = cmsD50Z
+ * PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsD50Y); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_D50Y, __pyx_t_1) < 0) __PYX_ERR(1, 23, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":24
+ * D50X = cmsD50X
+ * D50Y = cmsD50Y
+ * D50Z = cmsD50Z             # <<<<<<<<<<<<<<
+ * PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X
+ * PERCEPTUAL_BLACK_Y = cmsPERCEPTUAL_BLACK_Y
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsD50Z); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_D50Z, __pyx_t_1) < 0) __PYX_ERR(1, 24, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":25
+ * D50Y = cmsD50Y
+ * D50Z = cmsD50Z
+ * PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X             # <<<<<<<<<<<<<<
+ * PERCEPTUAL_BLACK_Y = cmsPERCEPTUAL_BLACK_Y
+ * PERCEPTUAL_BLACK_Z = cmsPERCEPTUAL_BLACK_Z
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsPERCEPTUAL_BLACK_X); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PERCEPTUAL_BLACK_X, __pyx_t_1) < 0) __PYX_ERR(1, 25, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":26
+ * D50Z = cmsD50Z
+ * PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X
+ * PERCEPTUAL_BLACK_Y = cmsPERCEPTUAL_BLACK_Y             # <<<<<<<<<<<<<<
+ * PERCEPTUAL_BLACK_Z = cmsPERCEPTUAL_BLACK_Z
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsPERCEPTUAL_BLACK_Y); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 26, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PERCEPTUAL_BLACK_Y, __pyx_t_1) < 0) __PYX_ERR(1, 26, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/constant.pxi":27
+ * PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X
+ * PERCEPTUAL_BLACK_Y = cmsPERCEPTUAL_BLACK_Y
+ * PERCEPTUAL_BLACK_Z = cmsPERCEPTUAL_BLACK_Z             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_1 = PyFloat_FromDouble(cmsPERCEPTUAL_BLACK_Z); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 27, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PERCEPTUAL_BLACK_Z, __pyx_t_1) < 0) __PYX_ERR(1, 27, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/colortype.pxi":206
  * 
  * 
  * class TYPE(Enum):             # <<<<<<<<<<<<<<
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 207, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 207, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 207, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_TYPE, __pyx_n_s_TYPE, (PyObject *) NULL, __pyx_n_s_lcms2_cms, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 207, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 206, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TYPE, __pyx_n_s_TYPE, (PyObject *) NULL, __pyx_n_s_lcms2_cms, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "src/gravure/lcms2/colortype.pxi":208
+  /* "src/gravure/lcms2/colortype.pxi":207
  * 
  * class TYPE(Enum):
  *     GRAY_8 = TYPE_GRAY_8             # <<<<<<<<<<<<<<
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 208, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_8, __pyx_t_4) < 0) __PYX_ERR(1, 208, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_8, __pyx_t_4) < 0) __PYX_ERR(2, 207, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":209
+  /* "src/gravure/lcms2/colortype.pxi":208
  * class TYPE(Enum):
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV             # <<<<<<<<<<<<<<
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 209, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_8_REV, __pyx_t_4) < 0) __PYX_ERR(1, 209, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_8_REV, __pyx_t_4) < 0) __PYX_ERR(2, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":210
+  /* "src/gravure/lcms2/colortype.pxi":209
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16             # <<<<<<<<<<<<<<
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16, __pyx_t_4) < 0) __PYX_ERR(1, 210, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16, __pyx_t_4) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":211
+  /* "src/gravure/lcms2/colortype.pxi":210
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV             # <<<<<<<<<<<<<<
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 211, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16_REV, __pyx_t_4) < 0) __PYX_ERR(1, 211, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16_REV, __pyx_t_4) < 0) __PYX_ERR(2, 210, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":212
+  /* "src/gravure/lcms2/colortype.pxi":211
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE             # <<<<<<<<<<<<<<
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 212, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 211, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":213
+  /* "src/gravure/lcms2/colortype.pxi":212
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8             # <<<<<<<<<<<<<<
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 213, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_8, __pyx_t_4) < 0) __PYX_ERR(1, 213, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_8, __pyx_t_4) < 0) __PYX_ERR(2, 212, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":214
+  /* "src/gravure/lcms2/colortype.pxi":213
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16             # <<<<<<<<<<<<<<
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 214, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16, __pyx_t_4) < 0) __PYX_ERR(1, 214, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16, __pyx_t_4) < 0) __PYX_ERR(2, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":215
+  /* "src/gravure/lcms2/colortype.pxi":214
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE             # <<<<<<<<<<<<<<
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 215, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 215, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 214, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":216
+  /* "src/gravure/lcms2/colortype.pxi":215
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR             # <<<<<<<<<<<<<<
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 216, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 216, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":217
+  /* "src/gravure/lcms2/colortype.pxi":216
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR             # <<<<<<<<<<<<<<
  * 
  *     RGB_8 = TYPE_RGB_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 217, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 217, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAYA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 216, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":219
+  /* "src/gravure/lcms2/colortype.pxi":218
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  * 
  *     RGB_8 = TYPE_RGB_8             # <<<<<<<<<<<<<<
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 219, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_8, __pyx_t_4) < 0) __PYX_ERR(1, 219, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_8, __pyx_t_4) < 0) __PYX_ERR(2, 218, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":220
+  /* "src/gravure/lcms2/colortype.pxi":219
  * 
  *     RGB_8 = TYPE_RGB_8
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR             # <<<<<<<<<<<<<<
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 220, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 220, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 219, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":221
+  /* "src/gravure/lcms2/colortype.pxi":220
  *     RGB_8 = TYPE_RGB_8
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8             # <<<<<<<<<<<<<<
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_8, __pyx_t_4) < 0) __PYX_ERR(1, 221, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_8, __pyx_t_4) < 0) __PYX_ERR(2, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":222
+  /* "src/gravure/lcms2/colortype.pxi":221
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR             # <<<<<<<<<<<<<<
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 222, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 222, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":223
+  /* "src/gravure/lcms2/colortype.pxi":222
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16             # <<<<<<<<<<<<<<
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 223, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16, __pyx_t_4) < 0) __PYX_ERR(1, 223, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16, __pyx_t_4) < 0) __PYX_ERR(2, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":224
+  /* "src/gravure/lcms2/colortype.pxi":223
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR             # <<<<<<<<<<<<<<
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 224, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 224, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 223, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":225
+  /* "src/gravure/lcms2/colortype.pxi":224
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE             # <<<<<<<<<<<<<<
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 225, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 225, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 224, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":226
+  /* "src/gravure/lcms2/colortype.pxi":225
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16             # <<<<<<<<<<<<<<
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  *     BGR_16_SE = TYPE_BGR_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 226, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16, __pyx_t_4) < 0) __PYX_ERR(1, 226, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16, __pyx_t_4) < 0) __PYX_ERR(2, 225, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":227
+  /* "src/gravure/lcms2/colortype.pxi":226
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR             # <<<<<<<<<<<<<<
  *     BGR_16_SE = TYPE_BGR_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 227, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 227, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 226, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":228
+  /* "src/gravure/lcms2/colortype.pxi":227
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  *     BGR_16_SE = TYPE_BGR_16_SE             # <<<<<<<<<<<<<<
  * 
  *     RGBA_8 = TYPE_RGBA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 228, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 227, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 228, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 227, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":230
+  /* "src/gravure/lcms2/colortype.pxi":229
  *     BGR_16_SE = TYPE_BGR_16_SE
  * 
  *     RGBA_8 = TYPE_RGBA_8             # <<<<<<<<<<<<<<
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 230, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_8, __pyx_t_4) < 0) __PYX_ERR(1, 230, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_8, __pyx_t_4) < 0) __PYX_ERR(2, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":231
+  /* "src/gravure/lcms2/colortype.pxi":230
  * 
  *     RGBA_8 = TYPE_RGBA_8
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR             # <<<<<<<<<<<<<<
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 231, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 231, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 230, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":232
+  /* "src/gravure/lcms2/colortype.pxi":231
  *     RGBA_8 = TYPE_RGBA_8
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16             # <<<<<<<<<<<<<<
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 232, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16, __pyx_t_4) < 0) __PYX_ERR(1, 232, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16, __pyx_t_4) < 0) __PYX_ERR(2, 231, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":233
+  /* "src/gravure/lcms2/colortype.pxi":232
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR             # <<<<<<<<<<<<<<
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 233, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 233, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 232, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":234
+  /* "src/gravure/lcms2/colortype.pxi":233
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  *     RGBA_16_SE = TYPE_RGBA_16_SE             # <<<<<<<<<<<<<<
  * 
  *     ARGB_8 = TYPE_ARGB_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 234, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 234, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 233, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":236
+  /* "src/gravure/lcms2/colortype.pxi":235
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  * 
  *     ARGB_8 = TYPE_ARGB_8             # <<<<<<<<<<<<<<
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR
  *     ARGB_16 = TYPE_ARGB_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 236, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 235, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_8, __pyx_t_4) < 0) __PYX_ERR(1, 236, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_8, __pyx_t_4) < 0) __PYX_ERR(2, 235, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":237
+  /* "src/gravure/lcms2/colortype.pxi":236
  * 
  *     ARGB_8 = TYPE_ARGB_8
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR             # <<<<<<<<<<<<<<
  *     ARGB_16 = TYPE_ARGB_16
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 237, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 237, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 236, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":238
+  /* "src/gravure/lcms2/colortype.pxi":237
  *     ARGB_8 = TYPE_ARGB_8
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR
  *     ARGB_16 = TYPE_ARGB_16             # <<<<<<<<<<<<<<
  * 
  *     ABGR_8 = TYPE_ABGR_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 238, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_16, __pyx_t_4) < 0) __PYX_ERR(1, 238, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_16, __pyx_t_4) < 0) __PYX_ERR(2, 237, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":240
+  /* "src/gravure/lcms2/colortype.pxi":239
  *     ARGB_16 = TYPE_ARGB_16
  * 
  *     ABGR_8 = TYPE_ABGR_8             # <<<<<<<<<<<<<<
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 240, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_8, __pyx_t_4) < 0) __PYX_ERR(1, 240, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_8, __pyx_t_4) < 0) __PYX_ERR(2, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":241
+  /* "src/gravure/lcms2/colortype.pxi":240
  * 
  *     ABGR_8 = TYPE_ABGR_8
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR             # <<<<<<<<<<<<<<
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 241, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 241, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":242
+  /* "src/gravure/lcms2/colortype.pxi":241
  *     ABGR_8 = TYPE_ABGR_8
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16             # <<<<<<<<<<<<<<
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 242, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16, __pyx_t_4) < 0) __PYX_ERR(1, 242, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16, __pyx_t_4) < 0) __PYX_ERR(2, 241, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":243
+  /* "src/gravure/lcms2/colortype.pxi":242
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR             # <<<<<<<<<<<<<<
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 243, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 243, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 242, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":244
+  /* "src/gravure/lcms2/colortype.pxi":243
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  *     ABGR_16_SE = TYPE_ABGR_16_SE             # <<<<<<<<<<<<<<
  * 
  *     BGRA_8 = TYPE_BGRA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 244, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 244, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 243, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":246
+  /* "src/gravure/lcms2/colortype.pxi":245
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  * 
  *     BGRA_8 = TYPE_BGRA_8             # <<<<<<<<<<<<<<
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 246, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 245, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_8, __pyx_t_4) < 0) __PYX_ERR(1, 246, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_8, __pyx_t_4) < 0) __PYX_ERR(2, 245, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":247
+  /* "src/gravure/lcms2/colortype.pxi":246
  * 
  *     BGRA_8 = TYPE_BGRA_8
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR             # <<<<<<<<<<<<<<
  *     BGRA_16 = TYPE_BGRA_16
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 247, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 247, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 246, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":248
+  /* "src/gravure/lcms2/colortype.pxi":247
  *     BGRA_8 = TYPE_BGRA_8
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16             # <<<<<<<<<<<<<<
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 248, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_16, __pyx_t_4) < 0) __PYX_ERR(1, 248, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_16, __pyx_t_4) < 0) __PYX_ERR(2, 247, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":249
+  /* "src/gravure/lcms2/colortype.pxi":248
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16
  *     BGRA_16_SE = TYPE_BGRA_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMY_8 = TYPE_CMY_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 249, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 249, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":251
+  /* "src/gravure/lcms2/colortype.pxi":250
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  * 
  *     CMY_8 = TYPE_CMY_8             # <<<<<<<<<<<<<<
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 251, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 250, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_8, __pyx_t_4) < 0) __PYX_ERR(1, 251, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_8, __pyx_t_4) < 0) __PYX_ERR(2, 250, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":252
+  /* "src/gravure/lcms2/colortype.pxi":251
  * 
  *     CMY_8 = TYPE_CMY_8
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 252, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 252, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":253
+  /* "src/gravure/lcms2/colortype.pxi":252
  *     CMY_8 = TYPE_CMY_8
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16             # <<<<<<<<<<<<<<
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  *     CMY_16_SE = TYPE_CMY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 253, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16, __pyx_t_4) < 0) __PYX_ERR(1, 253, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16, __pyx_t_4) < 0) __PYX_ERR(2, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":254
+  /* "src/gravure/lcms2/colortype.pxi":253
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMY_16_SE = TYPE_CMY_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 254, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 254, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 253, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":255
+  /* "src/gravure/lcms2/colortype.pxi":254
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  *     CMY_16_SE = TYPE_CMY_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK_8 = TYPE_CMYK_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 255, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 255, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":257
+  /* "src/gravure/lcms2/colortype.pxi":256
  *     CMY_16_SE = TYPE_CMY_16_SE
  * 
  *     CMYK_8 = TYPE_CMYK_8             # <<<<<<<<<<<<<<
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 257, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8, __pyx_t_4) < 0) __PYX_ERR(1, 257, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8, __pyx_t_4) < 0) __PYX_ERR(2, 256, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":258
+  /* "src/gravure/lcms2/colortype.pxi":257
  * 
  *     CMYK_8 = TYPE_CMYK_8
  *     CMYKA_8 = TYPE_CMYKA_8             # <<<<<<<<<<<<<<
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYKA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 258, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYKA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYKA_8, __pyx_t_4) < 0) __PYX_ERR(1, 258, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYKA_8, __pyx_t_4) < 0) __PYX_ERR(2, 257, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":259
+  /* "src/gravure/lcms2/colortype.pxi":258
  *     CMYK_8 = TYPE_CMYK_8
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV             # <<<<<<<<<<<<<<
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 259, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8_REV, __pyx_t_4) < 0) __PYX_ERR(1, 259, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8_REV, __pyx_t_4) < 0) __PYX_ERR(2, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":260
+  /* "src/gravure/lcms2/colortype.pxi":259
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8             # <<<<<<<<<<<<<<
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 260, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK_8, __pyx_t_4) < 0) __PYX_ERR(1, 260, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK_8, __pyx_t_4) < 0) __PYX_ERR(2, 259, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":261
+  /* "src/gravure/lcms2/colortype.pxi":260
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 261, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 260, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 261, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 260, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":262
+  /* "src/gravure/lcms2/colortype.pxi":261
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16             # <<<<<<<<<<<<<<
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 262, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16, __pyx_t_4) < 0) __PYX_ERR(1, 262, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16, __pyx_t_4) < 0) __PYX_ERR(2, 261, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":263
+  /* "src/gravure/lcms2/colortype.pxi":262
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV             # <<<<<<<<<<<<<<
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 263, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_REV, __pyx_t_4) < 0) __PYX_ERR(1, 263, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_REV, __pyx_t_4) < 0) __PYX_ERR(2, 262, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":264
+  /* "src/gravure/lcms2/colortype.pxi":263
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16             # <<<<<<<<<<<<<<
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 264, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK_16, __pyx_t_4) < 0) __PYX_ERR(1, 264, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK_16, __pyx_t_4) < 0) __PYX_ERR(2, 263, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":265
+  /* "src/gravure/lcms2/colortype.pxi":264
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 265, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 265, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 264, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":266
+  /* "src/gravure/lcms2/colortype.pxi":265
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  *     CMYK_16_SE = TYPE_CMYK_16_SE             # <<<<<<<<<<<<<<
  * 
  *     KYMC_8 = TYPE_KYMC_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 266, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 266, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":268
+  /* "src/gravure/lcms2/colortype.pxi":267
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  * 
  *     KYMC_8 = TYPE_KYMC_8             # <<<<<<<<<<<<<<
  *     KYMC_16 = TYPE_KYMC_16
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 268, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_8, __pyx_t_4) < 0) __PYX_ERR(1, 268, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_8, __pyx_t_4) < 0) __PYX_ERR(2, 267, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":269
+  /* "src/gravure/lcms2/colortype.pxi":268
  * 
  *     KYMC_8 = TYPE_KYMC_8
  *     KYMC_16 = TYPE_KYMC_16             # <<<<<<<<<<<<<<
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 269, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_16, __pyx_t_4) < 0) __PYX_ERR(1, 269, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_16, __pyx_t_4) < 0) __PYX_ERR(2, 268, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":270
+  /* "src/gravure/lcms2/colortype.pxi":269
  *     KYMC_8 = TYPE_KYMC_8
  *     KYMC_16 = TYPE_KYMC_16
  *     KYMC_16_SE = TYPE_KYMC_16_SE             # <<<<<<<<<<<<<<
  * 
  *     KCMY_8 = TYPE_KCMY_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 270, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 270, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 269, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":272
+  /* "src/gravure/lcms2/colortype.pxi":271
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  * 
  *     KCMY_8 = TYPE_KCMY_8             # <<<<<<<<<<<<<<
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 272, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 271, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_8, __pyx_t_4) < 0) __PYX_ERR(1, 272, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_8, __pyx_t_4) < 0) __PYX_ERR(2, 271, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":273
+  /* "src/gravure/lcms2/colortype.pxi":272
  * 
  *     KCMY_8 = TYPE_KCMY_8
  *     KCMY_8_REV = TYPE_KCMY_8_REV             # <<<<<<<<<<<<<<
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 273, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_8_REV, __pyx_t_4) < 0) __PYX_ERR(1, 273, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_8_REV, __pyx_t_4) < 0) __PYX_ERR(2, 272, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":274
+  /* "src/gravure/lcms2/colortype.pxi":273
  *     KCMY_8 = TYPE_KCMY_8
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16             # <<<<<<<<<<<<<<
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 274, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16, __pyx_t_4) < 0) __PYX_ERR(1, 274, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16, __pyx_t_4) < 0) __PYX_ERR(2, 273, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":275
+  /* "src/gravure/lcms2/colortype.pxi":274
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV             # <<<<<<<<<<<<<<
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 275, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 274, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16_REV, __pyx_t_4) < 0) __PYX_ERR(1, 275, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16_REV, __pyx_t_4) < 0) __PYX_ERR(2, 274, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":276
+  /* "src/gravure/lcms2/colortype.pxi":275
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  *     KCMY_16_SE = TYPE_KCMY_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK5_8 = TYPE_CMYK5_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 276, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 276, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KCMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":278
+  /* "src/gravure/lcms2/colortype.pxi":277
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  * 
  *     CMYK5_8 = TYPE_CMYK5_8             # <<<<<<<<<<<<<<
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 278, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 277, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_8, __pyx_t_4) < 0) __PYX_ERR(1, 278, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_8, __pyx_t_4) < 0) __PYX_ERR(2, 277, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":279
+  /* "src/gravure/lcms2/colortype.pxi":278
  * 
  *     CMYK5_8 = TYPE_CMYK5_8
  *     CMYK5_16 = TYPE_CMYK5_16             # <<<<<<<<<<<<<<
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 279, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_16, __pyx_t_4) < 0) __PYX_ERR(1, 279, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_16, __pyx_t_4) < 0) __PYX_ERR(2, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":280
+  /* "src/gravure/lcms2/colortype.pxi":279
  *     CMYK5_8 = TYPE_CMYK5_8
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE             # <<<<<<<<<<<<<<
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 280, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 280, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK5_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 279, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":281
+  /* "src/gravure/lcms2/colortype.pxi":280
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8             # <<<<<<<<<<<<<<
  *     KYMC5_16 = TYPE_KYMC5_16
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 281, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 280, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_8, __pyx_t_4) < 0) __PYX_ERR(1, 281, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_8, __pyx_t_4) < 0) __PYX_ERR(2, 280, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":282
+  /* "src/gravure/lcms2/colortype.pxi":281
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16             # <<<<<<<<<<<<<<
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 282, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_16, __pyx_t_4) < 0) __PYX_ERR(1, 282, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_16, __pyx_t_4) < 0) __PYX_ERR(2, 281, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":283
+  /* "src/gravure/lcms2/colortype.pxi":282
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK6_8 = TYPE_CMYK6_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 283, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 283, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC5_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 282, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":285
+  /* "src/gravure/lcms2/colortype.pxi":284
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  * 
  *     CMYK6_8 = TYPE_CMYK6_8             # <<<<<<<<<<<<<<
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 285, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_8, __pyx_t_4) < 0) __PYX_ERR(1, 285, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_8, __pyx_t_4) < 0) __PYX_ERR(2, 284, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":286
+  /* "src/gravure/lcms2/colortype.pxi":285
  * 
  *     CMYK6_8 = TYPE_CMYK6_8
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 286, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 286, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 285, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":287
+  /* "src/gravure/lcms2/colortype.pxi":286
  *     CMYK6_8 = TYPE_CMYK6_8
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16             # <<<<<<<<<<<<<<
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 287, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16, __pyx_t_4) < 0) __PYX_ERR(1, 287, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16, __pyx_t_4) < 0) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":288
+  /* "src/gravure/lcms2/colortype.pxi":287
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 288, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 288, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":289
+  /* "src/gravure/lcms2/colortype.pxi":288
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK7_8 = TYPE_CMYK7_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 289, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 289, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK6_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":291
+  /* "src/gravure/lcms2/colortype.pxi":290
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  * 
  *     CMYK7_8 = TYPE_CMYK7_8             # <<<<<<<<<<<<<<
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 291, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_8, __pyx_t_4) < 0) __PYX_ERR(1, 291, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_8, __pyx_t_4) < 0) __PYX_ERR(2, 290, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":292
+  /* "src/gravure/lcms2/colortype.pxi":291
  * 
  *     CMYK7_8 = TYPE_CMYK7_8
  *     CMYK7_16 = TYPE_CMYK7_16             # <<<<<<<<<<<<<<
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 292, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_16, __pyx_t_4) < 0) __PYX_ERR(1, 292, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_16, __pyx_t_4) < 0) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":293
+  /* "src/gravure/lcms2/colortype.pxi":292
  *     CMYK7_8 = TYPE_CMYK7_8
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE             # <<<<<<<<<<<<<<
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 293, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 293, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK7_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":294
+  /* "src/gravure/lcms2/colortype.pxi":293
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8             # <<<<<<<<<<<<<<
  *     KYMC7_16 = TYPE_KYMC7_16
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 294, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_8, __pyx_t_4) < 0) __PYX_ERR(1, 294, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_8, __pyx_t_4) < 0) __PYX_ERR(2, 293, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":295
+  /* "src/gravure/lcms2/colortype.pxi":294
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16             # <<<<<<<<<<<<<<
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 295, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 294, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_16, __pyx_t_4) < 0) __PYX_ERR(1, 295, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_16, __pyx_t_4) < 0) __PYX_ERR(2, 294, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":296
+  /* "src/gravure/lcms2/colortype.pxi":295
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK8_8 = TYPE_CMYK8_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 296, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 296, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC7_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 295, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":298
+  /* "src/gravure/lcms2/colortype.pxi":297
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  * 
  *     CMYK8_8 = TYPE_CMYK8_8             # <<<<<<<<<<<<<<
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 298, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_8, __pyx_t_4) < 0) __PYX_ERR(1, 298, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_8, __pyx_t_4) < 0) __PYX_ERR(2, 297, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":299
+  /* "src/gravure/lcms2/colortype.pxi":298
  * 
  *     CMYK8_8 = TYPE_CMYK8_8
  *     CMYK8_16 = TYPE_CMYK8_16             # <<<<<<<<<<<<<<
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 299, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_16, __pyx_t_4) < 0) __PYX_ERR(1, 299, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_16, __pyx_t_4) < 0) __PYX_ERR(2, 298, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":300
+  /* "src/gravure/lcms2/colortype.pxi":299
  *     CMYK8_8 = TYPE_CMYK8_8
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE             # <<<<<<<<<<<<<<
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 300, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 299, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 300, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK8_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 299, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":301
+  /* "src/gravure/lcms2/colortype.pxi":300
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8             # <<<<<<<<<<<<<<
  *     KYMC8_16 = TYPE_KYMC8_16
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 301, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 300, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_8, __pyx_t_4) < 0) __PYX_ERR(1, 301, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_8, __pyx_t_4) < 0) __PYX_ERR(2, 300, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":302
+  /* "src/gravure/lcms2/colortype.pxi":301
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16             # <<<<<<<<<<<<<<
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 302, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 301, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_16, __pyx_t_4) < 0) __PYX_ERR(1, 302, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_16, __pyx_t_4) < 0) __PYX_ERR(2, 301, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":303
+  /* "src/gravure/lcms2/colortype.pxi":302
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK9_8 = TYPE_CMYK9_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 303, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 303, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC8_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 302, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":305
+  /* "src/gravure/lcms2/colortype.pxi":304
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  * 
  *     CMYK9_8 = TYPE_CMYK9_8             # <<<<<<<<<<<<<<
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 305, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 304, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_8, __pyx_t_4) < 0) __PYX_ERR(1, 305, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_8, __pyx_t_4) < 0) __PYX_ERR(2, 304, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":306
+  /* "src/gravure/lcms2/colortype.pxi":305
  * 
  *     CMYK9_8 = TYPE_CMYK9_8
  *     CMYK9_16 = TYPE_CMYK9_16             # <<<<<<<<<<<<<<
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 306, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_16, __pyx_t_4) < 0) __PYX_ERR(1, 306, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_16, __pyx_t_4) < 0) __PYX_ERR(2, 305, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":307
+  /* "src/gravure/lcms2/colortype.pxi":306
  *     CMYK9_8 = TYPE_CMYK9_8
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE             # <<<<<<<<<<<<<<
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 307, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 307, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK9_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 306, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":308
+  /* "src/gravure/lcms2/colortype.pxi":307
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8             # <<<<<<<<<<<<<<
  *     KYMC9_16 = TYPE_KYMC9_16
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 308, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_8, __pyx_t_4) < 0) __PYX_ERR(1, 308, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_8, __pyx_t_4) < 0) __PYX_ERR(2, 307, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":309
+  /* "src/gravure/lcms2/colortype.pxi":308
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16             # <<<<<<<<<<<<<<
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 309, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_16, __pyx_t_4) < 0) __PYX_ERR(1, 309, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_16, __pyx_t_4) < 0) __PYX_ERR(2, 308, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":310
+  /* "src/gravure/lcms2/colortype.pxi":309
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK10_8 = TYPE_CMYK10_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 310, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 310, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC9_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 309, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":312
+  /* "src/gravure/lcms2/colortype.pxi":311
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  * 
  *     CMYK10_8 = TYPE_CMYK10_8             # <<<<<<<<<<<<<<
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 312, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 311, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_8, __pyx_t_4) < 0) __PYX_ERR(1, 312, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_8, __pyx_t_4) < 0) __PYX_ERR(2, 311, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":313
+  /* "src/gravure/lcms2/colortype.pxi":312
  * 
  *     CMYK10_8 = TYPE_CMYK10_8
  *     CMYK10_16 = TYPE_CMYK10_16             # <<<<<<<<<<<<<<
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 313, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_16, __pyx_t_4) < 0) __PYX_ERR(1, 313, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_16, __pyx_t_4) < 0) __PYX_ERR(2, 312, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":314
+  /* "src/gravure/lcms2/colortype.pxi":313
  *     CMYK10_8 = TYPE_CMYK10_8
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE             # <<<<<<<<<<<<<<
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 314, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 313, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 314, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK10_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 313, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":315
+  /* "src/gravure/lcms2/colortype.pxi":314
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8             # <<<<<<<<<<<<<<
  *     KYMC10_16 = TYPE_KYMC10_16
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 315, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 314, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_8, __pyx_t_4) < 0) __PYX_ERR(1, 315, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_8, __pyx_t_4) < 0) __PYX_ERR(2, 314, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":316
+  /* "src/gravure/lcms2/colortype.pxi":315
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16             # <<<<<<<<<<<<<<
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 316, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_16, __pyx_t_4) < 0) __PYX_ERR(1, 316, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_16, __pyx_t_4) < 0) __PYX_ERR(2, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":317
+  /* "src/gravure/lcms2/colortype.pxi":316
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK11_8 = TYPE_CMYK11_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 317, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 317, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC10_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 316, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":319
+  /* "src/gravure/lcms2/colortype.pxi":318
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  * 
  *     CMYK11_8 = TYPE_CMYK11_8             # <<<<<<<<<<<<<<
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 319, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 318, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_8, __pyx_t_4) < 0) __PYX_ERR(1, 319, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_8, __pyx_t_4) < 0) __PYX_ERR(2, 318, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":320
+  /* "src/gravure/lcms2/colortype.pxi":319
  * 
  *     CMYK11_8 = TYPE_CMYK11_8
  *     CMYK11_16 = TYPE_CMYK11_16             # <<<<<<<<<<<<<<
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 320, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_16, __pyx_t_4) < 0) __PYX_ERR(1, 320, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_16, __pyx_t_4) < 0) __PYX_ERR(2, 319, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":321
+  /* "src/gravure/lcms2/colortype.pxi":320
  *     CMYK11_8 = TYPE_CMYK11_8
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE             # <<<<<<<<<<<<<<
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 321, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 320, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 321, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK11_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 320, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":322
+  /* "src/gravure/lcms2/colortype.pxi":321
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8             # <<<<<<<<<<<<<<
  *     KYMC11_16 = TYPE_KYMC11_16
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 322, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_8, __pyx_t_4) < 0) __PYX_ERR(1, 322, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_8, __pyx_t_4) < 0) __PYX_ERR(2, 321, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":323
+  /* "src/gravure/lcms2/colortype.pxi":322
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16             # <<<<<<<<<<<<<<
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 323, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 322, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_16, __pyx_t_4) < 0) __PYX_ERR(1, 323, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_16, __pyx_t_4) < 0) __PYX_ERR(2, 322, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":324
+  /* "src/gravure/lcms2/colortype.pxi":323
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK12_8 = TYPE_CMYK12_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 324, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 324, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC11_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 323, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":326
+  /* "src/gravure/lcms2/colortype.pxi":325
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  * 
  *     CMYK12_8 = TYPE_CMYK12_8             # <<<<<<<<<<<<<<
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 326, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_8, __pyx_t_4) < 0) __PYX_ERR(1, 326, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_8, __pyx_t_4) < 0) __PYX_ERR(2, 325, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":327
+  /* "src/gravure/lcms2/colortype.pxi":326
  * 
  *     CMYK12_8 = TYPE_CMYK12_8
  *     CMYK12_16 = TYPE_CMYK12_16             # <<<<<<<<<<<<<<
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 327, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 326, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_16, __pyx_t_4) < 0) __PYX_ERR(1, 327, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_16, __pyx_t_4) < 0) __PYX_ERR(2, 326, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":328
+  /* "src/gravure/lcms2/colortype.pxi":327
  *     CMYK12_8 = TYPE_CMYK12_8
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE             # <<<<<<<<<<<<<<
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 328, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 328, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK12_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 327, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":329
+  /* "src/gravure/lcms2/colortype.pxi":328
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8             # <<<<<<<<<<<<<<
  *     KYMC12_16 = TYPE_KYMC12_16
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 329, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_8, __pyx_t_4) < 0) __PYX_ERR(1, 329, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_8, __pyx_t_4) < 0) __PYX_ERR(2, 328, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":330
+  /* "src/gravure/lcms2/colortype.pxi":329
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16             # <<<<<<<<<<<<<<
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 330, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_16, __pyx_t_4) < 0) __PYX_ERR(1, 330, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_16, __pyx_t_4) < 0) __PYX_ERR(2, 329, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":331
+  /* "src/gravure/lcms2/colortype.pxi":330
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # Colorimetric
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 331, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 331, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_KYMC12_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 330, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":334
+  /* "src/gravure/lcms2/colortype.pxi":333
  * 
  *     # Colorimetric
  *     XYZ_16 = TYPE_XYZ_16             # <<<<<<<<<<<<<<
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 334, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 333, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_16, __pyx_t_4) < 0) __PYX_ERR(1, 334, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_16, __pyx_t_4) < 0) __PYX_ERR(2, 333, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":335
+  /* "src/gravure/lcms2/colortype.pxi":334
  *     # Colorimetric
  *     XYZ_16 = TYPE_XYZ_16
  *     Lab_8 = TYPE_Lab_8             # <<<<<<<<<<<<<<
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 335, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_8, __pyx_t_4) < 0) __PYX_ERR(1, 335, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_8, __pyx_t_4) < 0) __PYX_ERR(2, 334, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":336
+  /* "src/gravure/lcms2/colortype.pxi":335
  *     XYZ_16 = TYPE_XYZ_16
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8             # <<<<<<<<<<<<<<
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 336, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2_8, __pyx_t_4) < 0) __PYX_ERR(1, 336, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2_8, __pyx_t_4) < 0) __PYX_ERR(2, 335, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":337
+  /* "src/gravure/lcms2/colortype.pxi":336
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8             # <<<<<<<<<<<<<<
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 337, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 336, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ALab_8, __pyx_t_4) < 0) __PYX_ERR(1, 337, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ALab_8, __pyx_t_4) < 0) __PYX_ERR(2, 336, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":338
+  /* "src/gravure/lcms2/colortype.pxi":337
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8             # <<<<<<<<<<<<<<
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 338, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ALabV2_8, __pyx_t_4) < 0) __PYX_ERR(1, 338, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ALabV2_8, __pyx_t_4) < 0) __PYX_ERR(2, 337, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":339
+  /* "src/gravure/lcms2/colortype.pxi":338
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16             # <<<<<<<<<<<<<<
  *     LabV2_16 = TYPE_LabV2_16
  *     Yxy_16 = TYPE_Yxy_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 339, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 338, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_16, __pyx_t_4) < 0) __PYX_ERR(1, 339, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_16, __pyx_t_4) < 0) __PYX_ERR(2, 338, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":340
+  /* "src/gravure/lcms2/colortype.pxi":339
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16             # <<<<<<<<<<<<<<
  *     Yxy_16 = TYPE_Yxy_16
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 340, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 339, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2_16, __pyx_t_4) < 0) __PYX_ERR(1, 340, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2_16, __pyx_t_4) < 0) __PYX_ERR(2, 339, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":341
+  /* "src/gravure/lcms2/colortype.pxi":340
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16
  *     Yxy_16 = TYPE_Yxy_16             # <<<<<<<<<<<<<<
  * 
  *     # YCbCr
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Yxy_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 341, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Yxy_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 340, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Yxy_16, __pyx_t_4) < 0) __PYX_ERR(1, 341, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Yxy_16, __pyx_t_4) < 0) __PYX_ERR(2, 340, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":344
+  /* "src/gravure/lcms2/colortype.pxi":343
  * 
  *     # YCbCr
  *     YCbCr_8 = TYPE_YCbCr_8             # <<<<<<<<<<<<<<
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 344, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 343, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_8, __pyx_t_4) < 0) __PYX_ERR(1, 344, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_8, __pyx_t_4) < 0) __PYX_ERR(2, 343, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":345
+  /* "src/gravure/lcms2/colortype.pxi":344
  *     # YCbCr
  *     YCbCr_8 = TYPE_YCbCr_8
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR             # <<<<<<<<<<<<<<
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 345, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 344, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 345, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 344, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":346
+  /* "src/gravure/lcms2/colortype.pxi":345
  *     YCbCr_8 = TYPE_YCbCr_8
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16             # <<<<<<<<<<<<<<
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 346, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 345, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16, __pyx_t_4) < 0) __PYX_ERR(1, 346, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16, __pyx_t_4) < 0) __PYX_ERR(2, 345, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":347
+  /* "src/gravure/lcms2/colortype.pxi":346
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR             # <<<<<<<<<<<<<<
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 347, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 346, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 347, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 346, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":348
+  /* "src/gravure/lcms2/colortype.pxi":347
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # YUV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 348, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 347, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 348, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 347, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":351
+  /* "src/gravure/lcms2/colortype.pxi":350
  * 
  *     # YUV
  *     YUV_8 = TYPE_YUV_8             # <<<<<<<<<<<<<<
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 351, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_8, __pyx_t_4) < 0) __PYX_ERR(1, 351, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_8, __pyx_t_4) < 0) __PYX_ERR(2, 350, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":352
+  /* "src/gravure/lcms2/colortype.pxi":351
  *     # YUV
  *     YUV_8 = TYPE_YUV_8
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR             # <<<<<<<<<<<<<<
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 352, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 352, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 351, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":353
+  /* "src/gravure/lcms2/colortype.pxi":352
  *     YUV_8 = TYPE_YUV_8
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16             # <<<<<<<<<<<<<<
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  *     YUV_16_SE = TYPE_YUV_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 353, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16, __pyx_t_4) < 0) __PYX_ERR(1, 353, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16, __pyx_t_4) < 0) __PYX_ERR(2, 352, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":354
+  /* "src/gravure/lcms2/colortype.pxi":353
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR             # <<<<<<<<<<<<<<
  *     YUV_16_SE = TYPE_YUV_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 354, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 354, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 353, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":355
+  /* "src/gravure/lcms2/colortype.pxi":354
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  *     YUV_16_SE = TYPE_YUV_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # HLS
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 355, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 355, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 354, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":358
+  /* "src/gravure/lcms2/colortype.pxi":357
  * 
  *     # HLS
  *     HLS_8 = TYPE_HLS_8             # <<<<<<<<<<<<<<
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 358, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_8, __pyx_t_4) < 0) __PYX_ERR(1, 358, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_8, __pyx_t_4) < 0) __PYX_ERR(2, 357, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":359
+  /* "src/gravure/lcms2/colortype.pxi":358
  *     # HLS
  *     HLS_8 = TYPE_HLS_8
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR             # <<<<<<<<<<<<<<
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 359, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 358, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 359, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 358, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":360
+  /* "src/gravure/lcms2/colortype.pxi":359
  *     HLS_8 = TYPE_HLS_8
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16             # <<<<<<<<<<<<<<
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  *     HLS_16_SE = TYPE_HLS_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 360, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16, __pyx_t_4) < 0) __PYX_ERR(1, 360, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16, __pyx_t_4) < 0) __PYX_ERR(2, 359, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":361
+  /* "src/gravure/lcms2/colortype.pxi":360
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR             # <<<<<<<<<<<<<<
  *     HLS_16_SE = TYPE_HLS_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 361, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 360, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 361, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 360, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":362
+  /* "src/gravure/lcms2/colortype.pxi":361
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  *     HLS_16_SE = TYPE_HLS_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # HSV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 362, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 361, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 362, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 361, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":365
+  /* "src/gravure/lcms2/colortype.pxi":364
  * 
  *     # HSV
  *     HSV_8 = TYPE_HSV_8             # <<<<<<<<<<<<<<
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 365, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 364, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_8, __pyx_t_4) < 0) __PYX_ERR(1, 365, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_8, __pyx_t_4) < 0) __PYX_ERR(2, 364, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":366
+  /* "src/gravure/lcms2/colortype.pxi":365
  *     # HSV
  *     HSV_8 = TYPE_HSV_8
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR             # <<<<<<<<<<<<<<
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 366, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 366, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 365, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":367
+  /* "src/gravure/lcms2/colortype.pxi":366
  *     HSV_8 = TYPE_HSV_8
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16             # <<<<<<<<<<<<<<
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  *     HSV_16_SE = TYPE_HSV_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 367, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 366, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16, __pyx_t_4) < 0) __PYX_ERR(1, 367, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16, __pyx_t_4) < 0) __PYX_ERR(2, 366, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":368
+  /* "src/gravure/lcms2/colortype.pxi":367
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR             # <<<<<<<<<<<<<<
  *     HSV_16_SE = TYPE_HSV_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 368, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 367, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(1, 368, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(2, 367, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":369
+  /* "src/gravure/lcms2/colortype.pxi":368
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  *     HSV_16_SE = TYPE_HSV_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # Named color index.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 369, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16_SE, __pyx_t_4) < 0) __PYX_ERR(1, 369, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV_16_SE, __pyx_t_4) < 0) __PYX_ERR(2, 368, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":373
+  /* "src/gravure/lcms2/colortype.pxi":372
  *     # Named color index.
  *     # Only 16 bits allowed (don't check colorspace)
  *     NAMED_COLOR_INDEX = TYPE_NAMED_COLOR_INDEX             # <<<<<<<<<<<<<<
  * 
  *     # Float formatters.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_NAMED_COLOR_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 373, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_NAMED_COLOR_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 372, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NAMED_COLOR_INDEX, __pyx_t_4) < 0) __PYX_ERR(1, 373, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NAMED_COLOR_INDEX, __pyx_t_4) < 0) __PYX_ERR(2, 372, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":376
+  /* "src/gravure/lcms2/colortype.pxi":375
  * 
  *     # Float formatters.
  *     XYZ_FLT = TYPE_XYZ_FLT             # <<<<<<<<<<<<<<
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 376, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 375, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 376, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 375, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":377
+  /* "src/gravure/lcms2/colortype.pxi":376
  *     # Float formatters.
  *     XYZ_FLT = TYPE_XYZ_FLT
  *     Lab_FLT = TYPE_Lab_FLT             # <<<<<<<<<<<<<<
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 377, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 376, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 377, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 376, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":378
+  /* "src/gravure/lcms2/colortype.pxi":377
  *     XYZ_FLT = TYPE_XYZ_FLT
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT             # <<<<<<<<<<<<<<
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 378, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 377, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabA_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 378, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabA_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 377, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":379
+  /* "src/gravure/lcms2/colortype.pxi":378
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT             # <<<<<<<<<<<<<<
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 379, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 378, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 379, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 378, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":380
+  /* "src/gravure/lcms2/colortype.pxi":379
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT             # <<<<<<<<<<<<<<
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 380, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 379, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 380, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 379, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":381
+  /* "src/gravure/lcms2/colortype.pxi":380
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT             # <<<<<<<<<<<<<<
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 381, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 380, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 381, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 380, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":382
+  /* "src/gravure/lcms2/colortype.pxi":381
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT             # <<<<<<<<<<<<<<
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 382, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 381, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 382, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 381, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":383
+  /* "src/gravure/lcms2/colortype.pxi":382
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT             # <<<<<<<<<<<<<<
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 383, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 382, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 383, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 382, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":384
+  /* "src/gravure/lcms2/colortype.pxi":383
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT             # <<<<<<<<<<<<<<
  *     ABGR_FLT = TYPE_ABGR_FLT
  *     CMYK_FLT = TYPE_CMYK_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 384, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 384, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 383, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":385
+  /* "src/gravure/lcms2/colortype.pxi":384
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT             # <<<<<<<<<<<<<<
  *     CMYK_FLT = TYPE_CMYK_FLT
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 385, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 384, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 385, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 384, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":386
+  /* "src/gravure/lcms2/colortype.pxi":385
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT
  *     CMYK_FLT = TYPE_CMYK_FLT             # <<<<<<<<<<<<<<
  * 
  *     # Floating point formatters.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 386, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 385, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 386, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 385, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":391
+  /* "src/gravure/lcms2/colortype.pxi":390
  *     # NOTE THAT 'BYTES' FIELD IS SET TO ZERO
  *     # ON DLB because 8 bytes overflows the bitfield
  *     XYZ_DBL = TYPE_XYZ_DBL             # <<<<<<<<<<<<<<
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 391, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 391, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 390, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":392
+  /* "src/gravure/lcms2/colortype.pxi":391
  *     # ON DLB because 8 bytes overflows the bitfield
  *     XYZ_DBL = TYPE_XYZ_DBL
  *     Lab_DBL = TYPE_Lab_DBL             # <<<<<<<<<<<<<<
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 392, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 391, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 392, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 391, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":393
+  /* "src/gravure/lcms2/colortype.pxi":392
  *     XYZ_DBL = TYPE_XYZ_DBL
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL             # <<<<<<<<<<<<<<
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 393, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 392, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 393, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 392, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":394
+  /* "src/gravure/lcms2/colortype.pxi":393
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL             # <<<<<<<<<<<<<<
  *     BGR_DBL = TYPE_BGR_DBL
  *     CMYK_DBL = TYPE_CMYK_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 394, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 394, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 393, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":395
+  /* "src/gravure/lcms2/colortype.pxi":394
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL             # <<<<<<<<<<<<<<
  *     CMYK_DBL = TYPE_CMYK_DBL
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 395, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 394, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 395, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 394, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":396
+  /* "src/gravure/lcms2/colortype.pxi":395
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL
  *     CMYK_DBL = TYPE_CMYK_DBL             # <<<<<<<<<<<<<<
  * 
  *     # IEEE 754-2008 "half"
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 396, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_DBL, __pyx_t_4) < 0) __PYX_ERR(1, 396, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_DBL, __pyx_t_4) < 0) __PYX_ERR(2, 395, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":399
+  /* "src/gravure/lcms2/colortype.pxi":398
  * 
  *     # IEEE 754-2008 "half"
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT             # <<<<<<<<<<<<<<
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 399, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 398, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 399, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 398, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":400
+  /* "src/gravure/lcms2/colortype.pxi":399
  *     # IEEE 754-2008 "half"
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT             # <<<<<<<<<<<<<<
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 400, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 400, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":401
+  /* "src/gravure/lcms2/colortype.pxi":400
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT             # <<<<<<<<<<<<<<
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 401, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 401, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGBA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 400, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":402
+  /* "src/gravure/lcms2/colortype.pxi":401
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT             # <<<<<<<<<<<<<<
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 402, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 402, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 401, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":403
+  /* "src/gravure/lcms2/colortype.pxi":402
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT             # <<<<<<<<<<<<<<
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 403, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 402, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 403, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ARGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 402, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":404
+  /* "src/gravure/lcms2/colortype.pxi":403
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT             # <<<<<<<<<<<<<<
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 404, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 403, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 404, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 403, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":405
+  /* "src/gravure/lcms2/colortype.pxi":404
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT             # <<<<<<<<<<<<<<
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 405, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 405, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BGRA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 404, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":406
+  /* "src/gravure/lcms2/colortype.pxi":405
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT             # <<<<<<<<<<<<<<
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 406, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 405, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(1, 406, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ABGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(2, 405, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "src/gravure/lcms2/colortype.pxi":207
+  /* "src/gravure/lcms2/colortype.pxi":206
  * 
  * 
  * class TYPE(Enum):             # <<<<<<<<<<<<<<
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_TYPE, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 207, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TYPE, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TYPE, __pyx_t_4) < 0) __PYX_ERR(1, 207, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TYPE, __pyx_t_4) < 0) __PYX_ERR(2, 206, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":226
+ * 
+ * @unique
+ * class ICCDef(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Definitions in ICC spec.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ICCDef, __pyx_n_s_ICCDef, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_Definitions_in_ICC_spec); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":229
+ *     """Definitions in ICC spec.
+ *     """
+ *     cmsMagicNumber = c_cmsMagicNumber             # <<<<<<<<<<<<<<
+ *     lcmsSignature = c_lcmsSignature
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsMagicNumber); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_cmsMagicNumber, __pyx_t_4) < 0) __PYX_ERR(3, 229, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":230
+ *     """
+ *     cmsMagicNumber = c_cmsMagicNumber
+ *     lcmsSignature = c_lcmsSignature             # <<<<<<<<<<<<<<
+ * 
+ * @unique
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(lcmsSignature); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 230, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_lcmsSignature, __pyx_t_4) < 0) __PYX_ERR(3, 230, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":225
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class ICCDef(TagEnum):
+ *     """Definitions in ICC spec.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":226
+ * 
+ * @unique
+ * class ICCDef(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Definitions in ICC spec.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ICCDef, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ICCDef, __pyx_t_4) < 0) __PYX_ERR(3, 226, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/cms.pyx":27
+  /* "src/gravure/lcms2/icctag.pxi":233
  * 
- * 
- * __all__ = ['TYPE',]             # <<<<<<<<<<<<<<
+ * @unique
+ * class TagTypeSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Base ICC type definitions.
+ *     """
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 233, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 233, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TagTypeSignature, __pyx_n_s_TagTypeSignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_Base_ICC_type_definitions); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 233, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":236
+ *     """Base ICC type definitions.
+ *     """
+ *     ChromaticityType = cmsSigChromaticityType             # <<<<<<<<<<<<<<
+ *     ColorantOrderType = cmsSigColorantOrderType
+ *     ColorantTableType = cmsSigColorantTableType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigChromaticityType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ChromaticityType, __pyx_t_4) < 0) __PYX_ERR(3, 236, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":237
+ *     """
+ *     ChromaticityType = cmsSigChromaticityType
+ *     ColorantOrderType = cmsSigColorantOrderType             # <<<<<<<<<<<<<<
+ *     ColorantTableType = cmsSigColorantTableType
+ *     CrdInfoType = cmsSigCrdInfoType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigColorantOrderType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 237, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorantOrderType, __pyx_t_4) < 0) __PYX_ERR(3, 237, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":238
+ *     ChromaticityType = cmsSigChromaticityType
+ *     ColorantOrderType = cmsSigColorantOrderType
+ *     ColorantTableType = cmsSigColorantTableType             # <<<<<<<<<<<<<<
+ *     CrdInfoType = cmsSigCrdInfoType
+ *     CurveType = cmsSigCurveType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigColorantTableType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorantTableType, __pyx_t_4) < 0) __PYX_ERR(3, 238, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":239
+ *     ColorantOrderType = cmsSigColorantOrderType
+ *     ColorantTableType = cmsSigColorantTableType
+ *     CrdInfoType = cmsSigCrdInfoType             # <<<<<<<<<<<<<<
+ *     CurveType = cmsSigCurveType
+ *     DataType = cmsSigDataType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigCrdInfoType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 239, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CrdInfoType, __pyx_t_4) < 0) __PYX_ERR(3, 239, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":240
+ *     ColorantTableType = cmsSigColorantTableType
+ *     CrdInfoType = cmsSigCrdInfoType
+ *     CurveType = cmsSigCurveType             # <<<<<<<<<<<<<<
+ *     DataType = cmsSigDataType
+ *     DictType = cmsSigDictType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigCurveType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 240, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CurveType, __pyx_t_4) < 0) __PYX_ERR(3, 240, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":241
+ *     CrdInfoType = cmsSigCrdInfoType
+ *     CurveType = cmsSigCurveType
+ *     DataType = cmsSigDataType             # <<<<<<<<<<<<<<
+ *     DictType = cmsSigDictType
+ *     DateTimeType = cmsSigDateTimeType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigDataType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DataType, __pyx_t_4) < 0) __PYX_ERR(3, 241, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":242
+ *     CurveType = cmsSigCurveType
+ *     DataType = cmsSigDataType
+ *     DictType = cmsSigDictType             # <<<<<<<<<<<<<<
+ *     DateTimeType = cmsSigDateTimeType
+ *     DeviceSettingsType = cmsSigDeviceSettingsType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigDictType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 242, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DictType, __pyx_t_4) < 0) __PYX_ERR(3, 242, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":243
+ *     DataType = cmsSigDataType
+ *     DictType = cmsSigDictType
+ *     DateTimeType = cmsSigDateTimeType             # <<<<<<<<<<<<<<
+ *     DeviceSettingsType = cmsSigDeviceSettingsType
+ *     Lut16Type = cmsSigLut16Type
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigDateTimeType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 243, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DateTimeType, __pyx_t_4) < 0) __PYX_ERR(3, 243, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":244
+ *     DictType = cmsSigDictType
+ *     DateTimeType = cmsSigDateTimeType
+ *     DeviceSettingsType = cmsSigDeviceSettingsType             # <<<<<<<<<<<<<<
+ *     Lut16Type = cmsSigLut16Type
+ *     Lut8Type = cmsSigLut8Type
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigDeviceSettingsType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 244, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DeviceSettingsType, __pyx_t_4) < 0) __PYX_ERR(3, 244, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":245
+ *     DateTimeType = cmsSigDateTimeType
+ *     DeviceSettingsType = cmsSigDeviceSettingsType
+ *     Lut16Type = cmsSigLut16Type             # <<<<<<<<<<<<<<
+ *     Lut8Type = cmsSigLut8Type
+ *     LutAtoBType = cmsSigLutAtoBType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigLut16Type); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 245, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lut16Type, __pyx_t_4) < 0) __PYX_ERR(3, 245, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":246
+ *     DeviceSettingsType = cmsSigDeviceSettingsType
+ *     Lut16Type = cmsSigLut16Type
+ *     Lut8Type = cmsSigLut8Type             # <<<<<<<<<<<<<<
+ *     LutAtoBType = cmsSigLutAtoBType
+ *     LutBtoAType = cmsSigLutBtoAType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigLut8Type); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 246, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lut8Type, __pyx_t_4) < 0) __PYX_ERR(3, 246, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":247
+ *     Lut16Type = cmsSigLut16Type
+ *     Lut8Type = cmsSigLut8Type
+ *     LutAtoBType = cmsSigLutAtoBType             # <<<<<<<<<<<<<<
+ *     LutBtoAType = cmsSigLutBtoAType
+ *     MeasurementType = cmsSigMeasurementType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigLutAtoBType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 247, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LutAtoBType, __pyx_t_4) < 0) __PYX_ERR(3, 247, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":248
+ *     Lut8Type = cmsSigLut8Type
+ *     LutAtoBType = cmsSigLutAtoBType
+ *     LutBtoAType = cmsSigLutBtoAType             # <<<<<<<<<<<<<<
+ *     MeasurementType = cmsSigMeasurementType
+ *     MultiLocalizedUnicodeType = cmsSigMultiLocalizedUnicodeType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigLutBtoAType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 248, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LutBtoAType, __pyx_t_4) < 0) __PYX_ERR(3, 248, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":249
+ *     LutAtoBType = cmsSigLutAtoBType
+ *     LutBtoAType = cmsSigLutBtoAType
+ *     MeasurementType = cmsSigMeasurementType             # <<<<<<<<<<<<<<
+ *     MultiLocalizedUnicodeType = cmsSigMultiLocalizedUnicodeType
+ *     MultiProcessElementType = cmsSigMultiProcessElementType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigMeasurementType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 249, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MeasurementType, __pyx_t_4) < 0) __PYX_ERR(3, 249, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":250
+ *     LutBtoAType = cmsSigLutBtoAType
+ *     MeasurementType = cmsSigMeasurementType
+ *     MultiLocalizedUnicodeType = cmsSigMultiLocalizedUnicodeType             # <<<<<<<<<<<<<<
+ *     MultiProcessElementType = cmsSigMultiProcessElementType
+ *     NamedColorType = cmsSigNamedColorType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigMultiLocalizedUnicodeType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 250, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MultiLocalizedUnicodeType, __pyx_t_4) < 0) __PYX_ERR(3, 250, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":251
+ *     MeasurementType = cmsSigMeasurementType
+ *     MultiLocalizedUnicodeType = cmsSigMultiLocalizedUnicodeType
+ *     MultiProcessElementType = cmsSigMultiProcessElementType             # <<<<<<<<<<<<<<
+ *     NamedColorType = cmsSigNamedColorType
+ *     NamedColor2Type = cmsSigNamedColor2Type
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigMultiProcessElementType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 251, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MultiProcessElementType, __pyx_t_4) < 0) __PYX_ERR(3, 251, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":252
+ *     MultiLocalizedUnicodeType = cmsSigMultiLocalizedUnicodeType
+ *     MultiProcessElementType = cmsSigMultiProcessElementType
+ *     NamedColorType = cmsSigNamedColorType             # <<<<<<<<<<<<<<
+ *     NamedColor2Type = cmsSigNamedColor2Type
+ *     ParametricCurveType = cmsSigParametricCurveType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigNamedColorType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 252, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedColorType, __pyx_t_4) < 0) __PYX_ERR(3, 252, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":253
+ *     MultiProcessElementType = cmsSigMultiProcessElementType
+ *     NamedColorType = cmsSigNamedColorType
+ *     NamedColor2Type = cmsSigNamedColor2Type             # <<<<<<<<<<<<<<
+ *     ParametricCurveType = cmsSigParametricCurveType
+ *     ProfileSequenceDescType = cmsSigProfileSequenceDescType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigNamedColor2Type); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 253, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedColor2Type, __pyx_t_4) < 0) __PYX_ERR(3, 253, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":254
+ *     NamedColorType = cmsSigNamedColorType
+ *     NamedColor2Type = cmsSigNamedColor2Type
+ *     ParametricCurveType = cmsSigParametricCurveType             # <<<<<<<<<<<<<<
+ *     ProfileSequenceDescType = cmsSigProfileSequenceDescType
+ *     ProfileSequenceIdType = cmsSigProfileSequenceIdType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigParametricCurveType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 254, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ParametricCurveType, __pyx_t_4) < 0) __PYX_ERR(3, 254, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":255
+ *     NamedColor2Type = cmsSigNamedColor2Type
+ *     ParametricCurveType = cmsSigParametricCurveType
+ *     ProfileSequenceDescType = cmsSigProfileSequenceDescType             # <<<<<<<<<<<<<<
+ *     ProfileSequenceIdType = cmsSigProfileSequenceIdType
+ *     ResponseCurveSet16Type = cmsSigResponseCurveSet16Type
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigProfileSequenceDescType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 255, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileSequenceDescType, __pyx_t_4) < 0) __PYX_ERR(3, 255, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":256
+ *     ParametricCurveType = cmsSigParametricCurveType
+ *     ProfileSequenceDescType = cmsSigProfileSequenceDescType
+ *     ProfileSequenceIdType = cmsSigProfileSequenceIdType             # <<<<<<<<<<<<<<
+ *     ResponseCurveSet16Type = cmsSigResponseCurveSet16Type
+ *     S15Fixed16ArrayType = cmsSigS15Fixed16ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigProfileSequenceIdType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileSequenceIdType, __pyx_t_4) < 0) __PYX_ERR(3, 256, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":257
+ *     ProfileSequenceDescType = cmsSigProfileSequenceDescType
+ *     ProfileSequenceIdType = cmsSigProfileSequenceIdType
+ *     ResponseCurveSet16Type = cmsSigResponseCurveSet16Type             # <<<<<<<<<<<<<<
+ *     S15Fixed16ArrayType = cmsSigS15Fixed16ArrayType
+ *     ScreeningType = cmsSigScreeningType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigResponseCurveSet16Type); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 257, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ResponseCurveSet16Type, __pyx_t_4) < 0) __PYX_ERR(3, 257, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":258
+ *     ProfileSequenceIdType = cmsSigProfileSequenceIdType
+ *     ResponseCurveSet16Type = cmsSigResponseCurveSet16Type
+ *     S15Fixed16ArrayType = cmsSigS15Fixed16ArrayType             # <<<<<<<<<<<<<<
+ *     ScreeningType = cmsSigScreeningType
+ *     SignatureType = cmsSigSignatureType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigS15Fixed16ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 258, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_S15Fixed16ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 258, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":259
+ *     ResponseCurveSet16Type = cmsSigResponseCurveSet16Type
+ *     S15Fixed16ArrayType = cmsSigS15Fixed16ArrayType
+ *     ScreeningType = cmsSigScreeningType             # <<<<<<<<<<<<<<
+ *     SignatureType = cmsSigSignatureType
+ *     TextType = cmsSigTextType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigScreeningType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 259, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ScreeningType, __pyx_t_4) < 0) __PYX_ERR(3, 259, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":260
+ *     S15Fixed16ArrayType = cmsSigS15Fixed16ArrayType
+ *     ScreeningType = cmsSigScreeningType
+ *     SignatureType = cmsSigSignatureType             # <<<<<<<<<<<<<<
+ *     TextType = cmsSigTextType
+ *     TextDescriptionType = cmsSigTextDescriptionType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigSignatureType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 260, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_SignatureType, __pyx_t_4) < 0) __PYX_ERR(3, 260, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":261
+ *     ScreeningType = cmsSigScreeningType
+ *     SignatureType = cmsSigSignatureType
+ *     TextType = cmsSigTextType             # <<<<<<<<<<<<<<
+ *     TextDescriptionType = cmsSigTextDescriptionType
+ *     U16Fixed16ArrayType = cmsSigU16Fixed16ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigTextType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 261, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_TextType, __pyx_t_4) < 0) __PYX_ERR(3, 261, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":262
+ *     SignatureType = cmsSigSignatureType
+ *     TextType = cmsSigTextType
+ *     TextDescriptionType = cmsSigTextDescriptionType             # <<<<<<<<<<<<<<
+ *     U16Fixed16ArrayType = cmsSigU16Fixed16ArrayType
+ *     UcrBgType = cmsSigUcrBgType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigTextDescriptionType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 262, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_TextDescriptionType, __pyx_t_4) < 0) __PYX_ERR(3, 262, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":263
+ *     TextType = cmsSigTextType
+ *     TextDescriptionType = cmsSigTextDescriptionType
+ *     U16Fixed16ArrayType = cmsSigU16Fixed16ArrayType             # <<<<<<<<<<<<<<
+ *     UcrBgType = cmsSigUcrBgType
+ *     UInt16ArrayType = cmsSigUInt16ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigU16Fixed16ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 263, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_U16Fixed16ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 263, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":264
+ *     TextDescriptionType = cmsSigTextDescriptionType
+ *     U16Fixed16ArrayType = cmsSigU16Fixed16ArrayType
+ *     UcrBgType = cmsSigUcrBgType             # <<<<<<<<<<<<<<
+ *     UInt16ArrayType = cmsSigUInt16ArrayType
+ *     UInt32ArrayType = cmsSigUInt32ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigUcrBgType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 264, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UcrBgType, __pyx_t_4) < 0) __PYX_ERR(3, 264, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":265
+ *     U16Fixed16ArrayType = cmsSigU16Fixed16ArrayType
+ *     UcrBgType = cmsSigUcrBgType
+ *     UInt16ArrayType = cmsSigUInt16ArrayType             # <<<<<<<<<<<<<<
+ *     UInt32ArrayType = cmsSigUInt32ArrayType
+ *     UInt64ArrayType = cmsSigUInt64ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigUInt16ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UInt16ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 265, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":266
+ *     UcrBgType = cmsSigUcrBgType
+ *     UInt16ArrayType = cmsSigUInt16ArrayType
+ *     UInt32ArrayType = cmsSigUInt32ArrayType             # <<<<<<<<<<<<<<
+ *     UInt64ArrayType = cmsSigUInt64ArrayType
+ *     UInt8ArrayType = cmsSigUInt8ArrayType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigUInt32ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 266, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UInt32ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 266, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":267
+ *     UInt16ArrayType = cmsSigUInt16ArrayType
+ *     UInt32ArrayType = cmsSigUInt32ArrayType
+ *     UInt64ArrayType = cmsSigUInt64ArrayType             # <<<<<<<<<<<<<<
+ *     UInt8ArrayType = cmsSigUInt8ArrayType
+ *     VcgtType = cmsSigVcgtType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigUInt64ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 267, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UInt64ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 267, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":268
+ *     UInt32ArrayType = cmsSigUInt32ArrayType
+ *     UInt64ArrayType = cmsSigUInt64ArrayType
+ *     UInt8ArrayType = cmsSigUInt8ArrayType             # <<<<<<<<<<<<<<
+ *     VcgtType = cmsSigVcgtType
+ *     ViewingConditionsType = cmsSigViewingConditionsType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigUInt8ArrayType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UInt8ArrayType, __pyx_t_4) < 0) __PYX_ERR(3, 268, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":269
+ *     UInt64ArrayType = cmsSigUInt64ArrayType
+ *     UInt8ArrayType = cmsSigUInt8ArrayType
+ *     VcgtType = cmsSigVcgtType             # <<<<<<<<<<<<<<
+ *     ViewingConditionsType = cmsSigViewingConditionsType
+ *     XYZType = cmsSigXYZType
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigVcgtType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_VcgtType, __pyx_t_4) < 0) __PYX_ERR(3, 269, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":270
+ *     UInt8ArrayType = cmsSigUInt8ArrayType
+ *     VcgtType = cmsSigVcgtType
+ *     ViewingConditionsType = cmsSigViewingConditionsType             # <<<<<<<<<<<<<<
+ *     XYZType = cmsSigXYZType
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigViewingConditionsType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 270, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ViewingConditionsType, __pyx_t_4) < 0) __PYX_ERR(3, 270, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":271
+ *     VcgtType = cmsSigVcgtType
+ *     ViewingConditionsType = cmsSigViewingConditionsType
+ *     XYZType = cmsSigXYZType             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagTypeSignature(cmsSigXYZType); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 271, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZType, __pyx_t_4) < 0) __PYX_ERR(3, 271, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":232
+ *     lcmsSignature = c_lcmsSignature
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class TagTypeSignature(TagEnum):
+ *     """Base ICC type definitions.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":233
+ * 
+ * @unique
+ * class TagTypeSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Base ICC type definitions.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TagTypeSignature, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 233, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagTypeSignature, __pyx_t_4) < 0) __PYX_ERR(3, 233, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":275
+ * 
+ * @unique
+ * class TagSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Base ICC tag definitions.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_TagSignature, __pyx_n_s_TagSignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_Base_ICC_tag_definitions); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":278
+ *     """Base ICC tag definitions.
+ *     """
+ *     AToB0Tag = cmsSigAToB0Tag             # <<<<<<<<<<<<<<
+ *     AToB1Tag = cmsSigAToB1Tag
+ *     AToB2Tag = cmsSigAToB2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigAToB0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 278, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_AToB0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 278, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":279
+ *     """
+ *     AToB0Tag = cmsSigAToB0Tag
+ *     AToB1Tag = cmsSigAToB1Tag             # <<<<<<<<<<<<<<
+ *     AToB2Tag = cmsSigAToB2Tag
+ *     BlueColorantTag = cmsSigBlueColorantTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigAToB1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 279, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_AToB1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 279, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":280
+ *     AToB0Tag = cmsSigAToB0Tag
+ *     AToB1Tag = cmsSigAToB1Tag
+ *     AToB2Tag = cmsSigAToB2Tag             # <<<<<<<<<<<<<<
+ *     BlueColorantTag = cmsSigBlueColorantTag
+ *     BlueMatrixColumnTag = cmsSigBlueMatrixColumnTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigAToB2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 280, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_AToB2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 280, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":281
+ *     AToB1Tag = cmsSigAToB1Tag
+ *     AToB2Tag = cmsSigAToB2Tag
+ *     BlueColorantTag = cmsSigBlueColorantTag             # <<<<<<<<<<<<<<
+ *     BlueMatrixColumnTag = cmsSigBlueMatrixColumnTag
+ *     BlueTRCTag = cmsSigBlueTRCTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBlueColorantTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 281, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BlueColorantTag, __pyx_t_4) < 0) __PYX_ERR(3, 281, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":282
+ *     AToB2Tag = cmsSigAToB2Tag
+ *     BlueColorantTag = cmsSigBlueColorantTag
+ *     BlueMatrixColumnTag = cmsSigBlueMatrixColumnTag             # <<<<<<<<<<<<<<
+ *     BlueTRCTag = cmsSigBlueTRCTag
+ *     BToA0Tag = cmsSigBToA0Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBlueMatrixColumnTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 282, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BlueMatrixColumnTag, __pyx_t_4) < 0) __PYX_ERR(3, 282, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":283
+ *     BlueColorantTag = cmsSigBlueColorantTag
+ *     BlueMatrixColumnTag = cmsSigBlueMatrixColumnTag
+ *     BlueTRCTag = cmsSigBlueTRCTag             # <<<<<<<<<<<<<<
+ *     BToA0Tag = cmsSigBToA0Tag
+ *     BToA1Tag = cmsSigBToA1Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBlueTRCTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 283, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BlueTRCTag, __pyx_t_4) < 0) __PYX_ERR(3, 283, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":284
+ *     BlueMatrixColumnTag = cmsSigBlueMatrixColumnTag
+ *     BlueTRCTag = cmsSigBlueTRCTag
+ *     BToA0Tag = cmsSigBToA0Tag             # <<<<<<<<<<<<<<
+ *     BToA1Tag = cmsSigBToA1Tag
+ *     BToA2Tag = cmsSigBToA2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToA0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 284, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToA0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 284, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":285
+ *     BlueTRCTag = cmsSigBlueTRCTag
+ *     BToA0Tag = cmsSigBToA0Tag
+ *     BToA1Tag = cmsSigBToA1Tag             # <<<<<<<<<<<<<<
+ *     BToA2Tag = cmsSigBToA2Tag
+ *     CalibrationDateTimeTag = cmsSigCalibrationDateTimeTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToA1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 285, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToA1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 285, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":286
+ *     BToA0Tag = cmsSigBToA0Tag
+ *     BToA1Tag = cmsSigBToA1Tag
+ *     BToA2Tag = cmsSigBToA2Tag             # <<<<<<<<<<<<<<
+ *     CalibrationDateTimeTag = cmsSigCalibrationDateTimeTag
+ *     CharTargetTag = cmsSigCharTargetTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToA2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToA2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 286, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":287
+ *     BToA1Tag = cmsSigBToA1Tag
+ *     BToA2Tag = cmsSigBToA2Tag
+ *     CalibrationDateTimeTag = cmsSigCalibrationDateTimeTag             # <<<<<<<<<<<<<<
+ *     CharTargetTag = cmsSigCharTargetTag
+ *     ChromaticAdaptationTag = cmsSigChromaticAdaptationTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigCalibrationDateTimeTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CalibrationDateTimeTag, __pyx_t_4) < 0) __PYX_ERR(3, 287, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":288
+ *     BToA2Tag = cmsSigBToA2Tag
+ *     CalibrationDateTimeTag = cmsSigCalibrationDateTimeTag
+ *     CharTargetTag = cmsSigCharTargetTag             # <<<<<<<<<<<<<<
+ *     ChromaticAdaptationTag = cmsSigChromaticAdaptationTag
+ *     ChromaticityTag = cmsSigChromaticityTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigCharTargetTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CharTargetTag, __pyx_t_4) < 0) __PYX_ERR(3, 288, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":289
+ *     CalibrationDateTimeTag = cmsSigCalibrationDateTimeTag
+ *     CharTargetTag = cmsSigCharTargetTag
+ *     ChromaticAdaptationTag = cmsSigChromaticAdaptationTag             # <<<<<<<<<<<<<<
+ *     ChromaticityTag = cmsSigChromaticityTag
+ *     ColorantOrderTag = cmsSigColorantOrderTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigChromaticAdaptationTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 289, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ChromaticAdaptationTag, __pyx_t_4) < 0) __PYX_ERR(3, 289, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":290
+ *     CharTargetTag = cmsSigCharTargetTag
+ *     ChromaticAdaptationTag = cmsSigChromaticAdaptationTag
+ *     ChromaticityTag = cmsSigChromaticityTag             # <<<<<<<<<<<<<<
+ *     ColorantOrderTag = cmsSigColorantOrderTag
+ *     ColorantTableTag = cmsSigColorantTableTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigChromaticityTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 290, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ChromaticityTag, __pyx_t_4) < 0) __PYX_ERR(3, 290, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":291
+ *     ChromaticAdaptationTag = cmsSigChromaticAdaptationTag
+ *     ChromaticityTag = cmsSigChromaticityTag
+ *     ColorantOrderTag = cmsSigColorantOrderTag             # <<<<<<<<<<<<<<
+ *     ColorantTableTag = cmsSigColorantTableTag
+ *     ColorantTableOutTag = cmsSigColorantTableOutTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigColorantOrderTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorantOrderTag, __pyx_t_4) < 0) __PYX_ERR(3, 291, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":292
+ *     ChromaticityTag = cmsSigChromaticityTag
+ *     ColorantOrderTag = cmsSigColorantOrderTag
+ *     ColorantTableTag = cmsSigColorantTableTag             # <<<<<<<<<<<<<<
+ *     ColorantTableOutTag = cmsSigColorantTableOutTag
+ *     ColorimetricIntentImageStateTag = cmsSigColorimetricIntentImageStateTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigColorantTableTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorantTableTag, __pyx_t_4) < 0) __PYX_ERR(3, 292, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":293
+ *     ColorantOrderTag = cmsSigColorantOrderTag
+ *     ColorantTableTag = cmsSigColorantTableTag
+ *     ColorantTableOutTag = cmsSigColorantTableOutTag             # <<<<<<<<<<<<<<
+ *     ColorimetricIntentImageStateTag = cmsSigColorimetricIntentImageStateTag
+ *     CopyrightTag = cmsSigCopyrightTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigColorantTableOutTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorantTableOutTag, __pyx_t_4) < 0) __PYX_ERR(3, 293, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":294
+ *     ColorantTableTag = cmsSigColorantTableTag
+ *     ColorantTableOutTag = cmsSigColorantTableOutTag
+ *     ColorimetricIntentImageStateTag = cmsSigColorimetricIntentImageStateTag             # <<<<<<<<<<<<<<
+ *     CopyrightTag = cmsSigCopyrightTag
+ *     CrdInfoTag = cmsSigCrdInfoTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigColorimetricIntentImageStateTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 294, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorimetricIntentImageStateTag, __pyx_t_4) < 0) __PYX_ERR(3, 294, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":295
+ *     ColorantTableOutTag = cmsSigColorantTableOutTag
+ *     ColorimetricIntentImageStateTag = cmsSigColorimetricIntentImageStateTag
+ *     CopyrightTag = cmsSigCopyrightTag             # <<<<<<<<<<<<<<
+ *     CrdInfoTag = cmsSigCrdInfoTag
+ *     DataTag = cmsSigDataTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigCopyrightTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CopyrightTag, __pyx_t_4) < 0) __PYX_ERR(3, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":296
+ *     ColorimetricIntentImageStateTag = cmsSigColorimetricIntentImageStateTag
+ *     CopyrightTag = cmsSigCopyrightTag
+ *     CrdInfoTag = cmsSigCrdInfoTag             # <<<<<<<<<<<<<<
+ *     DataTag = cmsSigDataTag
+ *     DateTimeTag = cmsSigDateTimeTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigCrdInfoTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 296, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CrdInfoTag, __pyx_t_4) < 0) __PYX_ERR(3, 296, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":297
+ *     CopyrightTag = cmsSigCopyrightTag
+ *     CrdInfoTag = cmsSigCrdInfoTag
+ *     DataTag = cmsSigDataTag             # <<<<<<<<<<<<<<
+ *     DateTimeTag = cmsSigDateTimeTag
+ *     DeviceMfgDescTag = cmsSigDeviceMfgDescTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDataTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 297, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DataTag, __pyx_t_4) < 0) __PYX_ERR(3, 297, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":298
+ *     CrdInfoTag = cmsSigCrdInfoTag
+ *     DataTag = cmsSigDataTag
+ *     DateTimeTag = cmsSigDateTimeTag             # <<<<<<<<<<<<<<
+ *     DeviceMfgDescTag = cmsSigDeviceMfgDescTag
+ *     DeviceModelDescTag = cmsSigDeviceModelDescTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDateTimeTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 298, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DateTimeTag, __pyx_t_4) < 0) __PYX_ERR(3, 298, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":299
+ *     DataTag = cmsSigDataTag
+ *     DateTimeTag = cmsSigDateTimeTag
+ *     DeviceMfgDescTag = cmsSigDeviceMfgDescTag             # <<<<<<<<<<<<<<
+ *     DeviceModelDescTag = cmsSigDeviceModelDescTag
+ *     DeviceSettingsTag = cmsSigDeviceSettingsTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDeviceMfgDescTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 299, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DeviceMfgDescTag, __pyx_t_4) < 0) __PYX_ERR(3, 299, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":300
+ *     DateTimeTag = cmsSigDateTimeTag
+ *     DeviceMfgDescTag = cmsSigDeviceMfgDescTag
+ *     DeviceModelDescTag = cmsSigDeviceModelDescTag             # <<<<<<<<<<<<<<
+ *     DeviceSettingsTag = cmsSigDeviceSettingsTag
+ *     DToB0Tag = cmsSigDToB0Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDeviceModelDescTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 300, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DeviceModelDescTag, __pyx_t_4) < 0) __PYX_ERR(3, 300, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":301
+ *     DeviceMfgDescTag = cmsSigDeviceMfgDescTag
+ *     DeviceModelDescTag = cmsSigDeviceModelDescTag
+ *     DeviceSettingsTag = cmsSigDeviceSettingsTag             # <<<<<<<<<<<<<<
+ *     DToB0Tag = cmsSigDToB0Tag
+ *     DToB1Tag = cmsSigDToB1Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDeviceSettingsTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 301, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DeviceSettingsTag, __pyx_t_4) < 0) __PYX_ERR(3, 301, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":302
+ *     DeviceModelDescTag = cmsSigDeviceModelDescTag
+ *     DeviceSettingsTag = cmsSigDeviceSettingsTag
+ *     DToB0Tag = cmsSigDToB0Tag             # <<<<<<<<<<<<<<
+ *     DToB1Tag = cmsSigDToB1Tag
+ *     DToB2Tag = cmsSigDToB2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDToB0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 302, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DToB0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 302, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":303
+ *     DeviceSettingsTag = cmsSigDeviceSettingsTag
+ *     DToB0Tag = cmsSigDToB0Tag
+ *     DToB1Tag = cmsSigDToB1Tag             # <<<<<<<<<<<<<<
+ *     DToB2Tag = cmsSigDToB2Tag
+ *     DToB3Tag = cmsSigDToB3Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDToB1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 303, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DToB1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 303, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":304
+ *     DToB0Tag = cmsSigDToB0Tag
+ *     DToB1Tag = cmsSigDToB1Tag
+ *     DToB2Tag = cmsSigDToB2Tag             # <<<<<<<<<<<<<<
+ *     DToB3Tag = cmsSigDToB3Tag
+ *     BToD0Tag = cmsSigBToD0Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDToB2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 304, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DToB2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 304, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":305
+ *     DToB1Tag = cmsSigDToB1Tag
+ *     DToB2Tag = cmsSigDToB2Tag
+ *     DToB3Tag = cmsSigDToB3Tag             # <<<<<<<<<<<<<<
+ *     BToD0Tag = cmsSigBToD0Tag
+ *     BToD1Tag = cmsSigBToD1Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigDToB3Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 305, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DToB3Tag, __pyx_t_4) < 0) __PYX_ERR(3, 305, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":306
+ *     DToB2Tag = cmsSigDToB2Tag
+ *     DToB3Tag = cmsSigDToB3Tag
+ *     BToD0Tag = cmsSigBToD0Tag             # <<<<<<<<<<<<<<
+ *     BToD1Tag = cmsSigBToD1Tag
+ *     BToD2Tag = cmsSigBToD2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToD0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 306, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToD0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 306, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":307
+ *     DToB3Tag = cmsSigDToB3Tag
+ *     BToD0Tag = cmsSigBToD0Tag
+ *     BToD1Tag = cmsSigBToD1Tag             # <<<<<<<<<<<<<<
+ *     BToD2Tag = cmsSigBToD2Tag
+ *     BToD3Tag = cmsSigBToD3Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToD1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 307, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToD1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 307, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":308
+ *     BToD0Tag = cmsSigBToD0Tag
+ *     BToD1Tag = cmsSigBToD1Tag
+ *     BToD2Tag = cmsSigBToD2Tag             # <<<<<<<<<<<<<<
+ *     BToD3Tag = cmsSigBToD3Tag
+ *     GamutTag = cmsSigGamutTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToD2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 308, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToD2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 308, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":309
+ *     BToD1Tag = cmsSigBToD1Tag
+ *     BToD2Tag = cmsSigBToD2Tag
+ *     BToD3Tag = cmsSigBToD3Tag             # <<<<<<<<<<<<<<
+ *     GamutTag = cmsSigGamutTag
+ *     GrayTRCTag = cmsSigGrayTRCTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigBToD3Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 309, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_BToD3Tag, __pyx_t_4) < 0) __PYX_ERR(3, 309, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":310
+ *     BToD2Tag = cmsSigBToD2Tag
+ *     BToD3Tag = cmsSigBToD3Tag
+ *     GamutTag = cmsSigGamutTag             # <<<<<<<<<<<<<<
+ *     GrayTRCTag = cmsSigGrayTRCTag
+ *     GreenColorantTag = cmsSigGreenColorantTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigGamutTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 310, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GamutTag, __pyx_t_4) < 0) __PYX_ERR(3, 310, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":311
+ *     BToD3Tag = cmsSigBToD3Tag
+ *     GamutTag = cmsSigGamutTag
+ *     GrayTRCTag = cmsSigGrayTRCTag             # <<<<<<<<<<<<<<
+ *     GreenColorantTag = cmsSigGreenColorantTag
+ *     GreenMatrixColumnTag = cmsSigGreenMatrixColumnTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigGrayTRCTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 311, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GrayTRCTag, __pyx_t_4) < 0) __PYX_ERR(3, 311, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":312
+ *     GamutTag = cmsSigGamutTag
+ *     GrayTRCTag = cmsSigGrayTRCTag
+ *     GreenColorantTag = cmsSigGreenColorantTag             # <<<<<<<<<<<<<<
+ *     GreenMatrixColumnTag = cmsSigGreenMatrixColumnTag
+ *     GreenTRCTag = cmsSigGreenTRCTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigGreenColorantTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 312, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GreenColorantTag, __pyx_t_4) < 0) __PYX_ERR(3, 312, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":313
+ *     GrayTRCTag = cmsSigGrayTRCTag
+ *     GreenColorantTag = cmsSigGreenColorantTag
+ *     GreenMatrixColumnTag = cmsSigGreenMatrixColumnTag             # <<<<<<<<<<<<<<
+ *     GreenTRCTag = cmsSigGreenTRCTag
+ *     LuminanceTag = cmsSigLuminanceTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigGreenMatrixColumnTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 313, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GreenMatrixColumnTag, __pyx_t_4) < 0) __PYX_ERR(3, 313, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":314
+ *     GreenColorantTag = cmsSigGreenColorantTag
+ *     GreenMatrixColumnTag = cmsSigGreenMatrixColumnTag
+ *     GreenTRCTag = cmsSigGreenTRCTag             # <<<<<<<<<<<<<<
+ *     LuminanceTag = cmsSigLuminanceTag
+ *     MeasurementTag = cmsSigMeasurementTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigGreenTRCTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 314, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GreenTRCTag, __pyx_t_4) < 0) __PYX_ERR(3, 314, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":315
+ *     GreenMatrixColumnTag = cmsSigGreenMatrixColumnTag
+ *     GreenTRCTag = cmsSigGreenTRCTag
+ *     LuminanceTag = cmsSigLuminanceTag             # <<<<<<<<<<<<<<
+ *     MeasurementTag = cmsSigMeasurementTag
+ *     MediaBlackPointTag = cmsSigMediaBlackPointTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigLuminanceTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 315, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LuminanceTag, __pyx_t_4) < 0) __PYX_ERR(3, 315, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":316
+ *     GreenTRCTag = cmsSigGreenTRCTag
+ *     LuminanceTag = cmsSigLuminanceTag
+ *     MeasurementTag = cmsSigMeasurementTag             # <<<<<<<<<<<<<<
+ *     MediaBlackPointTag = cmsSigMediaBlackPointTag
+ *     MediaWhitePointTag = cmsSigMediaWhitePointTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigMeasurementTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 316, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MeasurementTag, __pyx_t_4) < 0) __PYX_ERR(3, 316, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":317
+ *     LuminanceTag = cmsSigLuminanceTag
+ *     MeasurementTag = cmsSigMeasurementTag
+ *     MediaBlackPointTag = cmsSigMediaBlackPointTag             # <<<<<<<<<<<<<<
+ *     MediaWhitePointTag = cmsSigMediaWhitePointTag
+ *     NamedColorTag = cmsSigNamedColorTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigMediaBlackPointTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MediaBlackPointTag, __pyx_t_4) < 0) __PYX_ERR(3, 317, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":318
+ *     MeasurementTag = cmsSigMeasurementTag
+ *     MediaBlackPointTag = cmsSigMediaBlackPointTag
+ *     MediaWhitePointTag = cmsSigMediaWhitePointTag             # <<<<<<<<<<<<<<
+ *     NamedColorTag = cmsSigNamedColorTag
+ *     NamedColor2Tag = cmsSigNamedColor2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigMediaWhitePointTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MediaWhitePointTag, __pyx_t_4) < 0) __PYX_ERR(3, 318, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":319
+ *     MediaBlackPointTag = cmsSigMediaBlackPointTag
+ *     MediaWhitePointTag = cmsSigMediaWhitePointTag
+ *     NamedColorTag = cmsSigNamedColorTag             # <<<<<<<<<<<<<<
+ *     NamedColor2Tag = cmsSigNamedColor2Tag
+ *     OutputResponseTag = cmsSigOutputResponseTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigNamedColorTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 319, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedColorTag, __pyx_t_4) < 0) __PYX_ERR(3, 319, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":320
+ *     MediaWhitePointTag = cmsSigMediaWhitePointTag
+ *     NamedColorTag = cmsSigNamedColorTag
+ *     NamedColor2Tag = cmsSigNamedColor2Tag             # <<<<<<<<<<<<<<
+ *     OutputResponseTag = cmsSigOutputResponseTag
+ *     PerceptualRenderingIntentGamutTag = cmsSigPerceptualRenderingIntentGamutTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigNamedColor2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 320, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedColor2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 320, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":321
+ *     NamedColorTag = cmsSigNamedColorTag
+ *     NamedColor2Tag = cmsSigNamedColor2Tag
+ *     OutputResponseTag = cmsSigOutputResponseTag             # <<<<<<<<<<<<<<
+ *     PerceptualRenderingIntentGamutTag = cmsSigPerceptualRenderingIntentGamutTag
+ *     Preview0Tag = cmsSigPreview0Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigOutputResponseTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 321, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_OutputResponseTag, __pyx_t_4) < 0) __PYX_ERR(3, 321, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":322
+ *     NamedColor2Tag = cmsSigNamedColor2Tag
+ *     OutputResponseTag = cmsSigOutputResponseTag
+ *     PerceptualRenderingIntentGamutTag = cmsSigPerceptualRenderingIntentGamutTag             # <<<<<<<<<<<<<<
+ *     Preview0Tag = cmsSigPreview0Tag
+ *     Preview1Tag = cmsSigPreview1Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPerceptualRenderingIntentGamutTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 322, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PerceptualRenderingIntentGamutTa, __pyx_t_4) < 0) __PYX_ERR(3, 322, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":323
+ *     OutputResponseTag = cmsSigOutputResponseTag
+ *     PerceptualRenderingIntentGamutTag = cmsSigPerceptualRenderingIntentGamutTag
+ *     Preview0Tag = cmsSigPreview0Tag             # <<<<<<<<<<<<<<
+ *     Preview1Tag = cmsSigPreview1Tag
+ *     Preview2Tag = cmsSigPreview2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPreview0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 323, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Preview0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 323, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":324
+ *     PerceptualRenderingIntentGamutTag = cmsSigPerceptualRenderingIntentGamutTag
+ *     Preview0Tag = cmsSigPreview0Tag
+ *     Preview1Tag = cmsSigPreview1Tag             # <<<<<<<<<<<<<<
+ *     Preview2Tag = cmsSigPreview2Tag
+ *     ProfileDescriptionTag = cmsSigProfileDescriptionTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPreview1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 324, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Preview1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 324, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":325
+ *     Preview0Tag = cmsSigPreview0Tag
+ *     Preview1Tag = cmsSigPreview1Tag
+ *     Preview2Tag = cmsSigPreview2Tag             # <<<<<<<<<<<<<<
+ *     ProfileDescriptionTag = cmsSigProfileDescriptionTag
+ *     ProfileDescriptionMLTag = cmsSigProfileDescriptionMLTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPreview2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 325, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Preview2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 325, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":326
+ *     Preview1Tag = cmsSigPreview1Tag
+ *     Preview2Tag = cmsSigPreview2Tag
+ *     ProfileDescriptionTag = cmsSigProfileDescriptionTag             # <<<<<<<<<<<<<<
+ *     ProfileDescriptionMLTag = cmsSigProfileDescriptionMLTag
+ *     ProfileSequenceDescTag = cmsSigProfileSequenceDescTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigProfileDescriptionTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 326, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileDescriptionTag, __pyx_t_4) < 0) __PYX_ERR(3, 326, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":327
+ *     Preview2Tag = cmsSigPreview2Tag
+ *     ProfileDescriptionTag = cmsSigProfileDescriptionTag
+ *     ProfileDescriptionMLTag = cmsSigProfileDescriptionMLTag             # <<<<<<<<<<<<<<
+ *     ProfileSequenceDescTag = cmsSigProfileSequenceDescTag
+ *     ProfileSequenceIdTag = cmsSigProfileSequenceIdTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigProfileDescriptionMLTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 327, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileDescriptionMLTag, __pyx_t_4) < 0) __PYX_ERR(3, 327, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":328
+ *     ProfileDescriptionTag = cmsSigProfileDescriptionTag
+ *     ProfileDescriptionMLTag = cmsSigProfileDescriptionMLTag
+ *     ProfileSequenceDescTag = cmsSigProfileSequenceDescTag             # <<<<<<<<<<<<<<
+ *     ProfileSequenceIdTag = cmsSigProfileSequenceIdTag
+ *     Ps2CRD0Tag = cmsSigPs2CRD0Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigProfileSequenceDescTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 328, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileSequenceDescTag, __pyx_t_4) < 0) __PYX_ERR(3, 328, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":329
+ *     ProfileDescriptionMLTag = cmsSigProfileDescriptionMLTag
+ *     ProfileSequenceDescTag = cmsSigProfileSequenceDescTag
+ *     ProfileSequenceIdTag = cmsSigProfileSequenceIdTag             # <<<<<<<<<<<<<<
+ *     Ps2CRD0Tag = cmsSigPs2CRD0Tag
+ *     Ps2CRD1Tag = cmsSigPs2CRD1Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigProfileSequenceIdTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 329, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProfileSequenceIdTag, __pyx_t_4) < 0) __PYX_ERR(3, 329, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":330
+ *     ProfileSequenceDescTag = cmsSigProfileSequenceDescTag
+ *     ProfileSequenceIdTag = cmsSigProfileSequenceIdTag
+ *     Ps2CRD0Tag = cmsSigPs2CRD0Tag             # <<<<<<<<<<<<<<
+ *     Ps2CRD1Tag = cmsSigPs2CRD1Tag
+ *     Ps2CRD2Tag = cmsSigPs2CRD2Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2CRD0Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 330, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2CRD0Tag, __pyx_t_4) < 0) __PYX_ERR(3, 330, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":331
+ *     ProfileSequenceIdTag = cmsSigProfileSequenceIdTag
+ *     Ps2CRD0Tag = cmsSigPs2CRD0Tag
+ *     Ps2CRD1Tag = cmsSigPs2CRD1Tag             # <<<<<<<<<<<<<<
+ *     Ps2CRD2Tag = cmsSigPs2CRD2Tag
+ *     Ps2CRD3Tag = cmsSigPs2CRD3Tag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2CRD1Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 331, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2CRD1Tag, __pyx_t_4) < 0) __PYX_ERR(3, 331, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":332
+ *     Ps2CRD0Tag = cmsSigPs2CRD0Tag
+ *     Ps2CRD1Tag = cmsSigPs2CRD1Tag
+ *     Ps2CRD2Tag = cmsSigPs2CRD2Tag             # <<<<<<<<<<<<<<
+ *     Ps2CRD3Tag = cmsSigPs2CRD3Tag
+ *     Ps2CSATag = cmsSigPs2CSATag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2CRD2Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2CRD2Tag, __pyx_t_4) < 0) __PYX_ERR(3, 332, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":333
+ *     Ps2CRD1Tag = cmsSigPs2CRD1Tag
+ *     Ps2CRD2Tag = cmsSigPs2CRD2Tag
+ *     Ps2CRD3Tag = cmsSigPs2CRD3Tag             # <<<<<<<<<<<<<<
+ *     Ps2CSATag = cmsSigPs2CSATag
+ *     Ps2RenderingIntentTag = cmsSigPs2RenderingIntentTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2CRD3Tag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 333, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2CRD3Tag, __pyx_t_4) < 0) __PYX_ERR(3, 333, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":334
+ *     Ps2CRD2Tag = cmsSigPs2CRD2Tag
+ *     Ps2CRD3Tag = cmsSigPs2CRD3Tag
+ *     Ps2CSATag = cmsSigPs2CSATag             # <<<<<<<<<<<<<<
+ *     Ps2RenderingIntentTag = cmsSigPs2RenderingIntentTag
+ *     RedColorantTag = cmsSigRedColorantTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2CSATag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 334, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2CSATag, __pyx_t_4) < 0) __PYX_ERR(3, 334, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":335
+ *     Ps2CRD3Tag = cmsSigPs2CRD3Tag
+ *     Ps2CSATag = cmsSigPs2CSATag
+ *     Ps2RenderingIntentTag = cmsSigPs2RenderingIntentTag             # <<<<<<<<<<<<<<
+ *     RedColorantTag = cmsSigRedColorantTag
+ *     RedMatrixColumnTag = cmsSigRedMatrixColumnTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigPs2RenderingIntentTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 335, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Ps2RenderingIntentTag, __pyx_t_4) < 0) __PYX_ERR(3, 335, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":336
+ *     Ps2CSATag = cmsSigPs2CSATag
+ *     Ps2RenderingIntentTag = cmsSigPs2RenderingIntentTag
+ *     RedColorantTag = cmsSigRedColorantTag             # <<<<<<<<<<<<<<
+ *     RedMatrixColumnTag = cmsSigRedMatrixColumnTag
+ *     RedTRCTag = cmsSigRedTRCTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigRedColorantTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 336, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RedColorantTag, __pyx_t_4) < 0) __PYX_ERR(3, 336, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":337
+ *     Ps2RenderingIntentTag = cmsSigPs2RenderingIntentTag
+ *     RedColorantTag = cmsSigRedColorantTag
+ *     RedMatrixColumnTag = cmsSigRedMatrixColumnTag             # <<<<<<<<<<<<<<
+ *     RedTRCTag = cmsSigRedTRCTag
+ *     SaturationRenderingIntentGamutTag = cmsSigSaturationRenderingIntentGamutTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigRedMatrixColumnTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 337, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RedMatrixColumnTag, __pyx_t_4) < 0) __PYX_ERR(3, 337, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":338
+ *     RedColorantTag = cmsSigRedColorantTag
+ *     RedMatrixColumnTag = cmsSigRedMatrixColumnTag
+ *     RedTRCTag = cmsSigRedTRCTag             # <<<<<<<<<<<<<<
+ *     SaturationRenderingIntentGamutTag = cmsSigSaturationRenderingIntentGamutTag
+ *     ScreeningDescTag = cmsSigScreeningDescTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigRedTRCTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 338, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RedTRCTag, __pyx_t_4) < 0) __PYX_ERR(3, 338, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":339
+ *     RedMatrixColumnTag = cmsSigRedMatrixColumnTag
+ *     RedTRCTag = cmsSigRedTRCTag
+ *     SaturationRenderingIntentGamutTag = cmsSigSaturationRenderingIntentGamutTag             # <<<<<<<<<<<<<<
+ *     ScreeningDescTag = cmsSigScreeningDescTag
+ *     ScreeningTag = cmsSigScreeningTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigSaturationRenderingIntentGamutTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 339, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_SaturationRenderingIntentGamutTa, __pyx_t_4) < 0) __PYX_ERR(3, 339, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":340
+ *     RedTRCTag = cmsSigRedTRCTag
+ *     SaturationRenderingIntentGamutTag = cmsSigSaturationRenderingIntentGamutTag
+ *     ScreeningDescTag = cmsSigScreeningDescTag             # <<<<<<<<<<<<<<
+ *     ScreeningTag = cmsSigScreeningTag
+ *     TechnologyTag = cmsSigTechnologyTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigScreeningDescTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 340, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ScreeningDescTag, __pyx_t_4) < 0) __PYX_ERR(3, 340, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":341
+ *     SaturationRenderingIntentGamutTag = cmsSigSaturationRenderingIntentGamutTag
+ *     ScreeningDescTag = cmsSigScreeningDescTag
+ *     ScreeningTag = cmsSigScreeningTag             # <<<<<<<<<<<<<<
+ *     TechnologyTag = cmsSigTechnologyTag
+ *     UcrBgTag = cmsSigUcrBgTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigScreeningTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 341, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ScreeningTag, __pyx_t_4) < 0) __PYX_ERR(3, 341, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":342
+ *     ScreeningDescTag = cmsSigScreeningDescTag
+ *     ScreeningTag = cmsSigScreeningTag
+ *     TechnologyTag = cmsSigTechnologyTag             # <<<<<<<<<<<<<<
+ *     UcrBgTag = cmsSigUcrBgTag
+ *     ViewingCondDescTag = cmsSigViewingCondDescTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigTechnologyTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 342, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_TechnologyTag, __pyx_t_4) < 0) __PYX_ERR(3, 342, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":343
+ *     ScreeningTag = cmsSigScreeningTag
+ *     TechnologyTag = cmsSigTechnologyTag
+ *     UcrBgTag = cmsSigUcrBgTag             # <<<<<<<<<<<<<<
+ *     ViewingCondDescTag = cmsSigViewingCondDescTag
+ *     ViewingConditionsTag = cmsSigViewingConditionsTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigUcrBgTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 343, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UcrBgTag, __pyx_t_4) < 0) __PYX_ERR(3, 343, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":344
+ *     TechnologyTag = cmsSigTechnologyTag
+ *     UcrBgTag = cmsSigUcrBgTag
+ *     ViewingCondDescTag = cmsSigViewingCondDescTag             # <<<<<<<<<<<<<<
+ *     ViewingConditionsTag = cmsSigViewingConditionsTag
+ *     VcgtTag = cmsSigVcgtTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigViewingCondDescTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 344, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ViewingCondDescTag, __pyx_t_4) < 0) __PYX_ERR(3, 344, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":345
+ *     UcrBgTag = cmsSigUcrBgTag
+ *     ViewingCondDescTag = cmsSigViewingCondDescTag
+ *     ViewingConditionsTag = cmsSigViewingConditionsTag             # <<<<<<<<<<<<<<
+ *     VcgtTag = cmsSigVcgtTag
+ *     MetaTag = cmsSigMetaTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigViewingConditionsTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 345, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ViewingConditionsTag, __pyx_t_4) < 0) __PYX_ERR(3, 345, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":346
+ *     ViewingCondDescTag = cmsSigViewingCondDescTag
+ *     ViewingConditionsTag = cmsSigViewingConditionsTag
+ *     VcgtTag = cmsSigVcgtTag             # <<<<<<<<<<<<<<
+ *     MetaTag = cmsSigMetaTag
+ *     ArgyllArtsTag = cmsSigArgyllArtsTag
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigVcgtTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 346, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_VcgtTag, __pyx_t_4) < 0) __PYX_ERR(3, 346, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":347
+ *     ViewingConditionsTag = cmsSigViewingConditionsTag
+ *     VcgtTag = cmsSigVcgtTag
+ *     MetaTag = cmsSigMetaTag             # <<<<<<<<<<<<<<
+ *     ArgyllArtsTag = cmsSigArgyllArtsTag
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigMetaTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 347, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MetaTag, __pyx_t_4) < 0) __PYX_ERR(3, 347, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":348
+ *     VcgtTag = cmsSigVcgtTag
+ *     MetaTag = cmsSigMetaTag
+ *     ArgyllArtsTag = cmsSigArgyllArtsTag             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTagSignature(cmsSigArgyllArtsTag); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 348, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ArgyllArtsTag, __pyx_t_4) < 0) __PYX_ERR(3, 348, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":274
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class TagSignature(TagEnum):
+ *     """Base ICC tag definitions.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 274, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":275
+ * 
+ * @unique
+ * class TagSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Base ICC tag definitions.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_TagSignature, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 274, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagSignature, __pyx_t_4) < 0) __PYX_ERR(3, 275, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":352
+ * 
+ * @unique
+ * class TechnologySignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Technology tag.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TechnologySignature, __pyx_n_s_TechnologySignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_ICC_Technology_tag); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":355
+ *     """ICC Technology tag.
+ *     """
+ *     DigitalCamera = cmsSigDigitalCamera             # <<<<<<<<<<<<<<
+ *     FilmScanner = cmsSigFilmScanner
+ *     ReflectiveScanner = cmsSigReflectiveScanner
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigDigitalCamera); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 355, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DigitalCamera, __pyx_t_4) < 0) __PYX_ERR(3, 355, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":356
+ *     """
+ *     DigitalCamera = cmsSigDigitalCamera
+ *     FilmScanner = cmsSigFilmScanner             # <<<<<<<<<<<<<<
+ *     ReflectiveScanner = cmsSigReflectiveScanner
+ *     InkJetPrinter = cmsSigInkJetPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigFilmScanner); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 356, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_FilmScanner, __pyx_t_4) < 0) __PYX_ERR(3, 356, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":357
+ *     DigitalCamera = cmsSigDigitalCamera
+ *     FilmScanner = cmsSigFilmScanner
+ *     ReflectiveScanner = cmsSigReflectiveScanner             # <<<<<<<<<<<<<<
+ *     InkJetPrinter = cmsSigInkJetPrinter
+ *     ThermalWaxPrinter = cmsSigThermalWaxPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigReflectiveScanner); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 357, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ReflectiveScanner, __pyx_t_4) < 0) __PYX_ERR(3, 357, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":358
+ *     FilmScanner = cmsSigFilmScanner
+ *     ReflectiveScanner = cmsSigReflectiveScanner
+ *     InkJetPrinter = cmsSigInkJetPrinter             # <<<<<<<<<<<<<<
+ *     ThermalWaxPrinter = cmsSigThermalWaxPrinter
+ *     ElectrophotographicPrinter = cmsSigElectrophotographicPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigInkJetPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 358, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_InkJetPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 358, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":359
+ *     ReflectiveScanner = cmsSigReflectiveScanner
+ *     InkJetPrinter = cmsSigInkJetPrinter
+ *     ThermalWaxPrinter = cmsSigThermalWaxPrinter             # <<<<<<<<<<<<<<
+ *     ElectrophotographicPrinter = cmsSigElectrophotographicPrinter
+ *     ElectrostaticPrinter = cmsSigElectrostaticPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigThermalWaxPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 359, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ThermalWaxPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 359, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":360
+ *     InkJetPrinter = cmsSigInkJetPrinter
+ *     ThermalWaxPrinter = cmsSigThermalWaxPrinter
+ *     ElectrophotographicPrinter = cmsSigElectrophotographicPrinter             # <<<<<<<<<<<<<<
+ *     ElectrostaticPrinter = cmsSigElectrostaticPrinter
+ *     DyeSublimationPrinter = cmsSigDyeSublimationPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigElectrophotographicPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 360, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ElectrophotographicPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 360, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":361
+ *     ThermalWaxPrinter = cmsSigThermalWaxPrinter
+ *     ElectrophotographicPrinter = cmsSigElectrophotographicPrinter
+ *     ElectrostaticPrinter = cmsSigElectrostaticPrinter             # <<<<<<<<<<<<<<
+ *     DyeSublimationPrinter = cmsSigDyeSublimationPrinter
+ *     PhotographicPaperPrinter = cmsSigPhotographicPaperPrinter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigElectrostaticPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 361, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ElectrostaticPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 361, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":362
+ *     ElectrophotographicPrinter = cmsSigElectrophotographicPrinter
+ *     ElectrostaticPrinter = cmsSigElectrostaticPrinter
+ *     DyeSublimationPrinter = cmsSigDyeSublimationPrinter             # <<<<<<<<<<<<<<
+ *     PhotographicPaperPrinter = cmsSigPhotographicPaperPrinter
+ *     FilmWriter = cmsSigFilmWriter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigDyeSublimationPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 362, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DyeSublimationPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 362, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":363
+ *     ElectrostaticPrinter = cmsSigElectrostaticPrinter
+ *     DyeSublimationPrinter = cmsSigDyeSublimationPrinter
+ *     PhotographicPaperPrinter = cmsSigPhotographicPaperPrinter             # <<<<<<<<<<<<<<
+ *     FilmWriter = cmsSigFilmWriter
+ *     VideoMonitor = cmsSigVideoMonitor
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigPhotographicPaperPrinter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 363, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PhotographicPaperPrinter, __pyx_t_4) < 0) __PYX_ERR(3, 363, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":364
+ *     DyeSublimationPrinter = cmsSigDyeSublimationPrinter
+ *     PhotographicPaperPrinter = cmsSigPhotographicPaperPrinter
+ *     FilmWriter = cmsSigFilmWriter             # <<<<<<<<<<<<<<
+ *     VideoMonitor = cmsSigVideoMonitor
+ *     VideoCamera = cmsSigVideoCamera
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigFilmWriter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 364, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_FilmWriter, __pyx_t_4) < 0) __PYX_ERR(3, 364, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":365
+ *     PhotographicPaperPrinter = cmsSigPhotographicPaperPrinter
+ *     FilmWriter = cmsSigFilmWriter
+ *     VideoMonitor = cmsSigVideoMonitor             # <<<<<<<<<<<<<<
+ *     VideoCamera = cmsSigVideoCamera
+ *     ProjectionTelevision = cmsSigProjectionTelevision
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigVideoMonitor); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 365, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_VideoMonitor, __pyx_t_4) < 0) __PYX_ERR(3, 365, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":366
+ *     FilmWriter = cmsSigFilmWriter
+ *     VideoMonitor = cmsSigVideoMonitor
+ *     VideoCamera = cmsSigVideoCamera             # <<<<<<<<<<<<<<
+ *     ProjectionTelevision = cmsSigProjectionTelevision
+ *     CRTDisplay = cmsSigCRTDisplay
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigVideoCamera); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 366, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_VideoCamera, __pyx_t_4) < 0) __PYX_ERR(3, 366, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":367
+ *     VideoMonitor = cmsSigVideoMonitor
+ *     VideoCamera = cmsSigVideoCamera
+ *     ProjectionTelevision = cmsSigProjectionTelevision             # <<<<<<<<<<<<<<
+ *     CRTDisplay = cmsSigCRTDisplay
+ *     PMDisplay = cmsSigPMDisplay
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigProjectionTelevision); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 367, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ProjectionTelevision, __pyx_t_4) < 0) __PYX_ERR(3, 367, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":368
+ *     VideoCamera = cmsSigVideoCamera
+ *     ProjectionTelevision = cmsSigProjectionTelevision
+ *     CRTDisplay = cmsSigCRTDisplay             # <<<<<<<<<<<<<<
+ *     PMDisplay = cmsSigPMDisplay
+ *     AMDisplay = cmsSigAMDisplay
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigCRTDisplay); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 368, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CRTDisplay, __pyx_t_4) < 0) __PYX_ERR(3, 368, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":369
+ *     ProjectionTelevision = cmsSigProjectionTelevision
+ *     CRTDisplay = cmsSigCRTDisplay
+ *     PMDisplay = cmsSigPMDisplay             # <<<<<<<<<<<<<<
+ *     AMDisplay = cmsSigAMDisplay
+ *     PhotoCD = cmsSigPhotoCD
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigPMDisplay); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 369, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PMDisplay, __pyx_t_4) < 0) __PYX_ERR(3, 369, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":370
+ *     CRTDisplay = cmsSigCRTDisplay
+ *     PMDisplay = cmsSigPMDisplay
+ *     AMDisplay = cmsSigAMDisplay             # <<<<<<<<<<<<<<
+ *     PhotoCD = cmsSigPhotoCD
+ *     PhotoImageSetter = cmsSigPhotoImageSetter
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigAMDisplay); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 370, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_AMDisplay, __pyx_t_4) < 0) __PYX_ERR(3, 370, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":371
+ *     PMDisplay = cmsSigPMDisplay
+ *     AMDisplay = cmsSigAMDisplay
+ *     PhotoCD = cmsSigPhotoCD             # <<<<<<<<<<<<<<
+ *     PhotoImageSetter = cmsSigPhotoImageSetter
+ *     Gravure = cmsSigGravure
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigPhotoCD); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 371, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PhotoCD, __pyx_t_4) < 0) __PYX_ERR(3, 371, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":372
+ *     AMDisplay = cmsSigAMDisplay
+ *     PhotoCD = cmsSigPhotoCD
+ *     PhotoImageSetter = cmsSigPhotoImageSetter             # <<<<<<<<<<<<<<
+ *     Gravure = cmsSigGravure
+ *     OffsetLithography = cmsSigOffsetLithography
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigPhotoImageSetter); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 372, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PhotoImageSetter, __pyx_t_4) < 0) __PYX_ERR(3, 372, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":373
+ *     PhotoCD = cmsSigPhotoCD
+ *     PhotoImageSetter = cmsSigPhotoImageSetter
+ *     Gravure = cmsSigGravure             # <<<<<<<<<<<<<<
+ *     OffsetLithography = cmsSigOffsetLithography
+ *     Silkscreen = cmsSigSilkscreen
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigGravure); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 373, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Gravure, __pyx_t_4) < 0) __PYX_ERR(3, 373, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":374
+ *     PhotoImageSetter = cmsSigPhotoImageSetter
+ *     Gravure = cmsSigGravure
+ *     OffsetLithography = cmsSigOffsetLithography             # <<<<<<<<<<<<<<
+ *     Silkscreen = cmsSigSilkscreen
+ *     Flexography = cmsSigFlexography
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigOffsetLithography); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 374, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_OffsetLithography, __pyx_t_4) < 0) __PYX_ERR(3, 374, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":375
+ *     Gravure = cmsSigGravure
+ *     OffsetLithography = cmsSigOffsetLithography
+ *     Silkscreen = cmsSigSilkscreen             # <<<<<<<<<<<<<<
+ *     Flexography = cmsSigFlexography
+ *     MotionPictureFilmScanner = cmsSigMotionPictureFilmScanner
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigSilkscreen); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 375, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Silkscreen, __pyx_t_4) < 0) __PYX_ERR(3, 375, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":376
+ *     OffsetLithography = cmsSigOffsetLithography
+ *     Silkscreen = cmsSigSilkscreen
+ *     Flexography = cmsSigFlexography             # <<<<<<<<<<<<<<
+ *     MotionPictureFilmScanner = cmsSigMotionPictureFilmScanner
+ *     MotionPictureFilmRecorder = cmsSigMotionPictureFilmRecorder
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigFlexography); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 376, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Flexography, __pyx_t_4) < 0) __PYX_ERR(3, 376, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":377
+ *     Silkscreen = cmsSigSilkscreen
+ *     Flexography = cmsSigFlexography
+ *     MotionPictureFilmScanner = cmsSigMotionPictureFilmScanner             # <<<<<<<<<<<<<<
+ *     MotionPictureFilmRecorder = cmsSigMotionPictureFilmRecorder
+ *     DigitalMotionPictureCamera = cmsSigDigitalMotionPictureCamera
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigMotionPictureFilmScanner); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 377, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MotionPictureFilmScanner, __pyx_t_4) < 0) __PYX_ERR(3, 377, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":378
+ *     Flexography = cmsSigFlexography
+ *     MotionPictureFilmScanner = cmsSigMotionPictureFilmScanner
+ *     MotionPictureFilmRecorder = cmsSigMotionPictureFilmRecorder             # <<<<<<<<<<<<<<
+ *     DigitalMotionPictureCamera = cmsSigDigitalMotionPictureCamera
+ *     DigitalCinemaProjector = cmsSigDigitalCinemaProjector
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigMotionPictureFilmRecorder); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 378, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MotionPictureFilmRecorder, __pyx_t_4) < 0) __PYX_ERR(3, 378, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":379
+ *     MotionPictureFilmScanner = cmsSigMotionPictureFilmScanner
+ *     MotionPictureFilmRecorder = cmsSigMotionPictureFilmRecorder
+ *     DigitalMotionPictureCamera = cmsSigDigitalMotionPictureCamera             # <<<<<<<<<<<<<<
+ *     DigitalCinemaProjector = cmsSigDigitalCinemaProjector
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigDigitalMotionPictureCamera); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 379, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DigitalMotionPictureCamera, __pyx_t_4) < 0) __PYX_ERR(3, 379, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":380
+ *     MotionPictureFilmRecorder = cmsSigMotionPictureFilmRecorder
+ *     DigitalMotionPictureCamera = cmsSigDigitalMotionPictureCamera
+ *     DigitalCinemaProjector = cmsSigDigitalCinemaProjector             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsTechnologySignature(cmsSigDigitalCinemaProjector); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 380, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DigitalCinemaProjector, __pyx_t_4) < 0) __PYX_ERR(3, 380, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":351
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class TechnologySignature(TagEnum):
+ *     """ICC Technology tag.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 351, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":352
+ * 
+ * @unique
+ * class TechnologySignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Technology tag.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TechnologySignature, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 351, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TechnologySignature, __pyx_t_4) < 0) __PYX_ERR(3, 352, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":384
+ * 
+ * @unique
+ * class ColorSpaceSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Color spaces.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorSpaceSignature, __pyx_n_s_ColorSpaceSignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_ICC_Color_spaces); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":387
+ *     """ICC Color spaces.
+ *     """
+ *     XYZData = cmsSigXYZData             # <<<<<<<<<<<<<<
+ *     LabData = cmsSigLabData
+ *     LuvData = cmsSigLuvData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigXYZData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 387, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZData, __pyx_t_4) < 0) __PYX_ERR(3, 387, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":388
+ *     """
+ *     XYZData = cmsSigXYZData
+ *     LabData = cmsSigLabData             # <<<<<<<<<<<<<<
+ *     LuvData = cmsSigLuvData
+ *     YCbCrData = cmsSigYCbCrData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigLabData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 388, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabData, __pyx_t_4) < 0) __PYX_ERR(3, 388, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":389
+ *     XYZData = cmsSigXYZData
+ *     LabData = cmsSigLabData
+ *     LuvData = cmsSigLuvData             # <<<<<<<<<<<<<<
+ *     YCbCrData = cmsSigYCbCrData
+ *     YxyData = cmsSigYxyData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigLuvData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 389, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LuvData, __pyx_t_4) < 0) __PYX_ERR(3, 389, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":390
+ *     LabData = cmsSigLabData
+ *     LuvData = cmsSigLuvData
+ *     YCbCrData = cmsSigYCbCrData             # <<<<<<<<<<<<<<
+ *     YxyData = cmsSigYxyData
+ *     RgbData = cmsSigRgbData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigYCbCrData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 390, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCrData, __pyx_t_4) < 0) __PYX_ERR(3, 390, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":391
+ *     LuvData = cmsSigLuvData
+ *     YCbCrData = cmsSigYCbCrData
+ *     YxyData = cmsSigYxyData             # <<<<<<<<<<<<<<
+ *     RgbData = cmsSigRgbData
+ *     GrayData = cmsSigGrayData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigYxyData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 391, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YxyData, __pyx_t_4) < 0) __PYX_ERR(3, 391, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":392
+ *     YCbCrData = cmsSigYCbCrData
+ *     YxyData = cmsSigYxyData
+ *     RgbData = cmsSigRgbData             # <<<<<<<<<<<<<<
+ *     GrayData = cmsSigGrayData
+ *     HsvData = cmsSigHsvData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigRgbData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 392, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RgbData, __pyx_t_4) < 0) __PYX_ERR(3, 392, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":393
+ *     YxyData = cmsSigYxyData
+ *     RgbData = cmsSigRgbData
+ *     GrayData = cmsSigGrayData             # <<<<<<<<<<<<<<
+ *     HsvData = cmsSigHsvData
+ *     HlsData = cmsSigHlsData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigGrayData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 393, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GrayData, __pyx_t_4) < 0) __PYX_ERR(3, 393, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":394
+ *     RgbData = cmsSigRgbData
+ *     GrayData = cmsSigGrayData
+ *     HsvData = cmsSigHsvData             # <<<<<<<<<<<<<<
+ *     HlsData = cmsSigHlsData
+ *     CmykData = cmsSigCmykData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigHsvData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 394, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HsvData, __pyx_t_4) < 0) __PYX_ERR(3, 394, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":395
+ *     GrayData = cmsSigGrayData
+ *     HsvData = cmsSigHsvData
+ *     HlsData = cmsSigHlsData             # <<<<<<<<<<<<<<
+ *     CmykData = cmsSigCmykData
+ *     CmyData = cmsSigCmyData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigHlsData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 395, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HlsData, __pyx_t_4) < 0) __PYX_ERR(3, 395, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":396
+ *     HsvData = cmsSigHsvData
+ *     HlsData = cmsSigHlsData
+ *     CmykData = cmsSigCmykData             # <<<<<<<<<<<<<<
+ *     CmyData = cmsSigCmyData
+ *     MCH1Data = cmsSigMCH1Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigCmykData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 396, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CmykData, __pyx_t_4) < 0) __PYX_ERR(3, 396, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":397
+ *     HlsData = cmsSigHlsData
+ *     CmykData = cmsSigCmykData
+ *     CmyData = cmsSigCmyData             # <<<<<<<<<<<<<<
+ *     MCH1Data = cmsSigMCH1Data
+ *     MCH2Data = cmsSigMCH2Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigCmyData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 397, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CmyData, __pyx_t_4) < 0) __PYX_ERR(3, 397, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":398
+ *     CmykData = cmsSigCmykData
+ *     CmyData = cmsSigCmyData
+ *     MCH1Data = cmsSigMCH1Data             # <<<<<<<<<<<<<<
+ *     MCH2Data = cmsSigMCH2Data
+ *     MCH3Data = cmsSigMCH3Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH1Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 398, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH1Data, __pyx_t_4) < 0) __PYX_ERR(3, 398, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":399
+ *     CmyData = cmsSigCmyData
+ *     MCH1Data = cmsSigMCH1Data
+ *     MCH2Data = cmsSigMCH2Data             # <<<<<<<<<<<<<<
+ *     MCH3Data = cmsSigMCH3Data
+ *     MCH4Data = cmsSigMCH4Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH2Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH2Data, __pyx_t_4) < 0) __PYX_ERR(3, 399, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":400
+ *     MCH1Data = cmsSigMCH1Data
+ *     MCH2Data = cmsSigMCH2Data
+ *     MCH3Data = cmsSigMCH3Data             # <<<<<<<<<<<<<<
+ *     MCH4Data = cmsSigMCH4Data
+ *     MCH5Data = cmsSigMCH5Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH3Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 400, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH3Data, __pyx_t_4) < 0) __PYX_ERR(3, 400, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":401
+ *     MCH2Data = cmsSigMCH2Data
+ *     MCH3Data = cmsSigMCH3Data
+ *     MCH4Data = cmsSigMCH4Data             # <<<<<<<<<<<<<<
+ *     MCH5Data = cmsSigMCH5Data
+ *     MCH6Data = cmsSigMCH6Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH4Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 401, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH4Data, __pyx_t_4) < 0) __PYX_ERR(3, 401, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":402
+ *     MCH3Data = cmsSigMCH3Data
+ *     MCH4Data = cmsSigMCH4Data
+ *     MCH5Data = cmsSigMCH5Data             # <<<<<<<<<<<<<<
+ *     MCH6Data = cmsSigMCH6Data
+ *     MCH7Data = cmsSigMCH7Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH5Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 402, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH5Data, __pyx_t_4) < 0) __PYX_ERR(3, 402, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":403
+ *     MCH4Data = cmsSigMCH4Data
+ *     MCH5Data = cmsSigMCH5Data
+ *     MCH6Data = cmsSigMCH6Data             # <<<<<<<<<<<<<<
+ *     MCH7Data = cmsSigMCH7Data
+ *     MCH8Data = cmsSigMCH8Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH6Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 403, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH6Data, __pyx_t_4) < 0) __PYX_ERR(3, 403, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":404
+ *     MCH5Data = cmsSigMCH5Data
+ *     MCH6Data = cmsSigMCH6Data
+ *     MCH7Data = cmsSigMCH7Data             # <<<<<<<<<<<<<<
+ *     MCH8Data = cmsSigMCH8Data
+ *     MCH9Data = cmsSigMCH9Data
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH7Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 404, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH7Data, __pyx_t_4) < 0) __PYX_ERR(3, 404, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":405
+ *     MCH6Data = cmsSigMCH6Data
+ *     MCH7Data = cmsSigMCH7Data
+ *     MCH8Data = cmsSigMCH8Data             # <<<<<<<<<<<<<<
+ *     MCH9Data = cmsSigMCH9Data
+ *     MCHAData = cmsSigMCHAData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH8Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 405, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH8Data, __pyx_t_4) < 0) __PYX_ERR(3, 405, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":406
+ *     MCH7Data = cmsSigMCH7Data
+ *     MCH8Data = cmsSigMCH8Data
+ *     MCH9Data = cmsSigMCH9Data             # <<<<<<<<<<<<<<
+ *     MCHAData = cmsSigMCHAData
+ *     MCHBData = cmsSigMCHBData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCH9Data); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 406, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH9Data, __pyx_t_4) < 0) __PYX_ERR(3, 406, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":407
+ *     MCH8Data = cmsSigMCH8Data
+ *     MCH9Data = cmsSigMCH9Data
+ *     MCHAData = cmsSigMCHAData             # <<<<<<<<<<<<<<
+ *     MCHBData = cmsSigMCHBData
+ *     MCHCData = cmsSigMCHCData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHAData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 407, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHAData, __pyx_t_4) < 0) __PYX_ERR(3, 407, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":408
+ *     MCH9Data = cmsSigMCH9Data
+ *     MCHAData = cmsSigMCHAData
+ *     MCHBData = cmsSigMCHBData             # <<<<<<<<<<<<<<
+ *     MCHCData = cmsSigMCHCData
+ *     MCHDData = cmsSigMCHDData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHBData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 408, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHBData, __pyx_t_4) < 0) __PYX_ERR(3, 408, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":409
+ *     MCHAData = cmsSigMCHAData
+ *     MCHBData = cmsSigMCHBData
+ *     MCHCData = cmsSigMCHCData             # <<<<<<<<<<<<<<
+ *     MCHDData = cmsSigMCHDData
+ *     MCHEData = cmsSigMCHEData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHCData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 409, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHCData, __pyx_t_4) < 0) __PYX_ERR(3, 409, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":410
+ *     MCHBData = cmsSigMCHBData
+ *     MCHCData = cmsSigMCHCData
+ *     MCHDData = cmsSigMCHDData             # <<<<<<<<<<<<<<
+ *     MCHEData = cmsSigMCHEData
+ *     MCHFData = cmsSigMCHFData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHDData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 410, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHDData, __pyx_t_4) < 0) __PYX_ERR(3, 410, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":411
+ *     MCHCData = cmsSigMCHCData
+ *     MCHDData = cmsSigMCHDData
+ *     MCHEData = cmsSigMCHEData             # <<<<<<<<<<<<<<
+ *     MCHFData = cmsSigMCHFData
+ *     NamedData = cmsSigNamedData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHEData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 411, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHEData, __pyx_t_4) < 0) __PYX_ERR(3, 411, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":412
+ *     MCHDData = cmsSigMCHDData
+ *     MCHEData = cmsSigMCHEData
+ *     MCHFData = cmsSigMCHFData             # <<<<<<<<<<<<<<
+ *     NamedData = cmsSigNamedData
+ *     _1colorData = cmsSig1colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigMCHFData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 412, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCHFData, __pyx_t_4) < 0) __PYX_ERR(3, 412, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":413
+ *     MCHEData = cmsSigMCHEData
+ *     MCHFData = cmsSigMCHFData
+ *     NamedData = cmsSigNamedData             # <<<<<<<<<<<<<<
+ *     _1colorData = cmsSig1colorData
+ *     _2colorData = cmsSig2colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigNamedData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 413, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedData, __pyx_t_4) < 0) __PYX_ERR(3, 413, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":414
+ *     MCHFData = cmsSigMCHFData
+ *     NamedData = cmsSigNamedData
+ *     _1colorData = cmsSig1colorData             # <<<<<<<<<<<<<<
+ *     _2colorData = cmsSig2colorData
+ *     _3colorData = cmsSig3colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig1colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 414, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_1colorData, __pyx_t_4) < 0) __PYX_ERR(3, 414, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":415
+ *     NamedData = cmsSigNamedData
+ *     _1colorData = cmsSig1colorData
+ *     _2colorData = cmsSig2colorData             # <<<<<<<<<<<<<<
+ *     _3colorData = cmsSig3colorData
+ *     _4colorData = cmsSig4colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig2colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 415, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_2colorData, __pyx_t_4) < 0) __PYX_ERR(3, 415, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":416
+ *     _1colorData = cmsSig1colorData
+ *     _2colorData = cmsSig2colorData
+ *     _3colorData = cmsSig3colorData             # <<<<<<<<<<<<<<
+ *     _4colorData = cmsSig4colorData
+ *     _5colorData = cmsSig5colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig3colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 416, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_3colorData, __pyx_t_4) < 0) __PYX_ERR(3, 416, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":417
+ *     _2colorData = cmsSig2colorData
+ *     _3colorData = cmsSig3colorData
+ *     _4colorData = cmsSig4colorData             # <<<<<<<<<<<<<<
+ *     _5colorData = cmsSig5colorData
+ *     _6colorData = cmsSig6colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig4colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 417, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_4colorData, __pyx_t_4) < 0) __PYX_ERR(3, 417, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":418
+ *     _3colorData = cmsSig3colorData
+ *     _4colorData = cmsSig4colorData
+ *     _5colorData = cmsSig5colorData             # <<<<<<<<<<<<<<
+ *     _6colorData = cmsSig6colorData
+ *     _7colorData = cmsSig7colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig5colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 418, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_5colorData, __pyx_t_4) < 0) __PYX_ERR(3, 418, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":419
+ *     _4colorData = cmsSig4colorData
+ *     _5colorData = cmsSig5colorData
+ *     _6colorData = cmsSig6colorData             # <<<<<<<<<<<<<<
+ *     _7colorData = cmsSig7colorData
+ *     _8colorData = cmsSig8colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig6colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 419, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_6colorData, __pyx_t_4) < 0) __PYX_ERR(3, 419, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":420
+ *     _5colorData = cmsSig5colorData
+ *     _6colorData = cmsSig6colorData
+ *     _7colorData = cmsSig7colorData             # <<<<<<<<<<<<<<
+ *     _8colorData = cmsSig8colorData
+ *     _9colorData = cmsSig9colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig7colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 420, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_7colorData, __pyx_t_4) < 0) __PYX_ERR(3, 420, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":421
+ *     _6colorData = cmsSig6colorData
+ *     _7colorData = cmsSig7colorData
+ *     _8colorData = cmsSig8colorData             # <<<<<<<<<<<<<<
+ *     _9colorData = cmsSig9colorData
+ *     _10colorData = cmsSig10colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig8colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 421, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_8colorData, __pyx_t_4) < 0) __PYX_ERR(3, 421, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":422
+ *     _7colorData = cmsSig7colorData
+ *     _8colorData = cmsSig8colorData
+ *     _9colorData = cmsSig9colorData             # <<<<<<<<<<<<<<
+ *     _10colorData = cmsSig10colorData
+ *     _11colorData = cmsSig11colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig9colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 422, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_9colorData, __pyx_t_4) < 0) __PYX_ERR(3, 422, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":423
+ *     _8colorData = cmsSig8colorData
+ *     _9colorData = cmsSig9colorData
+ *     _10colorData = cmsSig10colorData             # <<<<<<<<<<<<<<
+ *     _11colorData = cmsSig11colorData
+ *     _12colorData = cmsSig12colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig10colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 423, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_10colorData, __pyx_t_4) < 0) __PYX_ERR(3, 423, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":424
+ *     _9colorData = cmsSig9colorData
+ *     _10colorData = cmsSig10colorData
+ *     _11colorData = cmsSig11colorData             # <<<<<<<<<<<<<<
+ *     _12colorData = cmsSig12colorData
+ *     _13colorData = cmsSig13colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig11colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 424, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_11colorData, __pyx_t_4) < 0) __PYX_ERR(3, 424, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":425
+ *     _10colorData = cmsSig10colorData
+ *     _11colorData = cmsSig11colorData
+ *     _12colorData = cmsSig12colorData             # <<<<<<<<<<<<<<
+ *     _13colorData = cmsSig13colorData
+ *     _14colorData = cmsSig14colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig12colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 425, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_12colorData, __pyx_t_4) < 0) __PYX_ERR(3, 425, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":426
+ *     _11colorData = cmsSig11colorData
+ *     _12colorData = cmsSig12colorData
+ *     _13colorData = cmsSig13colorData             # <<<<<<<<<<<<<<
+ *     _14colorData = cmsSig14colorData
+ *     _15colorData = cmsSig15colorData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig13colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 426, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_13colorData, __pyx_t_4) < 0) __PYX_ERR(3, 426, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":427
+ *     _12colorData = cmsSig12colorData
+ *     _13colorData = cmsSig13colorData
+ *     _14colorData = cmsSig14colorData             # <<<<<<<<<<<<<<
+ *     _15colorData = cmsSig15colorData
+ *     LuvKData = cmsSigLuvKData
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig14colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 427, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_14colorData, __pyx_t_4) < 0) __PYX_ERR(3, 427, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":428
+ *     _13colorData = cmsSig13colorData
+ *     _14colorData = cmsSig14colorData
+ *     _15colorData = cmsSig15colorData             # <<<<<<<<<<<<<<
+ *     LuvKData = cmsSigLuvKData
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSig15colorData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 428, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_15colorData, __pyx_t_4) < 0) __PYX_ERR(3, 428, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":429
+ *     _14colorData = cmsSig14colorData
+ *     _15colorData = cmsSig15colorData
+ *     LuvKData = cmsSigLuvKData             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsColorSpaceSignature(cmsSigLuvKData); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 429, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LuvKData, __pyx_t_4) < 0) __PYX_ERR(3, 429, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":383
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class ColorSpaceSignature(TagEnum):
+ *     """ICC Color spaces.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 383, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":384
+ * 
+ * @unique
+ * class ColorSpaceSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Color spaces.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorSpaceSignature, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 383, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorSpaceSignature, __pyx_t_4) < 0) __PYX_ERR(3, 384, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":433
+ * 
+ * @unique
+ * class ProfileClassSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Profile Class.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_ProfileClassSignature, __pyx_n_s_ProfileClassSignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_ICC_Profile_Class); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":436
+ *     """ICC Profile Class.
+ *     """
+ *     InputClass = cmsSigInputClass             # <<<<<<<<<<<<<<
+ *     DisplayClass = cmsSigDisplayClass
+ *     OutputClass = cmsSigOutputClass
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigInputClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 436, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_InputClass, __pyx_t_4) < 0) __PYX_ERR(3, 436, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":437
+ *     """
+ *     InputClass = cmsSigInputClass
+ *     DisplayClass = cmsSigDisplayClass             # <<<<<<<<<<<<<<
+ *     OutputClass = cmsSigOutputClass
+ *     LinkClass = cmsSigLinkClass
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigDisplayClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 437, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DisplayClass, __pyx_t_4) < 0) __PYX_ERR(3, 437, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":438
+ *     InputClass = cmsSigInputClass
+ *     DisplayClass = cmsSigDisplayClass
+ *     OutputClass = cmsSigOutputClass             # <<<<<<<<<<<<<<
+ *     LinkClass = cmsSigLinkClass
+ *     AbstractClass = cmsSigAbstractClass
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigOutputClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 438, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_OutputClass, __pyx_t_4) < 0) __PYX_ERR(3, 438, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":439
+ *     DisplayClass = cmsSigDisplayClass
+ *     OutputClass = cmsSigOutputClass
+ *     LinkClass = cmsSigLinkClass             # <<<<<<<<<<<<<<
+ *     AbstractClass = cmsSigAbstractClass
+ *     ColorSpaceClass = cmsSigColorSpaceClass
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigLinkClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 439, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LinkClass, __pyx_t_4) < 0) __PYX_ERR(3, 439, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":440
+ *     OutputClass = cmsSigOutputClass
+ *     LinkClass = cmsSigLinkClass
+ *     AbstractClass = cmsSigAbstractClass             # <<<<<<<<<<<<<<
+ *     ColorSpaceClass = cmsSigColorSpaceClass
+ *     NamedColorClass = cmsSigNamedColorClass
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigAbstractClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 440, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_AbstractClass, __pyx_t_4) < 0) __PYX_ERR(3, 440, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":441
+ *     LinkClass = cmsSigLinkClass
+ *     AbstractClass = cmsSigAbstractClass
+ *     ColorSpaceClass = cmsSigColorSpaceClass             # <<<<<<<<<<<<<<
+ *     NamedColorClass = cmsSigNamedColorClass
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigColorSpaceClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 441, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ColorSpaceClass, __pyx_t_4) < 0) __PYX_ERR(3, 441, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":442
+ *     AbstractClass = cmsSigAbstractClass
+ *     ColorSpaceClass = cmsSigColorSpaceClass
+ *     NamedColorClass = cmsSigNamedColorClass             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsProfileClassSignature(cmsSigNamedColorClass); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 442, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_NamedColorClass, __pyx_t_4) < 0) __PYX_ERR(3, 442, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":432
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class ProfileClassSignature(TagEnum):
+ *     """ICC Profile Class.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 432, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":433
+ * 
+ * @unique
+ * class ProfileClassSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Profile Class.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_ProfileClassSignature, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 432, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ProfileClassSignature, __pyx_t_4) < 0) __PYX_ERR(3, 433, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":446
+ * 
+ * @unique
+ * class PlatformSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Platforms.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_PlatformSignature, __pyx_n_s_PlatformSignature, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_ICC_Platforms); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":449
+ *     """ICC Platforms.
+ *     """
+ *     Macintosh = cmsSigMacintosh             # <<<<<<<<<<<<<<
+ *     Microsoft = cmsSigMicrosoft
+ *     Solaris = cmsSigSolaris
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigMacintosh); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 449, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Macintosh, __pyx_t_4) < 0) __PYX_ERR(3, 449, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":450
+ *     """
+ *     Macintosh = cmsSigMacintosh
+ *     Microsoft = cmsSigMicrosoft             # <<<<<<<<<<<<<<
+ *     Solaris = cmsSigSolaris
+ *     SGI = cmsSigSGI
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigMicrosoft); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 450, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Microsoft, __pyx_t_4) < 0) __PYX_ERR(3, 450, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":451
+ *     Macintosh = cmsSigMacintosh
+ *     Microsoft = cmsSigMicrosoft
+ *     Solaris = cmsSigSolaris             # <<<<<<<<<<<<<<
+ *     SGI = cmsSigSGI
+ *     Taligent = cmsSigTaligent
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigSolaris); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 451, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Solaris, __pyx_t_4) < 0) __PYX_ERR(3, 451, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":452
+ *     Microsoft = cmsSigMicrosoft
+ *     Solaris = cmsSigSolaris
+ *     SGI = cmsSigSGI             # <<<<<<<<<<<<<<
+ *     Taligent = cmsSigTaligent
+ *     Unices = cmsSigUnices
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigSGI); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 452, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_SGI, __pyx_t_4) < 0) __PYX_ERR(3, 452, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":453
+ *     Solaris = cmsSigSolaris
+ *     SGI = cmsSigSGI
+ *     Taligent = cmsSigTaligent             # <<<<<<<<<<<<<<
+ *     Unices = cmsSigUnices
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigTaligent); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 453, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Taligent, __pyx_t_4) < 0) __PYX_ERR(3, 453, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":454
+ *     SGI = cmsSigSGI
+ *     Taligent = cmsSigTaligent
+ *     Unices = cmsSigUnices             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_cmsPlatformSignature(cmsSigUnices); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 454, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Unices, __pyx_t_4) < 0) __PYX_ERR(3, 454, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":445
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class PlatformSignature(TagEnum):
+ *     """ICC Platforms.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 445, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":446
+ * 
+ * @unique
+ * class PlatformSignature(TagEnum):             # <<<<<<<<<<<<<<
+ *     """ICC Platforms.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_PlatformSignature, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 445, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PlatformSignature, __pyx_t_4) < 0) __PYX_ERR(3, 446, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":458
+ * 
+ * @unique
+ * class Referencegamut(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Reference gamut.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_Referencegamut, __pyx_n_s_Referencegamut, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_Reference_gamut); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":461
+ *     """Reference gamut.
+ *     """
+ *     PerceptualReferenceMediumGamut = cmsSigPerceptualReferenceMediumGamut             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigPerceptualReferenceMediumGamut); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 461, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_PerceptualReferenceMediumGamut, __pyx_t_4) < 0) __PYX_ERR(3, 461, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":457
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class Referencegamut(TagEnum):
+ *     """Reference gamut.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 457, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":458
+ * 
+ * @unique
+ * class Referencegamut(TagEnum):             # <<<<<<<<<<<<<<
+ *     """Reference gamut.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_Referencegamut, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 457, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Referencegamut, __pyx_t_4) < 0) __PYX_ERR(3, 458, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":465
+ * 
+ * @unique
+ * class ColorimetricIntentImageStateTag(TagEnum):             # <<<<<<<<<<<<<<
+ *     """For TagSignature.ColorimetricIntentImageStateTag.
+ *     """
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorimetricIntentImageStateTag, __pyx_n_s_ColorimetricIntentImageStateTag, (PyObject *) NULL, __pyx_n_s_lcms2_cms, __pyx_kp_s_For_TagSignature_ColorimetricInt); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "src/gravure/lcms2/icctag.pxi":468
+ *     """For TagSignature.ColorimetricIntentImageStateTag.
+ *     """
+ *     SceneColorimetryEstimates = cmsSigSceneColorimetryEstimates             # <<<<<<<<<<<<<<
+ *     SceneAppearanceEstimates = cmsSigSceneAppearanceEstimates
+ *     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigSceneColorimetryEstimates); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 468, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_SceneColorimetryEstimates, __pyx_t_4) < 0) __PYX_ERR(3, 468, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":469
+ *     """
+ *     SceneColorimetryEstimates = cmsSigSceneColorimetryEstimates
+ *     SceneAppearanceEstimates = cmsSigSceneAppearanceEstimates             # <<<<<<<<<<<<<<
+ *     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates
+ *     ReflectionHardcopyOriginalColorimetry = cmsSigReflectionHardcopyOriginalColorimetry
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigSceneAppearanceEstimates); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_SceneAppearanceEstimates, __pyx_t_4) < 0) __PYX_ERR(3, 469, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":470
+ *     SceneColorimetryEstimates = cmsSigSceneColorimetryEstimates
+ *     SceneAppearanceEstimates = cmsSigSceneAppearanceEstimates
+ *     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates             # <<<<<<<<<<<<<<
+ *     ReflectionHardcopyOriginalColorimetry = cmsSigReflectionHardcopyOriginalColorimetry
+ *     ReflectionPrintOutputColorimetry = cmsSigReflectionPrintOutputColorimetry
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigFocalPlaneColorimetryEstimates); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 470, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_FocalPlaneColorimetryEstimates, __pyx_t_4) < 0) __PYX_ERR(3, 470, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":471
+ *     SceneAppearanceEstimates = cmsSigSceneAppearanceEstimates
+ *     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates
+ *     ReflectionHardcopyOriginalColorimetry = cmsSigReflectionHardcopyOriginalColorimetry             # <<<<<<<<<<<<<<
+ *     ReflectionPrintOutputColorimetry = cmsSigReflectionPrintOutputColorimetry
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigReflectionHardcopyOriginalColorimetry); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 471, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ReflectionHardcopyOriginalColori, __pyx_t_4) < 0) __PYX_ERR(3, 471, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":472
+ *     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates
+ *     ReflectionHardcopyOriginalColorimetry = cmsSigReflectionHardcopyOriginalColorimetry
+ *     ReflectionPrintOutputColorimetry = cmsSigReflectionPrintOutputColorimetry             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsSigReflectionPrintOutputColorimetry); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 472, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ReflectionPrintOutputColorimetry, __pyx_t_4) < 0) __PYX_ERR(3, 472, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "src/gravure/lcms2/icctag.pxi":464
+ * 
+ * 
+ * @unique             # <<<<<<<<<<<<<<
+ * class ColorimetricIntentImageStateTag(TagEnum):
+ *     """For TagSignature.ColorimetricIntentImageStateTag.
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(3, 464, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "src/gravure/lcms2/icctag.pxi":465
+ * 
+ * @unique
+ * class ColorimetricIntentImageStateTag(TagEnum):             # <<<<<<<<<<<<<<
+ *     """For TagSignature.ColorimetricIntentImageStateTag.
+ *     """
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorimetricIntentImageStateTag, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_5, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 464, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorimetricIntentImageStateTag, __pyx_t_4) < 0) __PYX_ERR(3, 465, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "lcms2/cms.pyx":31
+ * 
+ * 
+ * __all__ = ['VERSION',             # <<<<<<<<<<<<<<
+ *            'D50X', 'D50Y', 'D50Z',
+ *            'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y', 'PERCEPTUAL_BLACK_Z',
+ */
+  __pyx_t_1 = PyList_New(17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_n_u_VERSION);
+  __Pyx_GIVEREF(__pyx_n_u_VERSION);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_VERSION);
+  __Pyx_INCREF(__pyx_n_u_D50X);
+  __Pyx_GIVEREF(__pyx_n_u_D50X);
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_u_D50X);
+  __Pyx_INCREF(__pyx_n_u_D50Y);
+  __Pyx_GIVEREF(__pyx_n_u_D50Y);
+  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_u_D50Y);
+  __Pyx_INCREF(__pyx_n_u_D50Z);
+  __Pyx_GIVEREF(__pyx_n_u_D50Z);
+  PyList_SET_ITEM(__pyx_t_1, 3, __pyx_n_u_D50Z);
+  __Pyx_INCREF(__pyx_n_u_PERCEPTUAL_BLACK_X);
+  __Pyx_GIVEREF(__pyx_n_u_PERCEPTUAL_BLACK_X);
+  PyList_SET_ITEM(__pyx_t_1, 4, __pyx_n_u_PERCEPTUAL_BLACK_X);
+  __Pyx_INCREF(__pyx_n_u_PERCEPTUAL_BLACK_Y);
+  __Pyx_GIVEREF(__pyx_n_u_PERCEPTUAL_BLACK_Y);
+  PyList_SET_ITEM(__pyx_t_1, 5, __pyx_n_u_PERCEPTUAL_BLACK_Y);
+  __Pyx_INCREF(__pyx_n_u_PERCEPTUAL_BLACK_Z);
+  __Pyx_GIVEREF(__pyx_n_u_PERCEPTUAL_BLACK_Z);
+  PyList_SET_ITEM(__pyx_t_1, 6, __pyx_n_u_PERCEPTUAL_BLACK_Z);
+  __Pyx_INCREF(__pyx_n_u_ICCDef);
+  __Pyx_GIVEREF(__pyx_n_u_ICCDef);
+  PyList_SET_ITEM(__pyx_t_1, 7, __pyx_n_u_ICCDef);
   __Pyx_INCREF(__pyx_n_u_TYPE);
   __Pyx_GIVEREF(__pyx_n_u_TYPE);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_TYPE);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_1, 8, __pyx_n_u_TYPE);
+  __Pyx_INCREF(__pyx_n_u_TagTypeSignature);
+  __Pyx_GIVEREF(__pyx_n_u_TagTypeSignature);
+  PyList_SET_ITEM(__pyx_t_1, 9, __pyx_n_u_TagTypeSignature);
+  __Pyx_INCREF(__pyx_n_u_TagSignature);
+  __Pyx_GIVEREF(__pyx_n_u_TagSignature);
+  PyList_SET_ITEM(__pyx_t_1, 10, __pyx_n_u_TagSignature);
+  __Pyx_INCREF(__pyx_n_u_TechnologySignature);
+  __Pyx_GIVEREF(__pyx_n_u_TechnologySignature);
+  PyList_SET_ITEM(__pyx_t_1, 11, __pyx_n_u_TechnologySignature);
+  __Pyx_INCREF(__pyx_n_u_ColorSpaceSignature);
+  __Pyx_GIVEREF(__pyx_n_u_ColorSpaceSignature);
+  PyList_SET_ITEM(__pyx_t_1, 12, __pyx_n_u_ColorSpaceSignature);
+  __Pyx_INCREF(__pyx_n_u_ProfileClassSignature);
+  __Pyx_GIVEREF(__pyx_n_u_ProfileClassSignature);
+  PyList_SET_ITEM(__pyx_t_1, 13, __pyx_n_u_ProfileClassSignature);
+  __Pyx_INCREF(__pyx_n_u_PlatformSignature);
+  __Pyx_GIVEREF(__pyx_n_u_PlatformSignature);
+  PyList_SET_ITEM(__pyx_t_1, 14, __pyx_n_u_PlatformSignature);
+  __Pyx_INCREF(__pyx_n_u_Referencegamut);
+  __Pyx_GIVEREF(__pyx_n_u_Referencegamut);
+  PyList_SET_ITEM(__pyx_t_1, 15, __pyx_n_u_Referencegamut);
+  __Pyx_INCREF(__pyx_n_u_ColorimetricIntentImageStateTag);
+  __Pyx_GIVEREF(__pyx_n_u_ColorimetricIntentImageStateTag);
+  PyList_SET_ITEM(__pyx_t_1, 16, __pyx_n_u_ColorimetricIntentImageStateTag);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "lcms2/cms.pyx":1
@@ -3962,6 +7819,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init lcms2.cms", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4273,6 +8133,257 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
     return result;
 }
 
+/* PyCFunctionFastCall */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
+    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
+    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
+    PyObject *self = PyCFunction_GET_SELF(func);
+    int flags = PyCFunction_GET_FLAGS(func);
+    assert(PyCFunction_Check(func));
+    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
+    assert(nargs >= 0);
+    assert(nargs == 0 || args != NULL);
+    /* _PyCFunction_FastCallDict() must not be called with an exception set,
+       because it may clear it (directly or indirectly) and so the
+       caller loses its exception */
+    assert(!PyErr_Occurred());
+    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
+        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
+    } else {
+        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
+    }
+}
+#endif
+
+/* PyFunctionFastCall */
+#if CYTHON_FAST_PYCALL
+static PyObject* __Pyx_PyFunction_FastCallNoKw(PyCodeObject *co, PyObject **args, Py_ssize_t na,
+                                               PyObject *globals) {
+    PyFrameObject *f;
+    PyThreadState *tstate = __Pyx_PyThreadState_Current;
+    PyObject **fastlocals;
+    Py_ssize_t i;
+    PyObject *result;
+    assert(globals != NULL);
+    /* XXX Perhaps we should create a specialized
+       PyFrame_New() that doesn't take locals, but does
+       take builtins without sanity checking them.
+       */
+    assert(tstate != NULL);
+    f = PyFrame_New(tstate, co, globals, NULL);
+    if (f == NULL) {
+        return NULL;
+    }
+    fastlocals = __Pyx_PyFrame_GetLocalsplus(f);
+    for (i = 0; i < na; i++) {
+        Py_INCREF(*args);
+        fastlocals[i] = *args++;
+    }
+    result = PyEval_EvalFrameEx(f,0);
+    ++tstate->recursion_depth;
+    Py_DECREF(f);
+    --tstate->recursion_depth;
+    return result;
+}
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, Py_ssize_t nargs, PyObject *kwargs) {
+    PyCodeObject *co = (PyCodeObject *)PyFunction_GET_CODE(func);
+    PyObject *globals = PyFunction_GET_GLOBALS(func);
+    PyObject *argdefs = PyFunction_GET_DEFAULTS(func);
+    PyObject *closure;
+#if PY_MAJOR_VERSION >= 3
+    PyObject *kwdefs;
+#endif
+    PyObject *kwtuple, **k;
+    PyObject **d;
+    Py_ssize_t nd;
+    Py_ssize_t nk;
+    PyObject *result;
+    assert(kwargs == NULL || PyDict_Check(kwargs));
+    nk = kwargs ? PyDict_Size(kwargs) : 0;
+    if (Py_EnterRecursiveCall((char*)" while calling a Python object")) {
+        return NULL;
+    }
+    if (
+#if PY_MAJOR_VERSION >= 3
+            co->co_kwonlyargcount == 0 &&
+#endif
+            likely(kwargs == NULL || nk == 0) &&
+            co->co_flags == (CO_OPTIMIZED | CO_NEWLOCALS | CO_NOFREE)) {
+        if (argdefs == NULL && co->co_argcount == nargs) {
+            result = __Pyx_PyFunction_FastCallNoKw(co, args, nargs, globals);
+            goto done;
+        }
+        else if (nargs == 0 && argdefs != NULL
+                 && co->co_argcount == Py_SIZE(argdefs)) {
+            /* function called with no arguments, but all parameters have
+               a default value: use default values as arguments .*/
+            args = &PyTuple_GET_ITEM(argdefs, 0);
+            result =__Pyx_PyFunction_FastCallNoKw(co, args, Py_SIZE(argdefs), globals);
+            goto done;
+        }
+    }
+    if (kwargs != NULL) {
+        Py_ssize_t pos, i;
+        kwtuple = PyTuple_New(2 * nk);
+        if (kwtuple == NULL) {
+            result = NULL;
+            goto done;
+        }
+        k = &PyTuple_GET_ITEM(kwtuple, 0);
+        pos = i = 0;
+        while (PyDict_Next(kwargs, &pos, &k[i], &k[i+1])) {
+            Py_INCREF(k[i]);
+            Py_INCREF(k[i+1]);
+            i += 2;
+        }
+        nk = i / 2;
+    }
+    else {
+        kwtuple = NULL;
+        k = NULL;
+    }
+    closure = PyFunction_GET_CLOSURE(func);
+#if PY_MAJOR_VERSION >= 3
+    kwdefs = PyFunction_GET_KW_DEFAULTS(func);
+#endif
+    if (argdefs != NULL) {
+        d = &PyTuple_GET_ITEM(argdefs, 0);
+        nd = Py_SIZE(argdefs);
+    }
+    else {
+        d = NULL;
+        nd = 0;
+    }
+#if PY_MAJOR_VERSION >= 3
+    result = PyEval_EvalCodeEx((PyObject*)co, globals, (PyObject *)NULL,
+                               args, (int)nargs,
+                               k, (int)nk,
+                               d, (int)nd, kwdefs, closure);
+#else
+    result = PyEval_EvalCodeEx(co, globals, (PyObject *)NULL,
+                               args, (int)nargs,
+                               k, (int)nk,
+                               d, (int)nd, closure);
+#endif
+    Py_XDECREF(kwtuple);
+done:
+    Py_LeaveRecursiveCall();
+    return result;
+}
+#endif
+#endif
+
+/* PyObjectCall */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+/* PyObjectCall2Args */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args, *result = NULL;
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyFunction_FastCall(function, args, 2);
+    }
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyCFunction_FastCall(function, args, 2);
+    }
+    #endif
+    args = PyTuple_New(2);
+    if (unlikely(!args)) goto done;
+    Py_INCREF(arg1);
+    PyTuple_SET_ITEM(args, 0, arg1);
+    Py_INCREF(arg2);
+    PyTuple_SET_ITEM(args, 1, arg2);
+    Py_INCREF(function);
+    result = __Pyx_PyObject_Call(function, args, NULL);
+    Py_DECREF(args);
+    Py_DECREF(function);
+done:
+    return result;
+}
+
+/* PyObjectCallMethO */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
+    PyObject *self, *result;
+    PyCFunction cfunc;
+    cfunc = PyCFunction_GET_FUNCTION(func);
+    self = PyCFunction_GET_SELF(func);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = cfunc(self, arg);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+/* PyObjectCallOneArg */
+#if CYTHON_COMPILING_IN_CPYTHON
+static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject *result;
+    PyObject *args = PyTuple_New(1);
+    if (unlikely(!args)) return NULL;
+    Py_INCREF(arg);
+    PyTuple_SET_ITEM(args, 0, arg);
+    result = __Pyx_PyObject_Call(func, args, NULL);
+    Py_DECREF(args);
+    return result;
+}
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+#if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(func)) {
+        return __Pyx_PyFunction_FastCall(func, &arg, 1);
+    }
+#endif
+    if (likely(PyCFunction_Check(func))) {
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
+            return __Pyx_PyObject_CallMethO(func, arg);
+#if CYTHON_FAST_PYCCALL
+        } else if (PyCFunction_GET_FLAGS(func) & METH_FASTCALL) {
+            return __Pyx_PyCFunction_FastCall(func, &arg, 1);
+#endif
+        }
+    }
+    return __Pyx__PyObject_CallOneArg(func, arg);
+}
+#else
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject *result;
+    PyObject *args = PyTuple_Pack(1, arg);
+    if (unlikely(!args)) return NULL;
+    result = __Pyx_PyObject_Call(func, args, NULL);
+    Py_DECREF(args);
+    return result;
+}
+#endif
+
 /* PyErrFetchRestore */
 #if CYTHON_FAST_THREAD_STATE
 static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
@@ -4531,6 +8642,192 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
         int one = 1; int little = (int)*(unsigned char *)&one;
         unsigned char *bytes = (unsigned char *)&value;
         return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTagTypeSignature(cmsTagTypeSignature value) {
+    const cmsTagTypeSignature neg_one = (cmsTagTypeSignature) ((cmsTagTypeSignature) 0 - (cmsTagTypeSignature) 1), const_zero = (cmsTagTypeSignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsTagTypeSignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsTagTypeSignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTagTypeSignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsTagTypeSignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTagTypeSignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsTagTypeSignature),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTagSignature(cmsTagSignature value) {
+    const cmsTagSignature neg_one = (cmsTagSignature) ((cmsTagSignature) 0 - (cmsTagSignature) 1), const_zero = (cmsTagSignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsTagSignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsTagSignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTagSignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsTagSignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTagSignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsTagSignature),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsTechnologySignature(cmsTechnologySignature value) {
+    const cmsTechnologySignature neg_one = (cmsTechnologySignature) ((cmsTechnologySignature) 0 - (cmsTechnologySignature) 1), const_zero = (cmsTechnologySignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsTechnologySignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsTechnologySignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTechnologySignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsTechnologySignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsTechnologySignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsTechnologySignature),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsColorSpaceSignature(cmsColorSpaceSignature value) {
+    const cmsColorSpaceSignature neg_one = (cmsColorSpaceSignature) ((cmsColorSpaceSignature) 0 - (cmsColorSpaceSignature) 1), const_zero = (cmsColorSpaceSignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsColorSpaceSignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsColorSpaceSignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsColorSpaceSignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsColorSpaceSignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsColorSpaceSignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsColorSpaceSignature),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsProfileClassSignature(cmsProfileClassSignature value) {
+    const cmsProfileClassSignature neg_one = (cmsProfileClassSignature) ((cmsProfileClassSignature) 0 - (cmsProfileClassSignature) 1), const_zero = (cmsProfileClassSignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsProfileClassSignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsProfileClassSignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsProfileClassSignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsProfileClassSignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsProfileClassSignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsProfileClassSignature),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_cmsPlatformSignature(cmsPlatformSignature value) {
+    const cmsPlatformSignature neg_one = (cmsPlatformSignature) ((cmsPlatformSignature) 0 - (cmsPlatformSignature) 1), const_zero = (cmsPlatformSignature) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(cmsPlatformSignature) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(cmsPlatformSignature) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsPlatformSignature) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(cmsPlatformSignature) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(cmsPlatformSignature) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(cmsPlatformSignature),
                                      little, !is_unsigned);
     }
 }
