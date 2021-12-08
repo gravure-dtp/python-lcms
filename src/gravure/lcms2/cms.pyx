@@ -34,4 +34,5 @@ __all__ = ['VERSION',
            'ICCDef', 'TYPE', 'TagTypeSignature', 'TagSignature',
            'TechnologySignature', 'ColorSpaceSignature',
            'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
-           'ColorimetricIntentImageStateTag']
+           'ColorimetricIntentImageStateTag', 'StageSignature',
+           'CurveSegSignature', 'ResponseCurveTypeSignature']

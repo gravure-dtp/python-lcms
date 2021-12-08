@@ -213,7 +213,6 @@ cdef extern from "lcms2.h":
     enum:
         # Reference gamut
         cmsSigPerceptualReferenceMediumGamut
-
         # For cmsSigColorimetricIntentImageStateTag
         cmsSigSceneColorimetryEstimates
         cmsSigSceneAppearanceEstimates
@@ -221,17 +220,57 @@ cdef extern from "lcms2.h":
         cmsSigReflectionHardcopyOriginalColorimetry
         cmsSigReflectionPrintOutputColorimetry
 
+    # Multi process elements types
+    ctypedef enum cmsStageSignature:
+        cmsSigCurveSetElemType
+        cmsSigMatrixElemType
+        cmsSigCLutElemType
+        cmsSigBAcsElemType
+        cmsSigEAcsElemType
+        # Custom from here, not in the ICC Spec
+        cmsSigXYZ2LabElemType
+        cmsSigLab2XYZElemType
+        cmsSigNamedColorElemType
+        cmsSigLabV2toV4
+        cmsSigLabV4toV2
+        # Identities
+        cmsSigIdentityElemType
+        # Float to floatPCS
+        cmsSigLab2FloatPCS
+        cmsSigFloatPCS2Lab
+        cmsSigXYZ2FloatPCS
+        cmsSigFloatPCS2XYZ
+        cmsSigClipNegativesElemType
+
+    # Types of CurveElements
+    ctypedef enum cmsCurveSegSignature:
+        cmsSigFormulaCurveSeg
+        cmsSigSampledCurveSeg
+        cmsSigSegmentedCurve
+
+    # Used in ResponseCurveType
+    enum:
+        cmsSigStatusA
+        cmsSigStatusE
+        cmsSigStatusI
+        cmsSigStatusT
+        cmsSigStatusM
+        cmsSigDN
+        cmsSigDNP
+        cmsSigDNN
+        cmsSigDNNP
+
 
 @unique
 class ICCDef(TagEnum):
-    """Definitions in ICC spec.
+    """Enumeration of definitions in ICC spec.
     """
     cmsMagicNumber = c_cmsMagicNumber
     lcmsSignature = c_lcmsSignature
 
 @unique
 class TagTypeSignature(TagEnum):
-    """Base ICC type definitions.
+    """Enumeration of base ICC type definitions.
     """
     ChromaticityType = cmsSigChromaticityType
     ColorantOrderType = cmsSigColorantOrderType
@@ -273,7 +312,7 @@ class TagTypeSignature(TagEnum):
 
 @unique
 class TagSignature(TagEnum):
-    """Base ICC tag definitions.
+    """Enumeration of base ICC tag definitions.
     """
     AToB0Tag = cmsSigAToB0Tag
     AToB1Tag = cmsSigAToB1Tag
@@ -350,7 +389,7 @@ class TagSignature(TagEnum):
 
 @unique
 class TechnologySignature(TagEnum):
-    """ICC Technology tag.
+    """Enumeration of ICC Technology tag.
     """
     DigitalCamera = cmsSigDigitalCamera
     FilmScanner = cmsSigFilmScanner
@@ -382,7 +421,7 @@ class TechnologySignature(TagEnum):
 
 @unique
 class ColorSpaceSignature(TagEnum):
-    """ICC Color spaces.
+    """Enumeration of ICC Color spaces.
     """
     XYZData = cmsSigXYZData
     LabData = cmsSigLabData
@@ -431,7 +470,7 @@ class ColorSpaceSignature(TagEnum):
 
 @unique
 class ProfileClassSignature(TagEnum):
-    """ICC Profile Class.
+    """Enumeration of ICC Profile Class.
     """
     InputClass = cmsSigInputClass
     DisplayClass = cmsSigDisplayClass
@@ -444,7 +483,7 @@ class ProfileClassSignature(TagEnum):
 
 @unique
 class PlatformSignature(TagEnum):
-    """ICC Platforms.
+    """Enumeration of ICC Platforms.
     """
     Macintosh = cmsSigMacintosh
     Microsoft = cmsSigMicrosoft
@@ -456,17 +495,69 @@ class PlatformSignature(TagEnum):
 
 @unique
 class Referencegamut(TagEnum):
-    """Reference gamut.
+    """Enumeration of Reference gamut.
     """
     PerceptualReferenceMediumGamut = cmsSigPerceptualReferenceMediumGamut
 
 
 @unique
 class ColorimetricIntentImageStateTag(TagEnum):
-    """For TagSignature.ColorimetricIntentImageStateTag.
+    """Enumeration of used For TagSignature.ColorimetricIntentImageStateTag.
     """
     SceneColorimetryEstimates = cmsSigSceneColorimetryEstimates
     SceneAppearanceEstimates = cmsSigSceneAppearanceEstimates
     FocalPlaneColorimetryEstimates = cmsSigFocalPlaneColorimetryEstimates
     ReflectionHardcopyOriginalColorimetry = cmsSigReflectionHardcopyOriginalColorimetry
     ReflectionPrintOutputColorimetry = cmsSigReflectionPrintOutputColorimetry
+
+
+@unique
+class StageSignature(TagEnum):
+    """Enumeration of multi process elements types.
+
+    Only CurveSetElemType, MatrixElemType, CLutElemType, BAcsElemType
+    and EAcsElemType are part of the ICC specs. Others are custom to LCMS2.
+    """
+    CurveSetElemType = cmsSigCurveSetElemType
+    MatrixElemType = cmsSigMatrixElemType
+    CLutElemType = cmsSigCLutElemType
+    BAcsElemType = cmsSigBAcsElemType
+    EAcsElemType = cmsSigEAcsElemType
+    # Custom from here, not in the ICC Spec
+    XYZ2LabElemType = cmsSigXYZ2LabElemType
+    Lab2XYZElemType = cmsSigLab2XYZElemType
+    NamedColorElemType = cmsSigNamedColorElemType
+    LabV2toV4 = cmsSigLabV2toV4
+    LabV4toV2 = cmsSigLabV4toV2
+    # Identities
+    IdentityElemType = cmsSigIdentityElemType
+    # Float to floatPCS
+    Lab2FloatPCS = cmsSigLab2FloatPCS
+    FloatPCS2Lab = cmsSigFloatPCS2Lab
+    XYZ2FloatPCS = cmsSigXYZ2FloatPCS
+    FloatPCS2XYZ = cmsSigFloatPCS2XYZ
+    ClipNegativesElemType = cmsSigClipNegativesElemType
+
+
+@unique
+class CurveSegSignature(TagEnum):
+    """Enumeration of types of CurveElements.
+    """
+    FormulaCurveSeg = cmsSigFormulaCurveSeg
+    SampledCurveSeg = cmsSigSampledCurveSeg
+    SegmentedCurve = cmsSigSegmentedCurve
+
+
+@unique
+class ResponseCurveTypeSignature(TagEnum):
+    """Enumeration of used in ResponseCurveType.
+    """
+    StatusA = cmsSigStatusA
+    StatusE = cmsSigStatusE
+    StatusI = cmsSigStatusI
+    StatusT = cmsSigStatusT
+    StatusM = cmsSigStatusM
+    DN = cmsSigDN
+    DNP = cmsSigDNP
+    DNN = cmsSigDNN
+    DNNP = cmsSigDNNP
