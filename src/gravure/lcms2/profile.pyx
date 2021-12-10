@@ -17,3 +17,25 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
+from enum import Enum
+
+
+class DeviceAttribute(Enum):
+    Reflective = cmsReflective
+    Transparency = cmsTransparency
+    Glossy = cmsGlossy
+    Matte = cmsMatte
+
+
+cdef class Profile():
+    """ICC Profile Class.
+    """
+
+    def __cinit__(Profile self):
+        pass
+
+    def __init__(Profile self):
+        pass
+
+    def __dealloc__(Profile self):
+        pass

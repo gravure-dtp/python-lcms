@@ -17,6 +17,9 @@ cdef extern from "lcms2.h":
     float cmsPERCEPTUAL_BLACK_Y
     float cmsPERCEPTUAL_BLACK_Z
 
+    # Maximum number of channels in ICC profiles
+    int cmsMAXCHANNELS
+
 
 VERSION = LCMS_VERSION
 D50X = cmsD50X
@@ -25,3 +28,4 @@ D50Z = cmsD50Z
 PERCEPTUAL_BLACK_X = cmsPERCEPTUAL_BLACK_X
 PERCEPTUAL_BLACK_Y = cmsPERCEPTUAL_BLACK_Y
 PERCEPTUAL_BLACK_Z = cmsPERCEPTUAL_BLACK_Z
+MAXCHANNELS = cmsMAXCHANNELS

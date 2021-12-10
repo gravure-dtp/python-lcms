@@ -23,16 +23,30 @@ from gravure.lcms2.enum import TagEnum
 import cython
 cimport cython
 
+from icctag cimport *
+from errors import LcmsError
+from profile import DeviceAttribute
+from profile cimport *
+
 include "constant.pxi"
 include "colortype.pxi"
 include "icctag.pxi"
 
 
-__all__ = ['VERSION',
-           'D50X', 'D50Y', 'D50Z',
-           'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y', 'PERCEPTUAL_BLACK_Z',
-           'ICCDef', 'TYPE', 'TagTypeSignature', 'TagSignature',
-           'TechnologySignature', 'ColorSpaceSignature',
-           'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
-           'ColorimetricIntentImageStateTag', 'StageSignature',
-           'CurveSegSignature', 'ResponseCurveTypeSignature']
+__all__ = [
+            # From 'constant.pxi'
+            'VERSION',
+            'D50X', 'D50Y', 'D50Z',
+            'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y', 'PERCEPTUAL_BLACK_Z',
+            'MAXCHANNELS'
+            # From 'colortype.pxi'
+            'COLORTYPE',
+            # From 'icctag.pxi'
+            'ICCDef', 'TagTypeSignature', 'TagSignature',
+            'TechnologySignature', 'ColorSpaceSignature',
+            'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
+            'ColorimetricIntentImageStateTag', 'StageSignature',
+            'CurveSegSignature', 'ResponseCurveTypeSignature',
+            # From 'profile.pyx'
+            'DeviceAttribute'
+        ]

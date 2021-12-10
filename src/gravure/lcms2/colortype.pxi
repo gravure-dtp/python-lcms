@@ -203,7 +203,7 @@ cdef extern from "lcms2.h":
         TYPE_ABGR_HALF_FLT
 
 
-class TYPE(Enum):
+class COLORTYPE(Enum):
     GRAY_8 = TYPE_GRAY_8
     GRAY_8_REV = TYPE_GRAY_8_REV
     GRAY_16 = TYPE_GRAY_16

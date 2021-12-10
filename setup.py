@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
-import sys
+import sys, os
 from pathlib import Path
 import subprocess as sp
 from pkg_resources import parse_version
@@ -92,7 +92,12 @@ def create_c_files():
     sys.stderr = open(".errors_log", "w")
     try:
         cythonize(
-            ["src/gravure/lcms2/cms.pyx"],
+            [
+                "src/gravure/lcms2/profile.pyx",
+                "src/gravure/lcms2/errors.pyx",
+                "src/gravure/lcms2/cms.pyx",
+            ],
+            include_path=[get_pkg_includedir("lcms2"), "src/gravure/lcms2"],
             nthreads=mp.cpu_count(),
             compiler_directives={
                 "language_level": 3,
@@ -147,15 +152,38 @@ else:
 def get_extensions():
     return [
         Extension(
+            "profile",
+            sources=["src/gravure/lcms2/profile.c"],
+            # libraries=[get_pkg_lib("lcms2")],
+            include_dirs=[get_pkg_includedir("lcms2")],
+            library_dirs=[get_pkg_libdir("lcms2")],
+            extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+            extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
+        ),
+        Extension(
+            "errors",
+            sources=["src/gravure/lcms2/errors.c"],
+            # libraries=[get_pkg_lib("lcms2")],
+            include_dirs=[get_pkg_includedir("lcms2")],
+            library_dirs=[get_pkg_libdir("lcms2")],
+            extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+            extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
+        ),
+        Extension(
             "cms",
             sources=["src/gravure/lcms2/cms.c"],
             # libraries=[get_pkg_lib("lcms2")],
             include_dirs=[get_pkg_includedir("lcms2")],
             library_dirs=[get_pkg_libdir("lcms2")],
             extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+            extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
         ),
     ]
 
+
+# os.environ[
+#     "LIBRARY_PATH"
+# ] = f"{os.environ.get('LIBRARY_PATH', '')}:{get_pkg_libdir('lcms2')}"
 
 setup(
     #
@@ -202,5 +230,10 @@ setup(
     ],
 )
 
+
+# END
+
+
+# END
 
 # END
