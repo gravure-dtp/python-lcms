@@ -94,7 +94,7 @@ def create_c_files():
         cythonize(
             [
                 "src/gravure/lcms2/profile.pyx",
-                "src/gravure/lcms2/errors.pyx",
+                "src/gravure/lcms2/_errors.pyx",
                 "src/gravure/lcms2/cms.pyx",
             ],
             include_path=[get_pkg_includedir("lcms2"), "src/gravure/lcms2"],
@@ -161,8 +161,8 @@ def get_extensions():
             extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
         ),
         Extension(
-            "errors",
-            sources=["src/gravure/lcms2/errors.c"],
+            "_errors",
+            sources=["src/gravure/lcms2/_errors.c"],
             # libraries=[get_pkg_lib("lcms2")],
             include_dirs=[get_pkg_includedir("lcms2")],
             library_dirs=[get_pkg_libdir("lcms2")],
@@ -201,7 +201,7 @@ setup(
     # package_data={"gravure/lcms2": ["*.pxd"]},
     zip_safe=False,
     #
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     #
     description="a Python binding to the little cms 2 library",
     long_description=get_description(),
@@ -230,10 +230,5 @@ setup(
     ],
 )
 
-
-# END
-
-
-# END
 
 # END

@@ -53,10 +53,12 @@ cdef extern from "lcms2.h":
     # Error logger is called with the ContextID when a message is raised.
     # This gives the chance to know which thread is responsible of the
     # warning and any environment associated with it.
-    # Non-multithreading applications may safely ignore this parameter.
+    # Non-multithreading applications may safely ignore this paameter.
     # Note that under certain special circumstances, ContextID may be NULL.
-    ctypedef void  (* cmsLogErrorHandlerFunction)(cmsContext ContextID, cmsUInt32Number ErrorCode, const char *Text)
+    ctypedef void (*cmsLogErrorHandlerFunction) (cmsContext ContextID,
+                    cmsUInt32Number ErrorCode, const char *Text)
 
     # Allows user to set any specific logger
-    void cmsSetLogErrorHandler(cmsLogErrorHandlerFunction Fn)
-    void cmsSetLogErrorHandlerTHR(cmsContext        ContextID,cmsLogErrorHandlerFunction Fn)
+    void cmsSetLogErrorHandler(cmsLogErrorHandlerFunction Fn) nogil
+    void cmsSetLogErrorHandlerTHR(cmsContext ContextID,
+                                  cmsLogErrorHandlerFunction Fn) nogil

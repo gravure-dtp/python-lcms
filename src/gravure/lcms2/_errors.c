@@ -4,12 +4,12 @@
 {
     "distutils": {
         "depends": [],
-        "name": "lcms2.errors",
+        "name": "lcms2._errors",
         "sources": [
-            "src/gravure/lcms2/errors.pyx"
+            "src/gravure/lcms2/_errors.pyx"
         ]
     },
-    "module_name": "lcms2.errors"
+    "module_name": "lcms2._errors"
 }
 END: Cython Metadata */
 
@@ -615,8 +615,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__lcms2__errors
-#define __PYX_HAVE_API__lcms2__errors
+#define __PYX_HAVE__lcms2___errors
+#define __PYX_HAVE_API__lcms2___errors
 /* Early includes */
 #include "lcms2.h"
 #ifdef _OPENMP
@@ -827,8 +827,20 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/gravure/lcms2/errors.pyx",
+  "src/gravure/lcms2/_errors.pyx",
 };
+/* ForceInitThreads.proto */
+#ifndef __PYX_FORCE_INIT_THREADS
+  #define __PYX_FORCE_INIT_THREADS 0
+#endif
+
+/* NoFastGil.proto */
+#define __Pyx_PyGILState_Ensure PyGILState_Ensure
+#define __Pyx_PyGILState_Release PyGILState_Release
+#define __Pyx_FastGIL_Remember()
+#define __Pyx_FastGIL_Forget()
+#define __Pyx_FastGilFuncInit()
+
 
 /*--- Type declarations ---*/
 
@@ -975,6 +987,120 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
+#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
+#endif
+
+/* PyErrFetchRestore.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#if CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
+#else
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#endif
+#else
+#define __Pyx_PyErr_Clear() PyErr_Clear()
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+/* PyDictVersioning.proto */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+#define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
+#define __PYX_GET_DICT_VERSION(dict)  (((PyDictObject*)(dict))->ma_version_tag)
+#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)\
+    (version_var) = __PYX_GET_DICT_VERSION(dict);\
+    (cache_var) = (value);
+#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP) {\
+    static PY_UINT64_T __pyx_dict_version = 0;\
+    static PyObject *__pyx_dict_cached_value = NULL;\
+    if (likely(__PYX_GET_DICT_VERSION(DICT) == __pyx_dict_version)) {\
+        (VAR) = __pyx_dict_cached_value;\
+    } else {\
+        (VAR) = __pyx_dict_cached_value = (LOOKUP);\
+        __pyx_dict_version = __PYX_GET_DICT_VERSION(DICT);\
+    }\
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj);
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj);
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version);
+#else
+#define __PYX_GET_DICT_VERSION(dict)  (0)
+#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
+#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
+#endif
+
+/* GetModuleGlobalName.proto */
+#if CYTHON_USE_DICT_VERSIONS
+#define __Pyx_GetModuleGlobalName(var, name)  {\
+    static PY_UINT64_T __pyx_dict_version = 0;\
+    static PyObject *__pyx_dict_cached_value = NULL;\
+    (var) = (likely(__pyx_dict_version == __PYX_GET_DICT_VERSION(__pyx_d))) ?\
+        (likely(__pyx_dict_cached_value) ? __Pyx_NewRef(__pyx_dict_cached_value) : __Pyx_GetBuiltinName(name)) :\
+        __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  {\
+    PY_UINT64_T __pyx_dict_version;\
+    PyObject *__pyx_dict_cached_value;\
+    (var) = __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value);
+#else
+#define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
+#endif
+
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* decode_c_string_utf16.proto */
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 0;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16LE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = -1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16BE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+
+/* decode_c_string.proto */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
+
+/* RaiseException.proto */
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
+
 /* CalculateMetaclass.proto */
 static PyObject *__Pyx_CalculateMetaclass(PyTypeObject *metaclass, PyObject *bases);
 
@@ -1061,87 +1187,50 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
 /* CyFunctionClassCell.proto */
 static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *classobj);
 
-/* PyDictVersioning.proto */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-#define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
-#define __PYX_GET_DICT_VERSION(dict)  (((PyDictObject*)(dict))->ma_version_tag)
-#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)\
-    (version_var) = __PYX_GET_DICT_VERSION(dict);\
-    (cache_var) = (value);
-#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP) {\
-    static PY_UINT64_T __pyx_dict_version = 0;\
-    static PyObject *__pyx_dict_cached_value = NULL;\
-    if (likely(__PYX_GET_DICT_VERSION(DICT) == __pyx_dict_version)) {\
-        (VAR) = __pyx_dict_cached_value;\
-    } else {\
-        (VAR) = __pyx_dict_cached_value = (LOOKUP);\
-        __pyx_dict_version = __PYX_GET_DICT_VERSION(DICT);\
-    }\
+/* ListCompAppend.proto */
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        __Pyx_SET_SIZE(list, len + 1);
+        return 0;
+    }
+    return PyList_Append(list, x);
 }
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj);
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj);
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version);
 #else
-#define __PYX_GET_DICT_VERSION(dict)  (0)
-#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
-#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
 #endif
 
-/* GetModuleGlobalName.proto */
-#if CYTHON_USE_DICT_VERSIONS
-#define __Pyx_GetModuleGlobalName(var, name)  {\
-    static PY_UINT64_T __pyx_dict_version = 0;\
-    static PyObject *__pyx_dict_cached_value = NULL;\
-    (var) = (likely(__pyx_dict_version == __PYX_GET_DICT_VERSION(__pyx_d))) ?\
-        (likely(__pyx_dict_cached_value) ? __Pyx_NewRef(__pyx_dict_cached_value) : __Pyx_GetBuiltinName(name)) :\
-        __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
-}
-#define __Pyx_GetModuleGlobalNameUncached(var, name)  {\
-    PY_UINT64_T __pyx_dict_version;\
-    PyObject *__pyx_dict_cached_value;\
-    (var) = __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
-}
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value);
-#else
-#define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
-#define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
-#endif
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
-#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+/* ObjectGetItem.proto */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
 #else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
-#endif
-
-/* PyErrFetchRestore.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
-#else
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#endif
-#else
-#define __Pyx_PyErr_Clear() PyErr_Clear()
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
 /* CLineInTraceback.proto */
@@ -1169,6 +1258,9 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object);
 /* AddTraceback.proto */
 static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
@@ -1203,14 +1295,19 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'context' */
 
-/* Module declarations from 'lcms2.errors' */
-#define __Pyx_MODULE_NAME "lcms2.errors"
-extern int __pyx_module_is_main_lcms2__errors;
-int __pyx_module_is_main_lcms2__errors = 0;
+/* Module declarations from 'lcms2._errors' */
+static PyObject *__pyx_7genexpr__pyx_v_5lcms2_7_errors_e;
+static void __pyx_f_5lcms2_7_errors_py_errors_logger(cmsContext, cmsUInt32Number, char const *); /*proto*/
+static void __pyx_f_5lcms2_7_errors_raiseError(int, char const *); /*proto*/
+#define __Pyx_MODULE_NAME "lcms2._errors"
+extern int __pyx_module_is_main_lcms2___errors;
+int __pyx_module_is_main_lcms2___errors = 0;
 
-/* Implementation of 'lcms2.errors' */
+/* Implementation of 'lcms2._errors' */
 static PyObject *__pyx_builtin_super;
+static const char __pyx_k_all[] = "__all__";
 static const char __pyx_k_doc[] = "__doc__";
+static const char __pyx_k_get[] = "get";
 static const char __pyx_k_init[] = "__init__";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1229,9 +1326,10 @@ static const char __pyx_k_SeekError[] = "SeekError";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_RangeError[] = "RangeError";
 static const char __pyx_k_WriteError[] = "WriteError";
-static const char __pyx_k_errors_map[] = "_errors_map";
-static const char __pyx_k_lcms2_errors[] = "lcms2.errors";
+static const char __pyx_k_errors_map[] = "__errors_map";
+static const char __pyx_k_init_logger[] = "_init_logger";
 static const char __pyx_k_InternalError[] = "InternalError";
+static const char __pyx_k_lcms2__errors[] = "lcms2._errors";
 static const char __pyx_k_UndefinedError[] = "UndefinedError";
 static const char __pyx_k_FileError___init[] = "FileError.__init__";
 static const char __pyx_k_LcmsError___init[] = "LcmsError.__init__";
@@ -1254,7 +1352,7 @@ static const char __pyx_k_BadSignatureError___init[] = "BadSignatureError.__init
 static const char __pyx_k_AlreadyDefinedError___init[] = "AlreadyDefinedError.__init__";
 static const char __pyx_k_ColorSpaceCheckError___init[] = "ColorSpaceCheckError.__init__";
 static const char __pyx_k_UnknownExtensionError___init[] = "UnknownExtensionError.__init__";
-static const char __pyx_k_src_gravure_lcms2_errors_pyx[] = "src/gravure/lcms2/errors.pyx";
+static const char __pyx_k_src_gravure_lcms2__errors_pyx[] = "src/gravure/lcms2/_errors.pyx";
 static const char __pyx_k_Base_Exception_for_lcms_errors[] = "Base Exception for lcms errors.\n    ";
 static const char __pyx_k_CorruptionDetectedError___init[] = "CorruptionDetectedError.__init__";
 static PyObject *__pyx_n_s_AlreadyDefinedError;
@@ -1288,11 +1386,14 @@ static PyObject *__pyx_n_s_UnknownExtensionError;
 static PyObject *__pyx_n_s_UnknownExtensionError___init;
 static PyObject *__pyx_n_s_WriteError;
 static PyObject *__pyx_n_s_WriteError___init;
+static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_errors_map;
+static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_init;
-static PyObject *__pyx_n_s_lcms2_errors;
+static PyObject *__pyx_n_s_init_logger;
+static PyObject *__pyx_n_s_lcms2__errors;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_message;
 static PyObject *__pyx_n_s_metaclass;
@@ -1301,24 +1402,25 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_s_self;
-static PyObject *__pyx_kp_s_src_gravure_lcms2_errors_pyx;
+static PyObject *__pyx_kp_s_src_gravure_lcms2__errors_pyx;
 static PyObject *__pyx_n_s_super;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_9LcmsError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_14UndefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_9FileError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_10RangeError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_13InternalError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_9NullError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_9ReadError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_9SeekError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_10WriteError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_21UnknownExtensionError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_20ColorSpaceCheckError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_19AlreadyDefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_17BadSignatureError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_23CorruptionDetectedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors_16NotSuitableError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message); /* proto */
+static PyObject *__pyx_pf_5lcms2_7_errors__init_logger(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -1363,9 +1465,10 @@ static PyObject *__pyx_codeobj__24;
 static PyObject *__pyx_codeobj__26;
 static PyObject *__pyx_codeobj__28;
 static PyObject *__pyx_codeobj__30;
+static PyObject *__pyx_codeobj__31;
 /* Late includes */
 
-/* "lcms2/errors.pyx":24
+/* "lcms2/_errors.pyx":24
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1374,10 +1477,10 @@ static PyObject *__pyx_codeobj__30;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_9LcmsError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_9LcmsError___init__[] = "LcmsError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_9LcmsError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_9LcmsError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_9LcmsError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_9LcmsError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_9LcmsError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_9LcmsError___init__[] = "LcmsError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_9LcmsError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_9LcmsError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_9LcmsError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_9LcmsError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -1428,18 +1531,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_9LcmsError_1__init__(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 24, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.LcmsError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.LcmsError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_9LcmsError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_9LcmsError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_9LcmsError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1450,7 +1553,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":25
+  /* "lcms2/_errors.pyx":25
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -1459,7 +1562,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":26
+  /* "lcms2/_errors.pyx":26
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -1500,7 +1603,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":24
+  /* "lcms2/_errors.pyx":24
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1515,7 +1618,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.LcmsError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.LcmsError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1523,7 +1626,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":32
+/* "lcms2/_errors.pyx":32
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1532,10 +1635,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_9LcmsError___init__(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_14UndefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_14UndefinedError___init__[] = "UndefinedError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_14UndefinedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_14UndefinedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_14UndefinedError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_14UndefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_14UndefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_14UndefinedError___init__[] = "UndefinedError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_14UndefinedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_14UndefinedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_14UndefinedError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_14UndefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -1586,18 +1689,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_14UndefinedError_1__init__(PyObject *__
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 32, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.UndefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.UndefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_14UndefinedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_14UndefinedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_14UndefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1608,7 +1711,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":33
+  /* "lcms2/_errors.pyx":33
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -1617,7 +1720,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":34
+  /* "lcms2/_errors.pyx":34
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -1658,7 +1761,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":32
+  /* "lcms2/_errors.pyx":32
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1673,7 +1776,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.UndefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.UndefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1681,7 +1784,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":40
+/* "lcms2/_errors.pyx":40
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1690,10 +1793,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_14UndefinedError___init__(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_9FileError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_9FileError___init__[] = "FileError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_9FileError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_9FileError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_9FileError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_9FileError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_9FileError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_9FileError___init__[] = "FileError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_9FileError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_9FileError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_9FileError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_9FileError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -1744,18 +1847,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_9FileError_1__init__(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 40, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.FileError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.FileError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_9FileError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_9FileError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_9FileError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1766,7 +1869,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":41
+  /* "lcms2/_errors.pyx":41
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -1775,7 +1878,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":42
+  /* "lcms2/_errors.pyx":42
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -1816,7 +1919,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":40
+  /* "lcms2/_errors.pyx":40
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1831,7 +1934,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.FileError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.FileError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1839,7 +1942,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":48
+/* "lcms2/_errors.pyx":48
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1848,10 +1951,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_9FileError___init__(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_10RangeError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_10RangeError___init__[] = "RangeError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_10RangeError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_10RangeError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_10RangeError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_10RangeError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_10RangeError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_10RangeError___init__[] = "RangeError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_10RangeError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_10RangeError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_10RangeError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_10RangeError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -1902,18 +2005,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_10RangeError_1__init__(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 48, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.RangeError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.RangeError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_10RangeError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_10RangeError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_10RangeError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1924,7 +2027,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":49
+  /* "lcms2/_errors.pyx":49
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -1933,7 +2036,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":50
+  /* "lcms2/_errors.pyx":50
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -1974,7 +2077,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":48
+  /* "lcms2/_errors.pyx":48
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -1989,7 +2092,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.RangeError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.RangeError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1997,7 +2100,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":56
+/* "lcms2/_errors.pyx":56
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2006,10 +2109,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_10RangeError___init__(CYTHON_UNUSED PyO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_13InternalError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_13InternalError___init__[] = "InternalError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_13InternalError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_13InternalError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_13InternalError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_13InternalError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_13InternalError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_13InternalError___init__[] = "InternalError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_13InternalError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_13InternalError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_13InternalError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_13InternalError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2060,18 +2163,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_13InternalError_1__init__(PyObject *__p
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 56, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.InternalError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.InternalError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_13InternalError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_13InternalError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_13InternalError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2082,7 +2185,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":57
+  /* "lcms2/_errors.pyx":57
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2091,7 +2194,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":58
+  /* "lcms2/_errors.pyx":58
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2132,7 +2235,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":56
+  /* "lcms2/_errors.pyx":56
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2147,7 +2250,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.InternalError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.InternalError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2155,7 +2258,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":64
+/* "lcms2/_errors.pyx":64
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2164,10 +2267,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_13InternalError___init__(CYTHON_UNUSED 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_9NullError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_9NullError___init__[] = "NullError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_9NullError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_9NullError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_9NullError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_9NullError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_9NullError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_9NullError___init__[] = "NullError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_9NullError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_9NullError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_9NullError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_9NullError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2218,18 +2321,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_9NullError_1__init__(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 64, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.NullError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.NullError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_9NullError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_9NullError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_9NullError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2240,7 +2343,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":65
+  /* "lcms2/_errors.pyx":65
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2249,7 +2352,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":66
+  /* "lcms2/_errors.pyx":66
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2290,7 +2393,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":64
+  /* "lcms2/_errors.pyx":64
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2305,7 +2408,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.NullError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.NullError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2313,7 +2416,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":72
+/* "lcms2/_errors.pyx":72
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2322,10 +2425,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_9NullError___init__(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_9ReadError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_9ReadError___init__[] = "ReadError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_9ReadError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_9ReadError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_9ReadError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_9ReadError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_9ReadError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_9ReadError___init__[] = "ReadError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_9ReadError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_9ReadError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_9ReadError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_9ReadError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2376,18 +2479,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_9ReadError_1__init__(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 72, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.ReadError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.ReadError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_9ReadError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_9ReadError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_9ReadError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2398,7 +2501,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":73
+  /* "lcms2/_errors.pyx":73
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2407,7 +2510,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":74
+  /* "lcms2/_errors.pyx":74
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2448,7 +2551,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":72
+  /* "lcms2/_errors.pyx":72
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2463,7 +2566,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.ReadError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.ReadError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2471,7 +2574,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":80
+/* "lcms2/_errors.pyx":80
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2480,10 +2583,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_9ReadError___init__(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_9SeekError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_9SeekError___init__[] = "SeekError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_9SeekError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_9SeekError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_9SeekError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_9SeekError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_9SeekError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_9SeekError___init__[] = "SeekError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_9SeekError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_9SeekError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_9SeekError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_9SeekError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2534,18 +2637,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_9SeekError_1__init__(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 80, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.SeekError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.SeekError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_9SeekError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_9SeekError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_9SeekError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2556,7 +2659,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":81
+  /* "lcms2/_errors.pyx":81
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2565,7 +2668,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":82
+  /* "lcms2/_errors.pyx":82
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2606,7 +2709,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":80
+  /* "lcms2/_errors.pyx":80
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2621,7 +2724,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.SeekError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.SeekError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2629,7 +2732,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":88
+/* "lcms2/_errors.pyx":88
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2638,10 +2741,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_9SeekError___init__(CYTHON_UNUSED PyObj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_10WriteError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_10WriteError___init__[] = "WriteError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_10WriteError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_10WriteError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_10WriteError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_10WriteError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_10WriteError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_10WriteError___init__[] = "WriteError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_10WriteError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_10WriteError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_10WriteError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_10WriteError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2692,18 +2795,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_10WriteError_1__init__(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.WriteError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.WriteError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_10WriteError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_10WriteError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_10WriteError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2714,7 +2817,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":89
+  /* "lcms2/_errors.pyx":89
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2723,7 +2826,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":90
+  /* "lcms2/_errors.pyx":90
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2764,7 +2867,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":88
+  /* "lcms2/_errors.pyx":88
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2779,7 +2882,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.WriteError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.WriteError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2787,7 +2890,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":96
+/* "lcms2/_errors.pyx":96
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2796,10 +2899,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_10WriteError___init__(CYTHON_UNUSED PyO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_21UnknownExtensionError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_21UnknownExtensionError___init__[] = "UnknownExtensionError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_21UnknownExtensionError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_21UnknownExtensionError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_21UnknownExtensionError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_21UnknownExtensionError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_21UnknownExtensionError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_21UnknownExtensionError___init__[] = "UnknownExtensionError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_21UnknownExtensionError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_21UnknownExtensionError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_21UnknownExtensionError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_21UnknownExtensionError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -2850,18 +2953,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_21UnknownExtensionError_1__init__(PyObj
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 96, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.UnknownExtensionError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.UnknownExtensionError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_21UnknownExtensionError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_21UnknownExtensionError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2872,7 +2975,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":97
+  /* "lcms2/_errors.pyx":97
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -2881,7 +2984,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":98
+  /* "lcms2/_errors.pyx":98
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -2922,7 +3025,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":96
+  /* "lcms2/_errors.pyx":96
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2937,7 +3040,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.UnknownExtensionError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.UnknownExtensionError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2945,7 +3048,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":104
+/* "lcms2/_errors.pyx":104
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -2954,10 +3057,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_21UnknownExtensionError___init__(CYTHON
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_20ColorSpaceCheckError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_20ColorSpaceCheckError___init__[] = "ColorSpaceCheckError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_20ColorSpaceCheckError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_20ColorSpaceCheckError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_20ColorSpaceCheckError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_20ColorSpaceCheckError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_20ColorSpaceCheckError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_20ColorSpaceCheckError___init__[] = "ColorSpaceCheckError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_20ColorSpaceCheckError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_20ColorSpaceCheckError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_20ColorSpaceCheckError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_20ColorSpaceCheckError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -3008,18 +3111,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_20ColorSpaceCheckError_1__init__(PyObje
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 104, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.ColorSpaceCheckError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.ColorSpaceCheckError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_20ColorSpaceCheckError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_20ColorSpaceCheckError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3030,7 +3133,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":105
+  /* "lcms2/_errors.pyx":105
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -3039,7 +3142,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":106
+  /* "lcms2/_errors.pyx":106
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -3080,7 +3183,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":104
+  /* "lcms2/_errors.pyx":104
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3095,7 +3198,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.ColorSpaceCheckError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.ColorSpaceCheckError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3103,7 +3206,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":112
+/* "lcms2/_errors.pyx":112
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3112,10 +3215,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_20ColorSpaceCheckError___init__(CYTHON_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_19AlreadyDefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_19AlreadyDefinedError___init__[] = "AlreadyDefinedError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_19AlreadyDefinedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_19AlreadyDefinedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_19AlreadyDefinedError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_19AlreadyDefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_19AlreadyDefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_19AlreadyDefinedError___init__[] = "AlreadyDefinedError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_19AlreadyDefinedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_19AlreadyDefinedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_19AlreadyDefinedError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_19AlreadyDefinedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -3166,18 +3269,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_19AlreadyDefinedError_1__init__(PyObjec
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 112, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.AlreadyDefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.AlreadyDefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_19AlreadyDefinedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_19AlreadyDefinedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3188,7 +3291,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":113
+  /* "lcms2/_errors.pyx":113
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -3197,7 +3300,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":114
+  /* "lcms2/_errors.pyx":114
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -3238,7 +3341,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":112
+  /* "lcms2/_errors.pyx":112
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3253,7 +3356,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.AlreadyDefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.AlreadyDefinedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3261,7 +3364,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":120
+/* "lcms2/_errors.pyx":120
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3270,10 +3373,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_19AlreadyDefinedError___init__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_17BadSignatureError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_17BadSignatureError___init__[] = "BadSignatureError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_17BadSignatureError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_17BadSignatureError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_17BadSignatureError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_17BadSignatureError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_17BadSignatureError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_17BadSignatureError___init__[] = "BadSignatureError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_17BadSignatureError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_17BadSignatureError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_17BadSignatureError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_17BadSignatureError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -3324,18 +3427,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_17BadSignatureError_1__init__(PyObject 
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 120, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.BadSignatureError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.BadSignatureError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_17BadSignatureError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_17BadSignatureError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_17BadSignatureError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3346,7 +3449,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":121
+  /* "lcms2/_errors.pyx":121
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -3355,7 +3458,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":122
+  /* "lcms2/_errors.pyx":122
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -3396,7 +3499,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":120
+  /* "lcms2/_errors.pyx":120
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3411,7 +3514,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.BadSignatureError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.BadSignatureError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3419,7 +3522,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":128
+/* "lcms2/_errors.pyx":128
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3428,10 +3531,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_17BadSignatureError___init__(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_23CorruptionDetectedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_23CorruptionDetectedError___init__[] = "CorruptionDetectedError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_23CorruptionDetectedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_23CorruptionDetectedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_23CorruptionDetectedError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_23CorruptionDetectedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_23CorruptionDetectedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_23CorruptionDetectedError___init__[] = "CorruptionDetectedError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_23CorruptionDetectedError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_23CorruptionDetectedError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_23CorruptionDetectedError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_23CorruptionDetectedError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -3482,18 +3585,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_23CorruptionDetectedError_1__init__(PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 128, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.CorruptionDetectedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.CorruptionDetectedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_23CorruptionDetectedError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_23CorruptionDetectedError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3504,7 +3607,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":129
+  /* "lcms2/_errors.pyx":129
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -3513,7 +3616,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":130
+  /* "lcms2/_errors.pyx":130
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -3554,7 +3657,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":128
+  /* "lcms2/_errors.pyx":128
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3569,7 +3672,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.CorruptionDetectedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.CorruptionDetectedError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3577,7 +3680,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
   return __pyx_r;
 }
 
-/* "lcms2/errors.pyx":136
+/* "lcms2/_errors.pyx":136
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3586,10 +3689,10 @@ static PyObject *__pyx_pf_5lcms2_6errors_23CorruptionDetectedError___init__(CYTH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5lcms2_6errors_16NotSuitableError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5lcms2_6errors_16NotSuitableError___init__[] = "NotSuitableError.__init__(self, message)";
-static PyMethodDef __pyx_mdef_5lcms2_6errors_16NotSuitableError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_6errors_16NotSuitableError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_6errors_16NotSuitableError___init__};
-static PyObject *__pyx_pw_5lcms2_6errors_16NotSuitableError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5lcms2_7_errors_16NotSuitableError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5lcms2_7_errors_16NotSuitableError___init__[] = "NotSuitableError.__init__(self, message)";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_16NotSuitableError_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5lcms2_7_errors_16NotSuitableError_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5lcms2_7_errors_16NotSuitableError___init__};
+static PyObject *__pyx_pw_5lcms2_7_errors_16NotSuitableError_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_message = 0;
   int __pyx_lineno = 0;
@@ -3640,18 +3743,18 @@ static PyObject *__pyx_pw_5lcms2_6errors_16NotSuitableError_1__init__(PyObject *
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 136, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lcms2.errors.NotSuitableError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.NotSuitableError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5lcms2_6errors_16NotSuitableError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
+  __pyx_r = __pyx_pf_5lcms2_7_errors_16NotSuitableError___init__(__pyx_self, __pyx_v_self, __pyx_v_message);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
+static PyObject *__pyx_pf_5lcms2_7_errors_16NotSuitableError___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_message) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3662,7 +3765,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "lcms2/errors.pyx":137
+  /* "lcms2/_errors.pyx":137
  *     """
  *     def __init__(self, message):
  *         self.message = message             # <<<<<<<<<<<<<<
@@ -3671,7 +3774,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUS
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":138
+  /* "lcms2/_errors.pyx":138
  *     def __init__(self, message):
  *         self.message = message
  *         super().__init__(message)             # <<<<<<<<<<<<<<
@@ -3712,7 +3815,7 @@ static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUS
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":136
+  /* "lcms2/_errors.pyx":136
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3727,9 +3830,249 @@ static PyObject *__pyx_pf_5lcms2_6errors_16NotSuitableError___init__(CYTHON_UNUS
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("lcms2.errors.NotSuitableError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lcms2._errors.NotSuitableError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "lcms2/_errors.pyx":163
+ * # Changed in version 3.7: PyEval_InitThreads() function is now
+ * # called by Py_Initialize(), so you dont have to call it yourself anymore.
+ * cdef void py_errors_logger(cmsContext ContextID, cmsUInt32Number ErrorCode,             # <<<<<<<<<<<<<<
+ *                            const char *Text):
+ *     raiseError(ErrorCode, Text)
+ */
+
+static void __pyx_f_5lcms2_7_errors_py_errors_logger(CYTHON_UNUSED cmsContext __pyx_v_ContextID, cmsUInt32Number __pyx_v_ErrorCode, char const *__pyx_v_Text) {
+  __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("py_errors_logger", 0);
+
+  /* "lcms2/_errors.pyx":165
+ * cdef void py_errors_logger(cmsContext ContextID, cmsUInt32Number ErrorCode,
+ *                            const char *Text):
+ *     raiseError(ErrorCode, Text)             # <<<<<<<<<<<<<<
+ * 
+ * cdef void raiseError(int err_code, const char *message) except * with gil:
+ */
+  __pyx_f_5lcms2_7_errors_raiseError(__pyx_v_ErrorCode, __pyx_v_Text); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
+
+  /* "lcms2/_errors.pyx":163
+ * # Changed in version 3.7: PyEval_InitThreads() function is now
+ * # called by Py_Initialize(), so you dont have to call it yourself anymore.
+ * cdef void py_errors_logger(cmsContext ContextID, cmsUInt32Number ErrorCode,             # <<<<<<<<<<<<<<
+ *                            const char *Text):
+ *     raiseError(ErrorCode, Text)
+ */
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("lcms2._errors.py_errors_logger", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+}
+
+/* "lcms2/_errors.pyx":167
+ *     raiseError(ErrorCode, Text)
+ * 
+ * cdef void raiseError(int err_code, const char *message) except * with gil:             # <<<<<<<<<<<<<<
+ *     error_cls = __errors_map.get(err_code, UndefinedError)
+ *     raise(error_cls(message.decode('ascii')))
+ */
+
+static void __pyx_f_5lcms2_7_errors_raiseError(int __pyx_v_err_code, char const *__pyx_v_message) {
+  PyObject *__pyx_v_error_cls = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  #ifdef WITH_THREAD
+  PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
+  #endif
+  __Pyx_RefNannySetupContext("raiseError", 0);
+
+  /* "lcms2/_errors.pyx":168
+ * 
+ * cdef void raiseError(int err_code, const char *message) except * with gil:
+ *     error_cls = __errors_map.get(err_code, UndefinedError)             # <<<<<<<<<<<<<<
+ *     raise(error_cls(message.decode('ascii')))
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_errors_map); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_err_code); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_UndefinedError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_3)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    if (__pyx_t_5) {
+      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
+    __pyx_t_2 = 0;
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_error_cls = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "lcms2/_errors.pyx":169
+ * cdef void raiseError(int err_code, const char *message) except * with gil:
+ *     error_cls = __errors_map.get(err_code, UndefinedError)
+ *     raise(error_cls(message.decode('ascii')))             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_3 = __Pyx_decode_c_string(__pyx_v_message, 0, strlen(__pyx_v_message), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_INCREF(__pyx_v_error_cls);
+  __pyx_t_7 = __pyx_v_error_cls; __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_7);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_7, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_ERR(0, 169, __pyx_L1_error)
+
+  /* "lcms2/_errors.pyx":167
+ *     raiseError(ErrorCode, Text)
+ * 
+ * cdef void raiseError(int err_code, const char *message) except * with gil:             # <<<<<<<<<<<<<<
+ *     error_cls = __errors_map.get(err_code, UndefinedError)
+ *     raise(error_cls(message.decode('ascii')))
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("lcms2._errors.raiseError", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_v_error_cls);
+  __Pyx_RefNannyFinishContext();
+  #ifdef WITH_THREAD
+  __Pyx_PyGILState_Release(__pyx_gilstate_save);
+  #endif
+}
+
+/* "lcms2/_errors.pyx":172
+ * 
+ * 
+ * def _init_logger():             # <<<<<<<<<<<<<<
+ *     cmsSetLogErrorHandler(py_errors_logger)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5lcms2_7_errors_1_init_logger(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5lcms2_7_errors__init_logger[] = "_init_logger()";
+static PyMethodDef __pyx_mdef_5lcms2_7_errors_1_init_logger = {"_init_logger", (PyCFunction)__pyx_pw_5lcms2_7_errors_1_init_logger, METH_NOARGS, __pyx_doc_5lcms2_7_errors__init_logger};
+static PyObject *__pyx_pw_5lcms2_7_errors_1_init_logger(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_init_logger (wrapper)", 0);
+  __pyx_r = __pyx_pf_5lcms2_7_errors__init_logger(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5lcms2_7_errors__init_logger(CYTHON_UNUSED PyObject *__pyx_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_init_logger", 0);
+
+  /* "lcms2/_errors.pyx":173
+ * 
+ * def _init_logger():
+ *     cmsSetLogErrorHandler(py_errors_logger)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  cmsSetLogErrorHandler(__pyx_f_5lcms2_7_errors_py_errors_logger);
+
+  /* "lcms2/_errors.pyx":172
+ * 
+ * 
+ * def _init_logger():             # <<<<<<<<<<<<<<
+ *     cmsSetLogErrorHandler(py_errors_logger)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -3742,17 +4085,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_errors(PyObject* module); /*proto*/
+static int __pyx_pymod_exec__errors(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_errors},
+  {Py_mod_exec, (void*)__pyx_pymod_exec__errors},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "errors",
+    "_errors",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -3812,11 +4155,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_UnknownExtensionError___init, __pyx_k_UnknownExtensionError___init, sizeof(__pyx_k_UnknownExtensionError___init), 0, 0, 1, 1},
   {&__pyx_n_s_WriteError, __pyx_k_WriteError, sizeof(__pyx_k_WriteError), 0, 0, 1, 1},
   {&__pyx_n_s_WriteError___init, __pyx_k_WriteError___init, sizeof(__pyx_k_WriteError___init), 0, 0, 1, 1},
+  {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_errors_map, __pyx_k_errors_map, sizeof(__pyx_k_errors_map), 0, 0, 1, 1},
+  {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
-  {&__pyx_n_s_lcms2_errors, __pyx_k_lcms2_errors, sizeof(__pyx_k_lcms2_errors), 0, 0, 1, 1},
+  {&__pyx_n_s_init_logger, __pyx_k_init_logger, sizeof(__pyx_k_init_logger), 0, 0, 1, 1},
+  {&__pyx_n_s_lcms2__errors, __pyx_k_lcms2__errors, sizeof(__pyx_k_lcms2__errors), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_message, __pyx_k_message, sizeof(__pyx_k_message), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
@@ -3825,7 +4171,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
-  {&__pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_k_src_gravure_lcms2_errors_pyx, sizeof(__pyx_k_src_gravure_lcms2_errors_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_k_src_gravure_lcms2__errors_pyx, sizeof(__pyx_k_src_gravure_lcms2__errors_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_super, __pyx_k_super, sizeof(__pyx_k_super), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
@@ -3841,7 +4187,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "lcms2/errors.pyx":24
+  /* "lcms2/_errors.pyx":24
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3851,9 +4197,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 24, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":32
+  /* "lcms2/_errors.pyx":32
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3863,9 +4209,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__3 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 32, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":40
+  /* "lcms2/_errors.pyx":40
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3875,9 +4221,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__5 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 40, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 40, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 40, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":48
+  /* "lcms2/_errors.pyx":48
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3887,9 +4233,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 48, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 48, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 48, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":56
+  /* "lcms2/_errors.pyx":56
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3899,9 +4245,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 56, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":64
+  /* "lcms2/_errors.pyx":64
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3911,9 +4257,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 64, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":72
+  /* "lcms2/_errors.pyx":72
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3923,9 +4269,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__13 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 72, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":80
+  /* "lcms2/_errors.pyx":80
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3935,9 +4281,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__15 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 80, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":88
+  /* "lcms2/_errors.pyx":88
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3947,9 +4293,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__17 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 88, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":96
+  /* "lcms2/_errors.pyx":96
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3959,9 +4305,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__19 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 96, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":104
+  /* "lcms2/_errors.pyx":104
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3971,9 +4317,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__21 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 104, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 104, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 104, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":112
+  /* "lcms2/_errors.pyx":112
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3983,9 +4329,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__23 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 112, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 112, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 112, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":120
+  /* "lcms2/_errors.pyx":120
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -3995,9 +4341,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__25 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 120, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 120, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 120, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":128
+  /* "lcms2/_errors.pyx":128
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -4007,9 +4353,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__27 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 128, __pyx_L1_error)
 
-  /* "lcms2/errors.pyx":136
+  /* "lcms2/_errors.pyx":136
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
@@ -4019,7 +4365,16 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__29 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_message); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_errors_pyx, __pyx_n_s_init, 136, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init, 136, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 136, __pyx_L1_error)
+
+  /* "lcms2/_errors.pyx":172
+ * 
+ * 
+ * def _init_logger():             # <<<<<<<<<<<<<<
+ *     cmsSetLogErrorHandler(py_errors_logger)
+ * 
+ */
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2__errors_pyx, __pyx_n_s_init_logger, 172, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 172, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4060,6 +4415,7 @@ static int __Pyx_modinit_global_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_global_init_code", 0);
   /*--- Global init code ---*/
+  __pyx_7genexpr__pyx_v_5lcms2_7_errors_e = Py_None; Py_INCREF(Py_None);
   __Pyx_RefNannyFinishContext();
   return 0;
 }
@@ -4131,11 +4487,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC initerrors(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC initerrors(void)
+__Pyx_PyMODINIT_FUNC init_errors(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC init_errors(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit_errors(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit_errors(void)
+__Pyx_PyMODINIT_FUNC PyInit__errors(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit__errors(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -4202,7 +4558,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec_errors(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec__errors(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -4211,6 +4567,8 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_errors(PyObject *__pyx_pyinit_modu
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
+  Py_ssize_t __pyx_t_6;
+  PyObject *(*__pyx_t_7)(PyObject *);
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4218,7 +4576,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_errors(PyObject *__pyx_pyinit_modu
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module 'errors' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module '_errors' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -4233,7 +4591,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_errors(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit__errors(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -4272,7 +4630,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("errors", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("_errors", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -4290,14 +4648,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_lcms2__errors) {
+  if (__pyx_module_is_main_lcms2___errors) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "lcms2.errors")) {
-      if (unlikely(PyDict_SetItemString(modules, "lcms2.errors", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "lcms2._errors")) {
+      if (unlikely(PyDict_SetItemString(modules, "lcms2._errors", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -4318,7 +4676,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "lcms2/errors.pyx":21
+  /* "lcms2/_errors.pyx":21
  * #
  * 
  * class LcmsError(Exception):             # <<<<<<<<<<<<<<
@@ -4332,19 +4690,19 @@ if (!__Pyx_RefNanny) {
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_LcmsError, __pyx_n_s_LcmsError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_LcmsError, __pyx_n_s_LcmsError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":24
+  /* "lcms2/_errors.pyx":24
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_9LcmsError_1__init__, 0, __pyx_n_s_LcmsError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_9LcmsError_1__init__, 0, __pyx_n_s_LcmsError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4352,7 +4710,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":21
+  /* "lcms2/_errors.pyx":21
  * #
  * 
  * class LcmsError(Exception):             # <<<<<<<<<<<<<<
@@ -4369,7 +4727,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":29
+  /* "lcms2/_errors.pyx":29
  * 
  * 
  * class UndefinedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4385,19 +4743,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_UndefinedError, __pyx_n_s_UndefinedError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_UndefinedError, __pyx_n_s_UndefinedError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":32
+  /* "lcms2/_errors.pyx":32
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_14UndefinedError_1__init__, 0, __pyx_n_s_UndefinedError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_14UndefinedError_1__init__, 0, __pyx_n_s_UndefinedError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4405,7 +4763,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":29
+  /* "lcms2/_errors.pyx":29
  * 
  * 
  * class UndefinedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4422,7 +4780,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":37
+  /* "lcms2/_errors.pyx":37
  * 
  * 
  * class FileError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4438,19 +4796,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_FileError, __pyx_n_s_FileError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_FileError, __pyx_n_s_FileError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":40
+  /* "lcms2/_errors.pyx":40
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_9FileError_1__init__, 0, __pyx_n_s_FileError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_9FileError_1__init__, 0, __pyx_n_s_FileError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4458,7 +4816,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":37
+  /* "lcms2/_errors.pyx":37
  * 
  * 
  * class FileError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4475,7 +4833,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":45
+  /* "lcms2/_errors.pyx":45
  * 
  * 
  * class RangeError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4491,19 +4849,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_RangeError, __pyx_n_s_RangeError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_RangeError, __pyx_n_s_RangeError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":48
+  /* "lcms2/_errors.pyx":48
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_10RangeError_1__init__, 0, __pyx_n_s_RangeError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_10RangeError_1__init__, 0, __pyx_n_s_RangeError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4511,7 +4869,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":45
+  /* "lcms2/_errors.pyx":45
  * 
  * 
  * class RangeError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4528,7 +4886,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":53
+  /* "lcms2/_errors.pyx":53
  * 
  * 
  * class InternalError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4544,19 +4902,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_InternalError, __pyx_n_s_InternalError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_InternalError, __pyx_n_s_InternalError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":56
+  /* "lcms2/_errors.pyx":56
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_13InternalError_1__init__, 0, __pyx_n_s_InternalError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_13InternalError_1__init__, 0, __pyx_n_s_InternalError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4564,7 +4922,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":53
+  /* "lcms2/_errors.pyx":53
  * 
  * 
  * class InternalError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4581,7 +4939,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":61
+  /* "lcms2/_errors.pyx":61
  * 
  * 
  * class NullError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4597,19 +4955,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_NullError, __pyx_n_s_NullError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_NullError, __pyx_n_s_NullError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":64
+  /* "lcms2/_errors.pyx":64
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_9NullError_1__init__, 0, __pyx_n_s_NullError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_9NullError_1__init__, 0, __pyx_n_s_NullError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4617,7 +4975,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":61
+  /* "lcms2/_errors.pyx":61
  * 
  * 
  * class NullError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4634,7 +4992,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":69
+  /* "lcms2/_errors.pyx":69
  * 
  * 
  * class ReadError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4650,19 +5008,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ReadError, __pyx_n_s_ReadError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ReadError, __pyx_n_s_ReadError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":72
+  /* "lcms2/_errors.pyx":72
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_9ReadError_1__init__, 0, __pyx_n_s_ReadError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_9ReadError_1__init__, 0, __pyx_n_s_ReadError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4670,7 +5028,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":69
+  /* "lcms2/_errors.pyx":69
  * 
  * 
  * class ReadError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4687,7 +5045,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":77
+  /* "lcms2/_errors.pyx":77
  * 
  * 
  * class SeekError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4703,19 +5061,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_SeekError, __pyx_n_s_SeekError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_SeekError, __pyx_n_s_SeekError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":80
+  /* "lcms2/_errors.pyx":80
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_9SeekError_1__init__, 0, __pyx_n_s_SeekError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_9SeekError_1__init__, 0, __pyx_n_s_SeekError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4723,7 +5081,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":77
+  /* "lcms2/_errors.pyx":77
  * 
  * 
  * class SeekError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4740,7 +5098,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":85
+  /* "lcms2/_errors.pyx":85
  * 
  * 
  * class WriteError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4756,19 +5114,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_WriteError, __pyx_n_s_WriteError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_WriteError, __pyx_n_s_WriteError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":88
+  /* "lcms2/_errors.pyx":88
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_10WriteError_1__init__, 0, __pyx_n_s_WriteError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_10WriteError_1__init__, 0, __pyx_n_s_WriteError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4776,7 +5134,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":85
+  /* "lcms2/_errors.pyx":85
  * 
  * 
  * class WriteError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4793,7 +5151,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":93
+  /* "lcms2/_errors.pyx":93
  * 
  * 
  * class UnknownExtensionError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4809,19 +5167,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_UnknownExtensionError, __pyx_n_s_UnknownExtensionError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_UnknownExtensionError, __pyx_n_s_UnknownExtensionError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":96
+  /* "lcms2/_errors.pyx":96
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_21UnknownExtensionError_1__init__, 0, __pyx_n_s_UnknownExtensionError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_21UnknownExtensionError_1__init__, 0, __pyx_n_s_UnknownExtensionError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4829,7 +5187,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":93
+  /* "lcms2/_errors.pyx":93
  * 
  * 
  * class UnknownExtensionError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4846,7 +5204,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":101
+  /* "lcms2/_errors.pyx":101
  * 
  * 
  * class ColorSpaceCheckError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4862,19 +5220,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorSpaceCheckError, __pyx_n_s_ColorSpaceCheckError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorSpaceCheckError, __pyx_n_s_ColorSpaceCheckError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":104
+  /* "lcms2/_errors.pyx":104
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_20ColorSpaceCheckError_1__init__, 0, __pyx_n_s_ColorSpaceCheckError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_20ColorSpaceCheckError_1__init__, 0, __pyx_n_s_ColorSpaceCheckError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4882,7 +5240,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":101
+  /* "lcms2/_errors.pyx":101
  * 
  * 
  * class ColorSpaceCheckError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4899,7 +5257,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":109
+  /* "lcms2/_errors.pyx":109
  * 
  * 
  * class AlreadyDefinedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4915,19 +5273,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_AlreadyDefinedError, __pyx_n_s_AlreadyDefinedError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_AlreadyDefinedError, __pyx_n_s_AlreadyDefinedError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":112
+  /* "lcms2/_errors.pyx":112
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_19AlreadyDefinedError_1__init__, 0, __pyx_n_s_AlreadyDefinedError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_19AlreadyDefinedError_1__init__, 0, __pyx_n_s_AlreadyDefinedError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -4935,7 +5293,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":109
+  /* "lcms2/_errors.pyx":109
  * 
  * 
  * class AlreadyDefinedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4952,7 +5310,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":117
+  /* "lcms2/_errors.pyx":117
  * 
  * 
  * class BadSignatureError(LcmsError):             # <<<<<<<<<<<<<<
@@ -4968,19 +5326,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_BadSignatureError, __pyx_n_s_BadSignatureError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_BadSignatureError, __pyx_n_s_BadSignatureError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":120
+  /* "lcms2/_errors.pyx":120
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_17BadSignatureError_1__init__, 0, __pyx_n_s_BadSignatureError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_17BadSignatureError_1__init__, 0, __pyx_n_s_BadSignatureError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -4988,7 +5346,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":117
+  /* "lcms2/_errors.pyx":117
  * 
  * 
  * class BadSignatureError(LcmsError):             # <<<<<<<<<<<<<<
@@ -5005,7 +5363,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":125
+  /* "lcms2/_errors.pyx":125
  * 
  * 
  * class CorruptionDetectedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -5021,19 +5379,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_CorruptionDetectedError, __pyx_n_s_CorruptionDetectedError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_CorruptionDetectedError, __pyx_n_s_CorruptionDetectedError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "lcms2/errors.pyx":128
+  /* "lcms2/_errors.pyx":128
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_23CorruptionDetectedError_1__init__, 0, __pyx_n_s_CorruptionDetectedError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_23CorruptionDetectedError_1__init__, 0, __pyx_n_s_CorruptionDetectedError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_5, __pyx_t_4);
@@ -5041,7 +5399,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "lcms2/errors.pyx":125
+  /* "lcms2/_errors.pyx":125
  * 
  * 
  * class CorruptionDetectedError(LcmsError):             # <<<<<<<<<<<<<<
@@ -5058,7 +5416,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":133
+  /* "lcms2/_errors.pyx":133
  * 
  * 
  * class NotSuitableError(LcmsError):             # <<<<<<<<<<<<<<
@@ -5074,19 +5432,19 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_NotSuitableError, __pyx_n_s_NotSuitableError, (PyObject *) NULL, __pyx_n_s_lcms2_errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_NotSuitableError, __pyx_n_s_NotSuitableError, (PyObject *) NULL, __pyx_n_s_lcms2__errors, __pyx_kp_s_Base_Exception_for_lcms_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "lcms2/errors.pyx":136
+  /* "lcms2/_errors.pyx":136
  *     """Base Exception for lcms errors.
  *     """
  *     def __init__(self, message):             # <<<<<<<<<<<<<<
  *         self.message = message
  *         super().__init__(message)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_6errors_16NotSuitableError_1__init__, 0, __pyx_n_s_NotSuitableError___init, NULL, __pyx_n_s_lcms2_errors, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5lcms2_7_errors_16NotSuitableError_1__init__, 0, __pyx_n_s_NotSuitableError___init, NULL, __pyx_n_s_lcms2__errors, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
@@ -5094,7 +5452,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "lcms2/errors.pyx":133
+  /* "lcms2/_errors.pyx":133
  * 
  * 
  * class NotSuitableError(LcmsError):             # <<<<<<<<<<<<<<
@@ -5111,10 +5469,10 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":141
+  /* "lcms2/_errors.pyx":141
  * 
  * 
- * _errors_map = {0: UndefinedError,             # <<<<<<<<<<<<<<
+ * __errors_map = {0: UndefinedError,             # <<<<<<<<<<<<<<
  *                1: FileError,
  *                2: RangeError,
  */
@@ -5125,9 +5483,9 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_0, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":142
+  /* "lcms2/_errors.pyx":142
  * 
- * _errors_map = {0: UndefinedError,
+ * __errors_map = {0: UndefinedError,
  *                1: FileError,             # <<<<<<<<<<<<<<
  *                2: RangeError,
  *                3: InternalError,
@@ -5137,8 +5495,8 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_1, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":143
- * _errors_map = {0: UndefinedError,
+  /* "lcms2/_errors.pyx":143
+ * __errors_map = {0: UndefinedError,
  *                1: FileError,
  *                2: RangeError,             # <<<<<<<<<<<<<<
  *                3: InternalError,
@@ -5149,7 +5507,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_2, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":144
+  /* "lcms2/_errors.pyx":144
  *                1: FileError,
  *                2: RangeError,
  *                3: InternalError,             # <<<<<<<<<<<<<<
@@ -5161,7 +5519,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_3, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":145
+  /* "lcms2/_errors.pyx":145
  *                2: RangeError,
  *                3: InternalError,
  *                4: NullError,             # <<<<<<<<<<<<<<
@@ -5173,7 +5531,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_4, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":146
+  /* "lcms2/_errors.pyx":146
  *                3: InternalError,
  *                4: NullError,
  *                5: ReadError,             # <<<<<<<<<<<<<<
@@ -5185,7 +5543,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_5, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":147
+  /* "lcms2/_errors.pyx":147
  *                4: NullError,
  *                5: ReadError,
  *                6: SeekError,             # <<<<<<<<<<<<<<
@@ -5197,7 +5555,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_6, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":148
+  /* "lcms2/_errors.pyx":148
  *                5: ReadError,
  *                6: SeekError,
  *                7: WriteError,             # <<<<<<<<<<<<<<
@@ -5209,7 +5567,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_7, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":149
+  /* "lcms2/_errors.pyx":149
  *                6: SeekError,
  *                7: WriteError,
  *                8: UnknownExtensionError,             # <<<<<<<<<<<<<<
@@ -5221,7 +5579,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_8, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":150
+  /* "lcms2/_errors.pyx":150
  *                7: WriteError,
  *                8: UnknownExtensionError,
  *                9: ColorSpaceCheckError,             # <<<<<<<<<<<<<<
@@ -5233,7 +5591,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_9, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":151
+  /* "lcms2/_errors.pyx":151
  *                8: UnknownExtensionError,
  *                9: ColorSpaceCheckError,
  *                10: AlreadyDefinedError,             # <<<<<<<<<<<<<<
@@ -5245,7 +5603,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_10, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":152
+  /* "lcms2/_errors.pyx":152
  *                9: ColorSpaceCheckError,
  *                10: AlreadyDefinedError,
  *                11: BadSignatureError,             # <<<<<<<<<<<<<<
@@ -5257,21 +5615,24 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_11, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":153
+  /* "lcms2/_errors.pyx":153
  *                10: AlreadyDefinedError,
  *                11: BadSignatureError,
  *                12: CorruptionDetectedError,             # <<<<<<<<<<<<<<
  *                13: NotSuitableError}
+ * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_CorruptionDetectedError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_t_1, __pyx_int_12, __pyx_t_2) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "lcms2/errors.pyx":154
+  /* "lcms2/_errors.pyx":154
  *                11: BadSignatureError,
  *                12: CorruptionDetectedError,
  *                13: NotSuitableError}             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_NotSuitableError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -5280,7 +5641,97 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_errors_map, __pyx_t_1) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "lcms2/errors.pyx":1
+  /* "lcms2/_errors.pyx":172
+ * 
+ * 
+ * def _init_logger():             # <<<<<<<<<<<<<<
+ *     cmsSetLogErrorHandler(py_errors_logger)
+ * 
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5lcms2_7_errors_1_init_logger, NULL, __pyx_n_s_lcms2__errors); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_init_logger, __pyx_t_1) < 0) __PYX_ERR(0, 172, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "lcms2/_errors.pyx":176
+ * 
+ * 
+ * __all__ =  [__errors_map[e].__name__ for e in __errors_map]             # <<<<<<<<<<<<<<
+ */
+  { /* enter inner scope */
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L4_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_errors_map); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L4_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+      __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3); __pyx_t_6 = 0;
+      __pyx_t_7 = NULL;
+    } else {
+      __pyx_t_6 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 176, __pyx_L4_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_7 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 176, __pyx_L4_error)
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_7)) {
+        if (likely(PyList_CheckExact(__pyx_t_3))) {
+          if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 176, __pyx_L4_error)
+          #else
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L4_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          #endif
+        } else {
+          if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 176, __pyx_L4_error)
+          #else
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L4_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          #endif
+        }
+      } else {
+        __pyx_t_2 = __pyx_t_7(__pyx_t_3);
+        if (unlikely(!__pyx_t_2)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 176, __pyx_L4_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_2);
+      }
+      __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e);
+      __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e, __pyx_t_2);
+      __Pyx_GIVEREF(__pyx_t_2);
+      __pyx_t_2 = 0;
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_errors_map); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L4_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_7genexpr__pyx_v_5lcms2_7_errors_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L4_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L4_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 176, __pyx_L4_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e, Py_None);
+    goto __pyx_L7_exit_scope;
+    __pyx_L4_error:;
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_5lcms2_7_errors_e, Py_None);
+    goto __pyx_L1_error;
+    __pyx_L7_exit_scope:;
+  } /* exit inner scope */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "lcms2/_errors.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
  * #
  * #       Copyright (c) Gilles Coissac 2021 <info@gillescoissac.fr>
@@ -5301,11 +5752,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_5);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init lcms2.errors", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init lcms2._errors", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init lcms2.errors");
+    PyErr_SetString(PyExc_ImportError, "init lcms2._errors");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -5768,6 +6219,325 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     result = __Pyx_PyObject_Call(func, args, NULL);
     Py_DECREF(args);
     return result;
+}
+#endif
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
+        return NULL;
+    }
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+#endif
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+    PyErr_Clear();
+#endif
+    return __Pyx_GetBuiltinName(name);
+}
+
+/* decode_c_string */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
+    Py_ssize_t length;
+    if (unlikely((start < 0) | (stop < 0))) {
+        size_t slen = strlen(cstring);
+        if (unlikely(slen > (size_t) PY_SSIZE_T_MAX)) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "c-string too long to convert to Python");
+            return NULL;
+        }
+        length = (Py_ssize_t) slen;
+        if (start < 0) {
+            start += length;
+            if (start < 0)
+                start = 0;
+        }
+        if (stop < 0)
+            stop += length;
+    }
+    if (unlikely(stop <= start))
+        return __Pyx_NewRef(__pyx_empty_unicode);
+    length = stop - start;
+    cstring += start;
+    if (decode_func) {
+        return decode_func(cstring, length, errors);
+    } else {
+        return PyUnicode_Decode(cstring, length, encoding, errors);
+    }
+}
+
+/* RaiseException */
+#if PY_MAJOR_VERSION < 3
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
+                        CYTHON_UNUSED PyObject *cause) {
+    __Pyx_PyThreadState_declare
+    Py_XINCREF(type);
+    if (!value || value == Py_None)
+        value = NULL;
+    else
+        Py_INCREF(value);
+    if (!tb || tb == Py_None)
+        tb = NULL;
+    else {
+        Py_INCREF(tb);
+        if (!PyTraceBack_Check(tb)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: arg 3 must be a traceback or None");
+            goto raise_error;
+        }
+    }
+    if (PyType_Check(type)) {
+#if CYTHON_COMPILING_IN_PYPY
+        if (!value) {
+            Py_INCREF(Py_None);
+            value = Py_None;
+        }
+#endif
+        PyErr_NormalizeException(&type, &value, &tb);
+    } else {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto raise_error;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(type);
+        Py_INCREF(type);
+        if (!PyType_IsSubtype((PyTypeObject *)type, (PyTypeObject *)PyExc_BaseException)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: exception class must be a subclass of BaseException");
+            goto raise_error;
+        }
+    }
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrRestore(type, value, tb);
+    return;
+raise_error:
+    Py_XDECREF(value);
+    Py_XDECREF(type);
+    Py_XDECREF(tb);
+    return;
+}
+#else
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause) {
+    PyObject* owned_instance = NULL;
+    if (tb == Py_None) {
+        tb = 0;
+    } else if (tb && !PyTraceBack_Check(tb)) {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: arg 3 must be a traceback or None");
+        goto bad;
+    }
+    if (value == Py_None)
+        value = 0;
+    if (PyExceptionInstance_Check(type)) {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto bad;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(value);
+    } else if (PyExceptionClass_Check(type)) {
+        PyObject *instance_class = NULL;
+        if (value && PyExceptionInstance_Check(value)) {
+            instance_class = (PyObject*) Py_TYPE(value);
+            if (instance_class != type) {
+                int is_subclass = PyObject_IsSubclass(instance_class, type);
+                if (!is_subclass) {
+                    instance_class = NULL;
+                } else if (unlikely(is_subclass == -1)) {
+                    goto bad;
+                } else {
+                    type = instance_class;
+                }
+            }
+        }
+        if (!instance_class) {
+            PyObject *args;
+            if (!value)
+                args = PyTuple_New(0);
+            else if (PyTuple_Check(value)) {
+                Py_INCREF(value);
+                args = value;
+            } else
+                args = PyTuple_Pack(1, value);
+            if (!args)
+                goto bad;
+            owned_instance = PyObject_Call(type, args, NULL);
+            Py_DECREF(args);
+            if (!owned_instance)
+                goto bad;
+            value = owned_instance;
+            if (!PyExceptionInstance_Check(value)) {
+                PyErr_Format(PyExc_TypeError,
+                             "calling %R should have returned an instance of "
+                             "BaseException, not %R",
+                             type, Py_TYPE(value));
+                goto bad;
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: exception class must be a subclass of BaseException");
+        goto bad;
+    }
+    if (cause) {
+        PyObject *fixed_cause;
+        if (cause == Py_None) {
+            fixed_cause = NULL;
+        } else if (PyExceptionClass_Check(cause)) {
+            fixed_cause = PyObject_CallObject(cause, NULL);
+            if (fixed_cause == NULL)
+                goto bad;
+        } else if (PyExceptionInstance_Check(cause)) {
+            fixed_cause = cause;
+            Py_INCREF(fixed_cause);
+        } else {
+            PyErr_SetString(PyExc_TypeError,
+                            "exception causes must derive from "
+                            "BaseException");
+            goto bad;
+        }
+        PyException_SetCause(value, fixed_cause);
+    }
+    PyErr_SetObject(type, value);
+    if (tb) {
+#if CYTHON_COMPILING_IN_PYPY
+        PyObject *tmp_type, *tmp_value, *tmp_tb;
+        PyErr_Fetch(&tmp_type, &tmp_value, &tmp_tb);
+        Py_INCREF(tb);
+        PyErr_Restore(tmp_type, tmp_value, tb);
+        Py_XDECREF(tmp_tb);
+#else
+        PyThreadState *tstate = __Pyx_PyThreadState_Current;
+        PyObject* tmp_tb = tstate->curexc_traceback;
+        if (tb != tmp_tb) {
+            Py_INCREF(tb);
+            tstate->curexc_traceback = tb;
+            Py_XDECREF(tmp_tb);
+        }
+#endif
+    }
+bad:
+    Py_XDECREF(owned_instance);
+    return;
 }
 #endif
 
@@ -6554,88 +7324,119 @@ static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *class
     return 0;
 }
 
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+/* GetItemInt */
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
 }
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
     }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
-}
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
-#endif
-
-/* GetModuleGlobalName */
-#if CYTHON_USE_DICT_VERSIONS
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
 #else
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+    return PySequence_GetItem(o, i);
 #endif
-{
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    } else if (unlikely(PyErr_Occurred())) {
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+/* ObjectGetItem */
+#if CYTHON_USE_TYPE_SLOTS
+static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
+    PyObject *runerr;
+    Py_ssize_t key_value;
+    PySequenceMethods *m = Py_TYPE(obj)->tp_as_sequence;
+    if (unlikely(!(m && m->sq_item))) {
+        PyErr_Format(PyExc_TypeError, "'%.200s' object is not subscriptable", Py_TYPE(obj)->tp_name);
         return NULL;
     }
-#else
-    result = PyDict_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
+    key_value = __Pyx_PyIndex_AsSsize_t(index);
+    if (likely(key_value != -1 || !(runerr = PyErr_Occurred()))) {
+        return __Pyx_GetItemInt_Fast(obj, key_value, 0, 1, 1);
     }
-#endif
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
+    if (PyErr_GivenExceptionMatches(runerr, PyExc_OverflowError)) {
+        PyErr_Clear();
+        PyErr_Format(PyExc_IndexError, "cannot fit '%.200s' into an index-sized integer", Py_TYPE(index)->tp_name);
     }
-    PyErr_Clear();
-#endif
-    return __Pyx_GetBuiltinName(name);
+    return NULL;
 }
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
+static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
+    PyMappingMethods *m = Py_TYPE(obj)->tp_as_mapping;
+    if (likely(m && m->mp_subscript)) {
+        return m->mp_subscript(obj, key);
+    }
+    return __Pyx_PyObject_GetIndex(obj, key);
 }
 #endif
 
@@ -6844,6 +7645,37 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 bad:
     Py_XDECREF(py_code);
     Py_XDECREF(py_frame);
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+    const int neg_one = (int) ((int) 0 - (int) 1), const_zero = (int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntToPy */

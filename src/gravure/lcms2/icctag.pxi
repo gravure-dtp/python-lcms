@@ -47,7 +47,6 @@ class TagTypeSignature(TagEnum):
     XYZType = cmsSigXYZType
 
 
-@unique
 class TagSignature(TagEnum):
     """Enumeration of base ICC tag definitions.
     """

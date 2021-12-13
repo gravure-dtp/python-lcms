@@ -138,7 +138,7 @@ class NotSuitableError(LcmsError):
         super().__init__(message)
 
 
-_errors_map = {0: UndefinedError,
+__errors_map = {0: UndefinedError,
                1: FileError,
                2: RangeError,
                3: InternalError,
@@ -152,3 +152,25 @@ _errors_map = {0: UndefinedError,
                11: BadSignatureError,
                12: CorruptionDetectedError,
                13: NotSuitableError}
+
+
+# Python-lcms callback function when errors occured
+# If the callback may be called from another non-Python thread,
+# care must be taken to initialize the GIL first,
+# through a call to PyEval_InitThreads().
+# Changed in version 3.7: PyEval_InitThreads() function is now
+# called by Py_Initialize(), so you don’t have to call it yourself anymore.
+cdef void py_errors_logger(cmsContext ContextID, cmsUInt32Number ErrorCode,
+                           const char *Text):
+    raiseError(ErrorCode, Text)
+
+cdef void raiseError(int err_code, const char *message) except * with gil:
+    error_cls = __errors_map.get(err_code, UndefinedError)
+    raise(error_cls(message.decode('ascii')))
+
+
+def _init_logger():
+    cmsSetLogErrorHandler(py_errors_logger)
+
+
+__all__ =  [__errors_map[e].__name__ for e in __errors_map]

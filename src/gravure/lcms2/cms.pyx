@@ -18,35 +18,41 @@
 #       MA 02110-1301, USA.
 #
 from enum import Enum, IntEnum, IntFlag, unique
-from gravure.lcms2.enum import TagEnum
-
 import cython
 cimport cython
 
+
+from gravure.lcms2.enum import TagEnum
 from icctag cimport *
-from errors import LcmsError
-from profile import DeviceAttribute
+import gravure.lcms2._errors as _errors
+from gravure.lcms2._errors import UndefinedError, FileError, RangeError, InternalError, NullError, ReadError, SeekError, WriteError, UnknownExtensionError, ColorSpaceCheckError, AlreadyDefinedError, BadSignatureError, CorruptionDetectedError, NotSuitableError
+from gravure.lcms2._errors import _init_logger
+from gravure.lcms2.profile import DeviceAttribute
 from profile cimport *
+
 
 include "constant.pxi"
 include "colortype.pxi"
 include "icctag.pxi"
 
 
-__all__ = [
-            # From 'constant.pxi'
-            'VERSION',
-            'D50X', 'D50Y', 'D50Z',
-            'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y', 'PERCEPTUAL_BLACK_Z',
-            'MAXCHANNELS'
-            # From 'colortype.pxi'
-            'COLORTYPE',
-            # From 'icctag.pxi'
-            'ICCDef', 'TagTypeSignature', 'TagSignature',
-            'TechnologySignature', 'ColorSpaceSignature',
-            'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
-            'ColorimetricIntentImageStateTag', 'StageSignature',
-            'CurveSegSignature', 'ResponseCurveTypeSignature',
-            # From 'profile.pyx'
-            'DeviceAttribute'
-        ]
+__constants__ = ['VERSION', 'D50X', 'D50Y', 'D50Z',
+                 'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y',
+                 'PERCEPTUAL_BLACK_Z', 'MAXCHANNELS']
+
+
+__enums__ = [# From 'colortype.pxi'
+             'COLORTYPE',
+             # From 'icctag.pxi'
+             'ICCDef', 'TagTypeSignature', 'TagSignature',
+             'TechnologySignature', 'ColorSpaceSignature',
+             'ProfileClassSignature', 'PlatformSignature', 'Referencegamut',
+             'ColorimetricIntentImageStateTag', 'StageSignature',
+             'CurveSegSignature', 'ResponseCurveTypeSignature',
+             # From 'profile.pyx'
+             'DeviceAttribute'
+             ]
+
+__all__ = __constants__ + __enums__ + _errors.__all__
+
+_init_logger()
