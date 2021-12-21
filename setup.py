@@ -23,7 +23,7 @@ import sys, os
 from pathlib import Path
 import subprocess as sp
 from pkg_resources import parse_version
-from setuptools import setup, Extension, find_namespace_packages
+from setuptools import setup, Extension, find_packages
 from setuptools_scm import get_version as scm_get_version
 
 
@@ -93,8 +93,8 @@ def create_c_files():
     try:
         cythonize(
             [
-                "src/gravure/lcms2/profile.pyx",
                 "src/gravure/lcms2/_errors.pyx",
+                "src/gravure/lcms2/profile.pyx",
                 "src/gravure/lcms2/cms.pyx",
             ],
             include_path=[get_pkg_includedir("lcms2"), "src/gravure/lcms2"],
@@ -110,7 +110,7 @@ def create_c_files():
                 "embedsignature": True,
                 "optimize.use_switch": False,
                 "optimize.unpack_method_calls": True,
-                "warn.undeclared": True,
+                "warn.undeclared": False,
                 "warn.unreachable": True,
                 "warn.maybe_uninitialized": True,
                 "warn.unused": True,
@@ -152,8 +152,8 @@ else:
 def get_extensions():
     return [
         Extension(
-            "profile",
-            sources=["src/gravure/lcms2/profile.c"],
+            "_errors",
+            sources=["src/gravure/lcms2/_errors.c"],
             # libraries=[get_pkg_lib("lcms2")],
             include_dirs=[get_pkg_includedir("lcms2")],
             library_dirs=[get_pkg_libdir("lcms2")],
@@ -161,8 +161,8 @@ def get_extensions():
             extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
         ),
         Extension(
-            "_errors",
-            sources=["src/gravure/lcms2/_errors.c"],
+            "profile",
+            sources=["src/gravure/lcms2/profile.c"],
             # libraries=[get_pkg_lib("lcms2")],
             include_dirs=[get_pkg_includedir("lcms2")],
             library_dirs=[get_pkg_libdir("lcms2")],
@@ -191,10 +191,13 @@ setup(
     version=get_version(),
     #
     package_dir={"": "src"},
-    packages=find_namespace_packages(
+    packages=find_packages(
         where="src",
         include=["gravure.lcms2"],
     ),
+    # until cython 3.0 implicit namespace
+    # packages is not yet supported
+    namespace_packages=["gravure"],
     ext_package="gravure.lcms2",
     ext_modules=get_extensions(),
     # for use of cimport *.pxd
@@ -202,6 +205,7 @@ setup(
     zip_safe=False,
     #
     python_requires=">=3.7",
+    tests_require="pytest",
     #
     description="a Python binding to the little cms 2 library",
     long_description=get_description(),

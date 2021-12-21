@@ -23,12 +23,12 @@ cimport cython
 
 
 from gravure.lcms2.enum import TagEnum
-from icctag cimport *
+from gravure.lcms2.constant cimport *
+from gravure.lcms2.icctag cimport *
 import gravure.lcms2._errors as _errors
 from gravure.lcms2._errors import UndefinedError, FileError, RangeError, InternalError, NullError, ReadError, SeekError, WriteError, UnknownExtensionError, ColorSpaceCheckError, AlreadyDefinedError, BadSignatureError, CorruptionDetectedError, NotSuitableError
 from gravure.lcms2._errors import _init_logger
-from gravure.lcms2.profile import DeviceAttribute
-from profile cimport *
+from gravure.lcms2.profile import DeviceAttribute, Profile
 
 
 include "constant.pxi"
@@ -39,7 +39,6 @@ include "icctag.pxi"
 __constants__ = ['VERSION', 'D50X', 'D50Y', 'D50Z',
                  'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y',
                  'PERCEPTUAL_BLACK_Z', 'MAXCHANNELS']
-
 
 __enums__ = [# From 'colortype.pxi'
              'COLORTYPE',
@@ -53,6 +52,8 @@ __enums__ = [# From 'colortype.pxi'
              'DeviceAttribute'
              ]
 
-__all__ = __constants__ + __enums__ + _errors.__all__
+__classes__ = ['Profile']
+
+__all__ = __constants__ + __enums__ + __classes__ + _errors.__all__
 
 _init_logger()

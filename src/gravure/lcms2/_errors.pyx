@@ -153,6 +153,13 @@ __errors_map = {0: UndefinedError,
                12: CorruptionDetectedError,
                13: NotSuitableError}
 
+__errors_stack = []
+
+# It is important to note a single function call
+# may trigger more than a single error logging entry.
+cdef void push_error(int err_code, const char *message) with gil:
+    error_cls = __errors_map.get(err_code, UndefinedError)
+    __errors_stack.append(error_cls(message.decode('ascii')))
 
 # Python-lcms callback function when errors occured
 # If the callback may be called from another non-Python thread,
@@ -162,12 +169,20 @@ __errors_map = {0: UndefinedError,
 # called by Py_Initialize(), so you don’t have to call it yourself anymore.
 cdef void py_errors_logger(cmsContext ContextID, cmsUInt32Number ErrorCode,
                            const char *Text):
-    raiseError(ErrorCode, Text)
+    push_error(ErrorCode, Text)
 
-cdef void raiseError(int err_code, const char *message) except * with gil:
-    error_cls = __errors_map.get(err_code, UndefinedError)
-    raise(error_cls(message.decode('ascii')))
+# TODO: multiple errors logging
+def raise_error(object default_error):
+    if len(__errors_stack) > 0:
+        raise(__errors_stack.pop())
+    else:
+        raise(default_error)
 
+def errors_count():
+    return len(__errors_stack)
+
+def clear_errors_stack():
+    __errors_stack = []
 
 def _init_logger():
     cmsSetLogErrorHandler(py_errors_logger)

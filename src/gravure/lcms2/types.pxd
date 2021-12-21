@@ -44,3 +44,4 @@ cdef extern from "lcms2.h":
     ctypedef void* cmsHANDLE          # Generic handle
     ctypedef void* cmsHPROFILE        # Opaque typedefs to hide internals
     ctypedef void* cmsHTRANSFORM
+    ctypedef struct cmsIOHANDLER

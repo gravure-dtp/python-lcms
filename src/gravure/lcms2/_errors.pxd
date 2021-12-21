@@ -17,8 +17,9 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
-from types cimport *
-from context cimport cmsContext
+from gravure.lcms2.types cimport *
+from gravure.lcms2.context cimport cmsContext
+
 
 cdef extern from "lcms2.h":
     # There is no error handling at all. When a function fails,
