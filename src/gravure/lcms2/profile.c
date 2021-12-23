@@ -689,8 +689,8 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__gravure__lcms2__profile
 #define __PYX_HAVE_API__gravure__lcms2__profile
 /* Early includes */
-#include <stddef.h>
 #include "lcms2.h"
+#include <stddef.h>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -903,23 +903,11 @@ static const char *__pyx_f[] = {
   "src/gravure/lcms2/profile.pyx",
   "stringsource",
 };
-/* ForceInitThreads.proto */
-#ifndef __PYX_FORCE_INIT_THREADS
-  #define __PYX_FORCE_INIT_THREADS 0
-#endif
-
-/* NoFastGil.proto */
-#define __Pyx_PyGILState_Ensure PyGILState_Ensure
-#define __Pyx_PyGILState_Release PyGILState_Release
-#define __Pyx_FastGIL_Remember()
-#define __Pyx_FastGIL_Forget()
-#define __Pyx_FastGilFuncInit()
-
 
 /*--- Type declarations ---*/
 struct __pyx_obj_7gravure_5lcms2_7profile_Profile;
 
-/* "gravure/lcms2/profile.pxd":100
+/* "gravure/lcms2/profile.pxd":85
  * 
  * 
  * cdef class Profile:             # <<<<<<<<<<<<<<
@@ -937,7 +925,7 @@ struct __pyx_obj_7gravure_5lcms2_7profile_Profile {
 
 
 
-/* "gravure/lcms2/profile.pyx":55
+/* "gravure/lcms2/profile.pyx":35
  * 
  * 
  * cdef class Profile():             # <<<<<<<<<<<<<<
@@ -947,7 +935,6 @@ struct __pyx_obj_7gravure_5lcms2_7profile_Profile {
 
 struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile {
   struct __pyx_obj_7gravure_5lcms2_7profile_Profile *(*profile_from_file)(char const *, char const *);
-  PyObject *(*get_profile_info)(struct __pyx_obj_7gravure_5lcms2_7profile_Profile *, cmsInfoType);
 };
 static struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile *__pyx_vtabptr_7gravure_5lcms2_7profile_Profile;
 
@@ -1208,13 +1195,6 @@ static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject 
 #define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
 #endif
 
-/* PyObjectCallNoArg.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
-#else
-#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
-#endif
-
 /* PyObject_GenericGetAttrNoDict.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
@@ -1311,110 +1291,6 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 #define __Pyx_HAS_GCC_DIAGNOSTIC
 #endif
 
-/* Common.proto */
-static int __Pyx_check_twos_complement(void) {
-    if ((-1 != ~0)) {
-        PyErr_SetString(PyExc_RuntimeError, "Two's complement required for overflow checks.");
-        return 1;
-    } else if ((sizeof(short) == sizeof(int))) {
-        PyErr_SetString(PyExc_RuntimeError, "sizeof(short) < sizeof(int) required for overflow checks.");
-        return 1;
-    } else {
-        return 0;
-    }
-}
-#define __PYX_IS_UNSIGNED(type) ((((type) -1) > 0))
-#define __PYX_SIGN_BIT(type)    ((((unsigned type) 1) << (sizeof(type) * 8 - 1)))
-#define __PYX_HALF_MAX(type)    ((((type) 1) << (sizeof(type) * 8 - 2)))
-#define __PYX_MIN(type)         ((__PYX_IS_UNSIGNED(type) ? (type) 0 : 0 - __PYX_HALF_MAX(type) - __PYX_HALF_MAX(type)))
-#define __PYX_MAX(type)         ((~__PYX_MIN(type)))
-#define __Pyx_add_no_overflow(a, b, overflow) ((a) + (b))
-#define __Pyx_add_const_no_overflow(a, b, overflow) ((a) + (b))
-#define __Pyx_sub_no_overflow(a, b, overflow) ((a) - (b))
-#define __Pyx_sub_const_no_overflow(a, b, overflow) ((a) - (b))
-#define __Pyx_mul_no_overflow(a, b, overflow) ((a) * (b))
-#define __Pyx_mul_const_no_overflow(a, b, overflow) ((a) * (b))
-#define __Pyx_div_no_overflow(a, b, overflow) ((a) / (b))
-#define __Pyx_div_const_no_overflow(a, b, overflow) ((a) / (b))
-
-/* BaseCaseSigned.proto */
-static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow);
-static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int constant, int *overflow);
-#define __Pyx_div_const_int_checking_overflow __Pyx_div_int_checking_overflow
-
-/* BaseCaseSigned.proto */
-static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow);
-static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long constant, int *overflow);
-#define __Pyx_div_const_long_checking_overflow __Pyx_div_long_checking_overflow
-
-/* BaseCaseSigned.proto */
-static CYTHON_INLINE long long __Pyx_add_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_sub_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_mul_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_div_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_add_const_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_sub_const_long_long_checking_overflow(long long a, long long b, int *overflow);
-static CYTHON_INLINE long long __Pyx_mul_const_long_long_checking_overflow(long long a, long long constant, int *overflow);
-#define __Pyx_div_const_long_long_checking_overflow __Pyx_div_long_long_checking_overflow
-
-/* BaseCaseUnsigned.proto */
-static CYTHON_INLINE unsigned int __Pyx_add_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
-static CYTHON_INLINE unsigned int __Pyx_sub_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
-static CYTHON_INLINE unsigned int __Pyx_mul_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
-static CYTHON_INLINE unsigned int __Pyx_div_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow);
-#define __Pyx_add_const_unsigned_int_checking_overflow __Pyx_add_unsigned_int_checking_overflow
-#define __Pyx_sub_const_unsigned_int_checking_overflow __Pyx_sub_unsigned_int_checking_overflow
-static CYTHON_INLINE unsigned int __Pyx_mul_const_unsigned_int_checking_overflow(unsigned int a, unsigned int constant, int *overflow);
-#define __Pyx_div_const_unsigned_int_checking_overflow __Pyx_div_unsigned_int_checking_overflow
-
-/* BaseCaseUnsigned.proto */
-static CYTHON_INLINE unsigned long __Pyx_add_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
-static CYTHON_INLINE unsigned long __Pyx_sub_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
-static CYTHON_INLINE unsigned long __Pyx_mul_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
-static CYTHON_INLINE unsigned long __Pyx_div_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow);
-#define __Pyx_add_const_unsigned_long_checking_overflow __Pyx_add_unsigned_long_checking_overflow
-#define __Pyx_sub_const_unsigned_long_checking_overflow __Pyx_sub_unsigned_long_checking_overflow
-static CYTHON_INLINE unsigned long __Pyx_mul_const_unsigned_long_checking_overflow(unsigned long a, unsigned long constant, int *overflow);
-#define __Pyx_div_const_unsigned_long_checking_overflow __Pyx_div_unsigned_long_checking_overflow
-
-/* BaseCaseUnsigned.proto */
-static CYTHON_INLINE unsigned long long __Pyx_add_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
-static CYTHON_INLINE unsigned long long __Pyx_sub_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
-static CYTHON_INLINE unsigned long long __Pyx_mul_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
-static CYTHON_INLINE unsigned long long __Pyx_div_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow);
-#define __Pyx_add_const_unsigned_long_long_checking_overflow __Pyx_add_unsigned_long_long_checking_overflow
-#define __Pyx_sub_const_unsigned_long_long_checking_overflow __Pyx_sub_unsigned_long_long_checking_overflow
-static CYTHON_INLINE unsigned long long __Pyx_mul_const_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long constant, int *overflow);
-#define __Pyx_div_const_unsigned_long_long_checking_overflow __Pyx_div_unsigned_long_long_checking_overflow
-
-/* SizeCheck.proto */
-static int __Pyx_check_sane_size_t(void) {
-    if (((sizeof(size_t) <= sizeof(int)) ||
-#ifdef HAVE_LONG_LONG
-            (sizeof(size_t) == sizeof(PY_LONG_LONG)) ||
-#endif
-            (sizeof(size_t) == sizeof(long)))) {
-        return 0;
-    } else {
-        PyErr_Format(PyExc_RuntimeError,\
-            "Bad size for int type %.60s: %d", "size_t", (int) sizeof(size_t));
-        return 1;
-    }
-}
-
-/* Binop.proto */
-static CYTHON_INLINE size_t __Pyx_mul_size_t_checking_overflow(size_t a, size_t b, int *overflow);
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
@@ -1443,25 +1319,30 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
 
+/* VoidPtrImport.proto */
+static int __Pyx_ImportVoidPtr(PyObject *module, const char *name, void **p, const char *sig);
+
+/* FunctionImport.proto */
+static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**f)(void), const char *sig);
+
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms2_7profile_7Profile_profile_from_file(char const *__pyx_v_c_name, char const *__pyx_v_c_access); /* proto*/
-static PyObject *__pyx_f_7gravure_5lcms2_7profile_7Profile_get_profile_info(struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_v_self, cmsInfoType __pyx_v_info); /* proto*/
-
-/* Module declarations from 'libc.stddef' */
 
 /* Module declarations from 'gravure.lcms2.types' */
 
 /* Module declarations from 'gravure.lcms2.icctag' */
 
-/* Module declarations from 'cpython.mem' */
+/* Module declarations from 'libc.stddef' */
 
-/* Module declarations from 'gravure.lcms2.constant' */
+/* Module declarations from 'gravure.lcms2.unicode' */
+static int *__pyx_vp_7gravure_5lcms2_7unicode_BYTE_KIND = 0;
+#define __pyx_v_7gravure_5lcms2_7unicode_BYTE_KIND (*__pyx_vp_7gravure_5lcms2_7unicode_BYTE_KIND)
+static PyObject *(*__pyx_f_7gravure_5lcms2_7unicode_get_profile_info)(cmsHPROFILE, cmsInfoType); /*proto*/
 
 /* Module declarations from 'gravure.lcms2.profile' */
 static PyTypeObject *__pyx_ptype_7gravure_5lcms2_7profile_Profile = 0;
-static PyObject *__pyx_f_7gravure_5lcms2_7profile_unicode_from_wchar(wchar_t const *, Py_ssize_t); /*proto*/
 #define __Pyx_MODULE_NAME "gravure.lcms2.profile"
 extern int __pyx_module_is_main_gravure__lcms2__profile;
 int __pyx_module_is_main_gravure__lcms2__profile = 0;
@@ -1469,10 +1350,8 @@ int __pyx_module_is_main_gravure__lcms2__profile = 0;
 /* Implementation of 'gravure.lcms2.profile' */
 static PyObject *__pyx_builtin_IOError;
 static PyObject *__pyx_builtin_ValueError;
-static PyObject *__pyx_builtin_MemoryError;
 static PyObject *__pyx_builtin_TypeError;
 static const char __pyx_k_r[] = "r";
-static const char __pyx_k__3[] = "";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_Enum[] = "Enum";
 static const char __pyx_k_Path[] = "Path";
@@ -1504,7 +1383,6 @@ static const char __pyx_k_Reflective[] = "Reflective";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_contextlib[] = "contextlib";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
-static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_raise_error[] = "raise_error";
 static const char __pyx_k_Transparency[] = "Transparency";
 static const char __pyx_k_errors_count[] = "errors_count";
@@ -1513,7 +1391,6 @@ static const char __pyx_k_UndefinedError[] = "UndefinedError";
 static const char __pyx_k_contextmanager[] = "contextmanager";
 static const char __pyx_k_DeviceAttribute[] = "DeviceAttribute";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_get_profile_info[] = "get_profile_info()";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_gravure_lcms2__errors[] = "gravure.lcms2._errors";
 static const char __pyx_k_gravure_lcms2_profile[] = "gravure.lcms2.profile";
@@ -1525,7 +1402,6 @@ static PyObject *__pyx_n_s_Enum;
 static PyObject *__pyx_n_s_Glossy;
 static PyObject *__pyx_n_s_IOError;
 static PyObject *__pyx_n_s_Matte;
-static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_Path;
 static PyObject *__pyx_n_s_Profile;
 static PyObject *__pyx_n_s_Reflective;
@@ -1535,7 +1411,6 @@ static PyObject *__pyx_kp_u_UTF_8;
 static PyObject *__pyx_n_s_UndefinedError;
 static PyObject *__pyx_kp_u_Unknown_error_in_opening_profile;
 static PyObject *__pyx_n_s_ValueError;
-static PyObject *__pyx_kp_u__3;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_contextlib;
 static PyObject *__pyx_n_s_contextmanager;
@@ -1545,7 +1420,6 @@ static PyObject *__pyx_n_s_enum;
 static PyObject *__pyx_n_s_errors_count;
 static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_kp_u_file_should_be_a_pathlib_Path_ob;
-static PyObject *__pyx_kp_u_get_profile_info;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_gravure_lcms2__errors;
 static PyObject *__pyx_n_s_gravure_lcms2_profile;
@@ -1582,60 +1456,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_10__setstate_cython_
 static PyObject *__pyx_tp_new_7gravure_5lcms2_7profile_Profile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
+static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
-static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__6;
 /* Late includes */
 
-/* "gravure/lcms2/profile.pyx":44
- * 
- * 
- * cdef object unicode_from_wchar(const wchar_t *buffer, Py_ssize_t size) with gil:             # <<<<<<<<<<<<<<
- *     #print("wchar_t: ", sizeof(wchar_t))
- *     return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)
- */
-
-static PyObject *__pyx_f_7gravure_5lcms2_7profile_unicode_from_wchar(wchar_t const *__pyx_v_buffer, Py_ssize_t __pyx_v_size) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1;
-  #ifdef WITH_THREAD
-  PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
-  #endif
-  __Pyx_RefNannySetupContext("unicode_from_wchar", 0);
-
-  /* "gravure/lcms2/profile.pyx":46
- * cdef object unicode_from_wchar(const wchar_t *buffer, Py_ssize_t size) with gil:
- *     #print("wchar_t: ", sizeof(wchar_t))
- *     return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)             # <<<<<<<<<<<<<<
- * 
- * class DeviceAttribute(Enum):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, __pyx_v_buffer, __pyx_v_size);
-  __Pyx_INCREF(((PyObject *)__pyx_t_1));
-  __pyx_r = ((PyObject *)__pyx_t_1);
-  goto __pyx_L0;
-
-  /* "gravure/lcms2/profile.pyx":44
- * 
- * 
- * cdef object unicode_from_wchar(const wchar_t *buffer, Py_ssize_t size) with gil:             # <<<<<<<<<<<<<<
- *     #print("wchar_t: ", sizeof(wchar_t))
- *     return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  #ifdef WITH_THREAD
-  __Pyx_PyGILState_Release(__pyx_gilstate_save);
-  #endif
-  return __pyx_r;
-}
-
-/* "gravure/lcms2/profile.pyx":59
+/* "gravure/lcms2/profile.pyx":39
  *     """
  * 
  *     def __cinit__(Profile self):             # <<<<<<<<<<<<<<
@@ -1670,7 +1495,7 @@ static int __pyx_pf_7gravure_5lcms2_7profile_7Profile___cinit__(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":62
+/* "gravure/lcms2/profile.pyx":42
  *         pass
  * 
  *     def __init__(Profile self):             # <<<<<<<<<<<<<<
@@ -1705,7 +1530,7 @@ static int __pyx_pf_7gravure_5lcms2_7profile_7Profile_2__init__(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":65
+/* "gravure/lcms2/profile.pyx":45
  *         pass
  * 
  *     def __dealloc__(Profile self):             # <<<<<<<<<<<<<<
@@ -1731,7 +1556,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "gravure/lcms2/profile.pyx":66
+  /* "gravure/lcms2/profile.pyx":46
  * 
  *     def __dealloc__(Profile self):
  *         if self.open_profile and self.handle is not NULL:             # <<<<<<<<<<<<<<
@@ -1749,7 +1574,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "gravure/lcms2/profile.pyx":67
+    /* "gravure/lcms2/profile.pyx":47
  *     def __dealloc__(Profile self):
  *         if self.open_profile and self.handle is not NULL:
  *             ret = cmsCloseProfile(self.handle)             # <<<<<<<<<<<<<<
@@ -1758,7 +1583,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
  */
     __pyx_v_ret = cmsCloseProfile(__pyx_v_self->handle);
 
-    /* "gravure/lcms2/profile.pyx":68
+    /* "gravure/lcms2/profile.pyx":48
  *         if self.open_profile and self.handle is not NULL:
  *             ret = cmsCloseProfile(self.handle)
  *             self.handle = NULL             # <<<<<<<<<<<<<<
@@ -1767,7 +1592,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
  */
     __pyx_v_self->handle = NULL;
 
-    /* "gravure/lcms2/profile.pyx":66
+    /* "gravure/lcms2/profile.pyx":46
  * 
  *     def __dealloc__(Profile self):
  *         if self.open_profile and self.handle is not NULL:             # <<<<<<<<<<<<<<
@@ -1776,7 +1601,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
  */
   }
 
-  /* "gravure/lcms2/profile.pyx":65
+  /* "gravure/lcms2/profile.pyx":45
  *         pass
  * 
  *     def __dealloc__(Profile self):             # <<<<<<<<<<<<<<
@@ -1788,7 +1613,7 @@ static void __pyx_pf_7gravure_5lcms2_7profile_7Profile_4__dealloc__(struct __pyx
   __Pyx_RefNannyFinishContext();
 }
 
-/* "gravure/lcms2/profile.pyx":72
+/* "gravure/lcms2/profile.pyx":52
  * 
  *     @staticmethod
  *     cdef Profile profile_from_file(const char *c_name, const char *c_access):             # <<<<<<<<<<<<<<
@@ -1808,7 +1633,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("profile_from_file", 0);
 
-  /* "gravure/lcms2/profile.pyx":75
+  /* "gravure/lcms2/profile.pyx":55
  *         cdef Profile instance
  *         cdef cmsHPROFILE c_handle
  *         c_handle = cmsOpenProfileFromFile(c_name, c_access)             # <<<<<<<<<<<<<<
@@ -1817,7 +1642,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
  */
   __pyx_v_c_handle = cmsOpenProfileFromFile(__pyx_v_c_name, __pyx_v_c_access);
 
-  /* "gravure/lcms2/profile.pyx":76
+  /* "gravure/lcms2/profile.pyx":56
  *         cdef cmsHPROFILE c_handle
  *         c_handle = cmsOpenProfileFromFile(c_name, c_access)
  *         if c_handle is NULL:             # <<<<<<<<<<<<<<
@@ -1827,7 +1652,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
   __pyx_t_1 = ((__pyx_v_c_handle == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "gravure/lcms2/profile.pyx":77
+    /* "gravure/lcms2/profile.pyx":57
  *         c_handle = cmsOpenProfileFromFile(c_name, c_access)
  *         if c_handle is NULL:
  *             instance = None             # <<<<<<<<<<<<<<
@@ -1837,7 +1662,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
     __Pyx_INCREF(Py_None);
     __pyx_v_instance = ((struct __pyx_obj_7gravure_5lcms2_7profile_Profile *)Py_None);
 
-    /* "gravure/lcms2/profile.pyx":76
+    /* "gravure/lcms2/profile.pyx":56
  *         cdef cmsHPROFILE c_handle
  *         c_handle = cmsOpenProfileFromFile(c_name, c_access)
  *         if c_handle is NULL:             # <<<<<<<<<<<<<<
@@ -1847,7 +1672,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
     goto __pyx_L3;
   }
 
-  /* "gravure/lcms2/profile.pyx":80
+  /* "gravure/lcms2/profile.pyx":60
  *         else:
  *             # Call to __new__ bypasses __init__ constructor
  *             instance = Profile.__new__(Profile)             # <<<<<<<<<<<<<<
@@ -1855,12 +1680,12 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
  *             instance.open_profile = True
  */
   /*else*/ {
-    __pyx_t_2 = ((PyObject *)__pyx_tp_new_7gravure_5lcms2_7profile_Profile(((PyTypeObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
+    __pyx_t_2 = ((PyObject *)__pyx_tp_new_7gravure_5lcms2_7profile_Profile(((PyTypeObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(((PyObject *)__pyx_t_2));
     __pyx_v_instance = ((struct __pyx_obj_7gravure_5lcms2_7profile_Profile *)__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "gravure/lcms2/profile.pyx":81
+    /* "gravure/lcms2/profile.pyx":61
  *             # Call to __new__ bypasses __init__ constructor
  *             instance = Profile.__new__(Profile)
  *             instance.handle = c_handle             # <<<<<<<<<<<<<<
@@ -1869,7 +1694,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
  */
     __pyx_v_instance->handle = __pyx_v_c_handle;
 
-    /* "gravure/lcms2/profile.pyx":82
+    /* "gravure/lcms2/profile.pyx":62
  *             instance = Profile.__new__(Profile)
  *             instance.handle = c_handle
  *             instance.open_profile = True             # <<<<<<<<<<<<<<
@@ -1880,7 +1705,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
   }
   __pyx_L3:;
 
-  /* "gravure/lcms2/profile.pyx":83
+  /* "gravure/lcms2/profile.pyx":63
  *             instance.handle = c_handle
  *             instance.open_profile = True
  *         return instance             # <<<<<<<<<<<<<<
@@ -1892,7 +1717,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
   __pyx_r = __pyx_v_instance;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/profile.pyx":72
+  /* "gravure/lcms2/profile.pyx":52
  * 
  *     @staticmethod
  *     cdef Profile profile_from_file(const char *c_name, const char *c_access):             # <<<<<<<<<<<<<<
@@ -1912,7 +1737,7 @@ static struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_f_7gravure_5lcms
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":88
+/* "gravure/lcms2/profile.pyx":68
  *     @classmethod
  *     #@contextmanager
  *     def open(cls, file, mode="r"):             # <<<<<<<<<<<<<<
@@ -1960,7 +1785,7 @@ static PyObject *__pyx_pw_7gravure_5lcms2_7profile_7Profile_7open(PyObject *__py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "open") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "open") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1976,7 +1801,7 @@ static PyObject *__pyx_pw_7gravure_5lcms2_7profile_7Profile_7open(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("open", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("open", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("gravure.lcms2.profile.Profile.open", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2019,7 +1844,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("open", 0);
 
-  /* "gravure/lcms2/profile.pyx":91
+  /* "gravure/lcms2/profile.pyx":71
  *         cdef const char* c_name
  *         cdef const char* c_access
  *         try:             # <<<<<<<<<<<<<<
@@ -2028,53 +1853,53 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
  */
   /*try:*/ {
 
-    /* "gravure/lcms2/profile.pyx":93
+    /* "gravure/lcms2/profile.pyx":73
  *         try:
  *             # enter
  *             if isinstance(file, Path):             # <<<<<<<<<<<<<<
  *                 b_file = str(file).encode('UTF-8')
  *                 c_name = b_file
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L4_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyObject_IsInstance(__pyx_v_file, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 93, __pyx_L4_error)
+    __pyx_t_2 = PyObject_IsInstance(__pyx_v_file, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 73, __pyx_L4_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_3 = (__pyx_t_2 != 0);
     if (likely(__pyx_t_3)) {
 
-      /* "gravure/lcms2/profile.pyx":94
+      /* "gravure/lcms2/profile.pyx":74
  *             # enter
  *             if isinstance(file, Path):
  *                 b_file = str(file).encode('UTF-8')             # <<<<<<<<<<<<<<
  *                 c_name = b_file
  *                 b_mode =  mode.encode('UTF-8')
  */
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_file); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L4_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_file); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_4 = PyUnicode_AsUTF8String(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L4_error)
+      __pyx_t_4 = PyUnicode_AsUTF8String(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_b_file = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "gravure/lcms2/profile.pyx":95
+      /* "gravure/lcms2/profile.pyx":75
  *             if isinstance(file, Path):
  *                 b_file = str(file).encode('UTF-8')
  *                 c_name = b_file             # <<<<<<<<<<<<<<
  *                 b_mode =  mode.encode('UTF-8')
  *                 c_access = b_mode
  */
-      __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_b_file); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L4_error)
+      __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_b_file); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L4_error)
       __pyx_v_c_name = __pyx_t_5;
 
-      /* "gravure/lcms2/profile.pyx":96
+      /* "gravure/lcms2/profile.pyx":76
  *                 b_file = str(file).encode('UTF-8')
  *                 c_name = b_file
  *                 b_mode =  mode.encode('UTF-8')             # <<<<<<<<<<<<<<
  *                 c_access = b_mode
  *                 profile = Profile.profile_from_file(c_name, c_access)
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_mode, __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L4_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_mode, __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_6 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -2088,55 +1913,55 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
       }
       __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_kp_u_UTF_8) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_kp_u_UTF_8);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L4_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_b_mode = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "gravure/lcms2/profile.pyx":97
+      /* "gravure/lcms2/profile.pyx":77
  *                 c_name = b_file
  *                 b_mode =  mode.encode('UTF-8')
  *                 c_access = b_mode             # <<<<<<<<<<<<<<
  *                 profile = Profile.profile_from_file(c_name, c_access)
  *                 if not profile:
  */
-      __pyx_t_7 = __Pyx_PyObject_AsString(__pyx_v_b_mode); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) __PYX_ERR(0, 97, __pyx_L4_error)
+      __pyx_t_7 = __Pyx_PyObject_AsString(__pyx_v_b_mode); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L4_error)
       __pyx_v_c_access = __pyx_t_7;
 
-      /* "gravure/lcms2/profile.pyx":98
+      /* "gravure/lcms2/profile.pyx":78
  *                 b_mode =  mode.encode('UTF-8')
  *                 c_access = b_mode
  *                 profile = Profile.profile_from_file(c_name, c_access)             # <<<<<<<<<<<<<<
  *                 if not profile:
  *                     raise_error(IOError("Unknown error in opening profile"))
  */
-      __pyx_t_4 = ((PyObject *)__pyx_f_7gravure_5lcms2_7profile_7Profile_profile_from_file(__pyx_v_c_name, __pyx_v_c_access)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L4_error)
+      __pyx_t_4 = ((PyObject *)__pyx_f_7gravure_5lcms2_7profile_7Profile_profile_from_file(__pyx_v_c_name, __pyx_v_c_access)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_v_profile = ((struct __pyx_obj_7gravure_5lcms2_7profile_Profile *)__pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "gravure/lcms2/profile.pyx":99
+      /* "gravure/lcms2/profile.pyx":79
  *                 c_access = b_mode
  *                 profile = Profile.profile_from_file(c_name, c_access)
  *                 if not profile:             # <<<<<<<<<<<<<<
  *                     raise_error(IOError("Unknown error in opening profile"))
  *                 # yielding
  */
-      __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_profile)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 99, __pyx_L4_error)
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_profile)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 79, __pyx_L4_error)
       __pyx_t_2 = ((!__pyx_t_3) != 0);
       if (__pyx_t_2) {
 
-        /* "gravure/lcms2/profile.pyx":100
+        /* "gravure/lcms2/profile.pyx":80
  *                 profile = Profile.profile_from_file(c_name, c_access)
  *                 if not profile:
  *                     raise_error(IOError("Unknown error in opening profile"))             # <<<<<<<<<<<<<<
  *                 # yielding
  *                 #yield(profile)
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L4_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L4_error)
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 80, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_8 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -2151,12 +1976,12 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
         __pyx_t_4 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_8, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6);
         __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L4_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "gravure/lcms2/profile.pyx":99
+        /* "gravure/lcms2/profile.pyx":79
  *                 c_access = b_mode
  *                 profile = Profile.profile_from_file(c_name, c_access)
  *                 if not profile:             # <<<<<<<<<<<<<<
@@ -2165,7 +1990,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
  */
       }
 
-      /* "gravure/lcms2/profile.pyx":103
+      /* "gravure/lcms2/profile.pyx":83
  *                 # yielding
  *                 #yield(profile)
  *                 return profile             # <<<<<<<<<<<<<<
@@ -2177,7 +2002,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
       __pyx_r = ((PyObject *)__pyx_v_profile);
       goto __pyx_L3_return;
 
-      /* "gravure/lcms2/profile.pyx":93
+      /* "gravure/lcms2/profile.pyx":73
  *         try:
  *             # enter
  *             if isinstance(file, Path):             # <<<<<<<<<<<<<<
@@ -2186,7 +2011,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
  */
     }
 
-    /* "gravure/lcms2/profile.pyx":105
+    /* "gravure/lcms2/profile.pyx":85
  *                 return profile
  *             else:
  *                 raise (ValueError("file should be a pathlib.Path object."))             # <<<<<<<<<<<<<<
@@ -2194,20 +2019,20 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
  *             # exit - cleanup is done by __dealloc__
  */
     /*else*/ {
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L4_error)
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 85, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_Raise(__pyx_t_4, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __PYX_ERR(0, 105, __pyx_L4_error)
+      __PYX_ERR(0, 85, __pyx_L4_error)
     }
   }
 
-  /* "gravure/lcms2/profile.pyx":108
+  /* "gravure/lcms2/profile.pyx":88
  *         finally:
  *             # exit - cleanup is done by __dealloc__
  *             pass             # <<<<<<<<<<<<<<
  * 
- * 
+ *     @property
  */
   /*finally:*/ {
     __pyx_L4_error:;
@@ -2253,7 +2078,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
     }
   }
 
-  /* "gravure/lcms2/profile.pyx":88
+  /* "gravure/lcms2/profile.pyx":68
  *     @classmethod
  *     #@contextmanager
  *     def open(cls, file, mode="r"):             # <<<<<<<<<<<<<<
@@ -2278,446 +2103,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_6open(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":111
- * 
- * 
- *     cdef object get_profile_info(Profile self, cmsInfoType info):             # <<<<<<<<<<<<<<
- *         cdef wchar_t *buffer
- *         cdef int buffer_size
- */
-
-static PyObject *__pyx_f_7gravure_5lcms2_7profile_7Profile_get_profile_info(struct __pyx_obj_7gravure_5lcms2_7profile_Profile *__pyx_v_self, cmsInfoType __pyx_v_info) {
-  wchar_t *__pyx_v_buffer;
-  int __pyx_v_buffer_size;
-  PyObject *__pyx_v_py_string = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  int __pyx_t_7;
-  size_t __pyx_t_8;
-  int __pyx_t_9;
-  char const *__pyx_t_10;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
-  PyObject *__pyx_t_15 = NULL;
-  PyObject *__pyx_t_16 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("get_profile_info", 0);
-
-  /* "gravure/lcms2/profile.pyx":114
- *         cdef wchar_t *buffer
- *         cdef int buffer_size
- *         py_string = ""             # <<<<<<<<<<<<<<
- * 
- *         # 1st request the size of the cstring
- */
-  __Pyx_INCREF(__pyx_kp_u__3);
-  __pyx_v_py_string = __pyx_kp_u__3;
-
-  /* "gravure/lcms2/profile.pyx":117
- * 
- *         # 1st request the size of the cstring
- *         buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)             # <<<<<<<<<<<<<<
- *         if buffer_size == 0:
- *             if errors_count():
- */
-  __pyx_v_buffer_size = cmsGetProfileInfo(__pyx_v_self->handle, __pyx_v_info, ((char const *)"en"), ((char const *)"US"), NULL, 0);
-
-  /* "gravure/lcms2/profile.pyx":118
- *         # 1st request the size of the cstring
- *         buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)
- *         if buffer_size == 0:             # <<<<<<<<<<<<<<
- *             if errors_count():
- *                 raise_error(UndefinedError("get_profile_info()"))
- */
-  __pyx_t_1 = ((__pyx_v_buffer_size == 0) != 0);
-  if (__pyx_t_1) {
-
-    /* "gravure/lcms2/profile.pyx":119
- *         buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)
- *         if buffer_size == 0:
- *             if errors_count():             # <<<<<<<<<<<<<<
- *                 raise_error(UndefinedError("get_profile_info()"))
- *             return py_string
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_errors_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 119, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (__pyx_t_1) {
-
-      /* "gravure/lcms2/profile.pyx":120
- *         if buffer_size == 0:
- *             if errors_count():
- *                 raise_error(UndefinedError("get_profile_info()"))             # <<<<<<<<<<<<<<
- *             return py_string
- * 
- */
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 120, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_UndefinedError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-        if (likely(__pyx_t_6)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-          __Pyx_INCREF(__pyx_t_6);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_5, function);
-        }
-      }
-      __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_kp_u_get_profile_info) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_kp_u_get_profile_info);
-      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
-        if (likely(__pyx_t_5)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-          __Pyx_INCREF(__pyx_t_5);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_3, function);
-        }
-      }
-      __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-      /* "gravure/lcms2/profile.pyx":119
- *         buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)
- *         if buffer_size == 0:
- *             if errors_count():             # <<<<<<<<<<<<<<
- *                 raise_error(UndefinedError("get_profile_info()"))
- *             return py_string
- */
-    }
-
-    /* "gravure/lcms2/profile.pyx":121
- *             if errors_count():
- *                 raise_error(UndefinedError("get_profile_info()"))
- *             return py_string             # <<<<<<<<<<<<<<
- * 
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
- */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_v_py_string);
-    __pyx_r = __pyx_v_py_string;
-    goto __pyx_L0;
-
-    /* "gravure/lcms2/profile.pyx":118
- *         # 1st request the size of the cstring
- *         buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)
- *         if buffer_size == 0:             # <<<<<<<<<<<<<<
- *             if errors_count():
- *                 raise_error(UndefinedError("get_profile_info()"))
- */
-  }
-
-  /* "gravure/lcms2/profile.pyx":123
- *             return py_string
- * 
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))             # <<<<<<<<<<<<<<
- *         if not buffer:
- *             raise MemoryError("get_profile_info()")
- */
-  __pyx_t_7 = 0;
-  __pyx_t_8 = __Pyx_mul_size_t_checking_overflow(__pyx_v_buffer_size, (sizeof(wchar_t)), &__pyx_t_7);
-  if (unlikely(__pyx_t_7)) {
-    PyErr_SetString(PyExc_OverflowError, "value too large");
-    __PYX_ERR(0, 123, __pyx_L1_error)
-  }
-  __pyx_v_buffer = ((wchar_t *)PyMem_Malloc(__pyx_t_8));
-
-  /* "gravure/lcms2/profile.pyx":124
- * 
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
- *         if not buffer:             # <<<<<<<<<<<<<<
- *             raise MemoryError("get_profile_info()")
- * 
- */
-  __pyx_t_1 = ((!(__pyx_v_buffer != 0)) != 0);
-  if (unlikely(__pyx_t_1)) {
-
-    /* "gravure/lcms2/profile.pyx":125
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
- *         if not buffer:
- *             raise MemoryError("get_profile_info()")             # <<<<<<<<<<<<<<
- * 
- *         try:
- */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 125, __pyx_L1_error)
-
-    /* "gravure/lcms2/profile.pyx":124
- * 
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
- *         if not buffer:             # <<<<<<<<<<<<<<
- *             raise MemoryError("get_profile_info()")
- * 
- */
-  }
-
-  /* "gravure/lcms2/profile.pyx":127
- *             raise MemoryError("get_profile_info()")
- * 
- *         try:             # <<<<<<<<<<<<<<
- *             # 2nd request the cstring
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
- */
-  /*try:*/ {
-
-    /* "gravure/lcms2/profile.pyx":129
- *         try:
- *             # 2nd request the cstring
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)             # <<<<<<<<<<<<<<
- *             if buffer_size == 0:
- *                 if errors_count():
- */
-    __pyx_v_buffer_size = cmsGetProfileInfo(__pyx_v_self->handle, __pyx_v_info, ((char const *)"en"), ((char const *)"US"), __pyx_v_buffer, __pyx_v_buffer_size);
-
-    /* "gravure/lcms2/profile.pyx":130
- *             # 2nd request the cstring
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
- *             if buffer_size == 0:             # <<<<<<<<<<<<<<
- *                 if errors_count():
- *                     raise_error(UndefinedError("get_profile_info()"))
- */
-    __pyx_t_1 = ((__pyx_v_buffer_size == 0) != 0);
-    if (__pyx_t_1) {
-
-      /* "gravure/lcms2/profile.pyx":131
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
- *             if buffer_size == 0:
- *                 if errors_count():             # <<<<<<<<<<<<<<
- *                     raise_error(UndefinedError("get_profile_info()"))
- *             else:
- */
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_errors_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L7_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-        if (likely(__pyx_t_4)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-          __Pyx_INCREF(__pyx_t_4);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_3, function);
-        }
-      }
-      __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L7_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 131, __pyx_L7_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (__pyx_t_1) {
-
-        /* "gravure/lcms2/profile.pyx":132
- *             if buffer_size == 0:
- *                 if errors_count():
- *                     raise_error(UndefinedError("get_profile_info()"))             # <<<<<<<<<<<<<<
- *             else:
- *                 py_string = unicode_from_wchar(buffer, buffer_size)
- */
-        __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_UndefinedError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 132, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = NULL;
-        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-          __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-          if (likely(__pyx_t_6)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-            __Pyx_INCREF(__pyx_t_6);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_5, function);
-          }
-        }
-        __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_kp_u_get_profile_info) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_kp_u_get_profile_info);
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 132, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = NULL;
-        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-          __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
-          if (likely(__pyx_t_5)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-            __Pyx_INCREF(__pyx_t_5);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_3, function);
-          }
-        }
-        __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
-        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L7_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-        /* "gravure/lcms2/profile.pyx":131
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
- *             if buffer_size == 0:
- *                 if errors_count():             # <<<<<<<<<<<<<<
- *                     raise_error(UndefinedError("get_profile_info()"))
- *             else:
- */
-      }
-
-      /* "gravure/lcms2/profile.pyx":130
- *             # 2nd request the cstring
- *             buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
- *             if buffer_size == 0:             # <<<<<<<<<<<<<<
- *                 if errors_count():
- *                     raise_error(UndefinedError("get_profile_info()"))
- */
-      goto __pyx_L9;
-    }
-
-    /* "gravure/lcms2/profile.pyx":134
- *                     raise_error(UndefinedError("get_profile_info()"))
- *             else:
- *                 py_string = unicode_from_wchar(buffer, buffer_size)             # <<<<<<<<<<<<<<
- *         finally:
- *             # last free buffer
- */
-    /*else*/ {
-      __pyx_t_2 = __pyx_f_7gravure_5lcms2_7profile_unicode_from_wchar(__pyx_v_buffer, __pyx_v_buffer_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L7_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF_SET(__pyx_v_py_string, __pyx_t_2);
-      __pyx_t_2 = 0;
-    }
-    __pyx_L9:;
-  }
-
-  /* "gravure/lcms2/profile.pyx":137
- *         finally:
- *             # last free buffer
- *             PyMem_Free(buffer)             # <<<<<<<<<<<<<<
- *         return py_string
- * 
- */
-  /*finally:*/ {
-    /*normal exit:*/{
-      PyMem_Free(__pyx_v_buffer);
-      goto __pyx_L8;
-    }
-    __pyx_L7_error:;
-    /*exception exit:*/{
-      __Pyx_PyThreadState_declare
-      __Pyx_PyThreadState_assign
-      __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0;
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_14, &__pyx_t_15, &__pyx_t_16);
-      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13) < 0)) __Pyx_ErrFetch(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
-      __Pyx_XGOTREF(__pyx_t_11);
-      __Pyx_XGOTREF(__pyx_t_12);
-      __Pyx_XGOTREF(__pyx_t_13);
-      __Pyx_XGOTREF(__pyx_t_14);
-      __Pyx_XGOTREF(__pyx_t_15);
-      __Pyx_XGOTREF(__pyx_t_16);
-      __pyx_t_7 = __pyx_lineno; __pyx_t_9 = __pyx_clineno; __pyx_t_10 = __pyx_filename;
-      {
-        PyMem_Free(__pyx_v_buffer);
-      }
-      if (PY_MAJOR_VERSION >= 3) {
-        __Pyx_XGIVEREF(__pyx_t_14);
-        __Pyx_XGIVEREF(__pyx_t_15);
-        __Pyx_XGIVEREF(__pyx_t_16);
-        __Pyx_ExceptionReset(__pyx_t_14, __pyx_t_15, __pyx_t_16);
-      }
-      __Pyx_XGIVEREF(__pyx_t_11);
-      __Pyx_XGIVEREF(__pyx_t_12);
-      __Pyx_XGIVEREF(__pyx_t_13);
-      __Pyx_ErrRestore(__pyx_t_11, __pyx_t_12, __pyx_t_13);
-      __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0; __pyx_t_14 = 0; __pyx_t_15 = 0; __pyx_t_16 = 0;
-      __pyx_lineno = __pyx_t_7; __pyx_clineno = __pyx_t_9; __pyx_filename = __pyx_t_10;
-      goto __pyx_L1_error;
-    }
-    __pyx_L8:;
-  }
-
-  /* "gravure/lcms2/profile.pyx":138
- *             # last free buffer
- *             PyMem_Free(buffer)
- *         return py_string             # <<<<<<<<<<<<<<
- * 
- *     @property
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_py_string);
-  __pyx_r = __pyx_v_py_string;
-  goto __pyx_L0;
-
-  /* "gravure/lcms2/profile.pyx":111
- * 
- * 
- *     cdef object get_profile_info(Profile self, cmsInfoType info):             # <<<<<<<<<<<<<<
- *         cdef wchar_t *buffer
- *         cdef int buffer_size
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("gravure.lcms2.profile.Profile.get_profile_info", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_py_string);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "gravure/lcms2/profile.pyx":141
+/* "gravure/lcms2/profile.pyx":91
  * 
  *     @property
  *     def description(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoDescription)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoDescription)
  * 
  */
 
@@ -2743,25 +2133,25 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_11description___get_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "gravure/lcms2/profile.pyx":142
+  /* "gravure/lcms2/profile.pyx":92
  *     @property
  *     def description(self):
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoDescription)             # <<<<<<<<<<<<<<
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoDescription)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile *)__pyx_v_self->__pyx_vtab)->get_profile_info(__pyx_v_self, cmsInfoDescription); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7gravure_5lcms2_7unicode_get_profile_info(__pyx_v_self->handle, cmsInfoDescription); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/profile.pyx":141
+  /* "gravure/lcms2/profile.pyx":91
  * 
  *     @property
  *     def description(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoDescription)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoDescription)
  * 
  */
 
@@ -2776,11 +2166,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_11description___get_
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":145
+/* "gravure/lcms2/profile.pyx":95
  * 
  *     @property
  *     def manufacturer(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoManufacturer)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoManufacturer)
  * 
  */
 
@@ -2806,25 +2196,25 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_12manufacturer___get
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "gravure/lcms2/profile.pyx":146
+  /* "gravure/lcms2/profile.pyx":96
  *     @property
  *     def manufacturer(self):
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoManufacturer)             # <<<<<<<<<<<<<<
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoManufacturer)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile *)__pyx_v_self->__pyx_vtab)->get_profile_info(__pyx_v_self, cmsInfoManufacturer); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7gravure_5lcms2_7unicode_get_profile_info(__pyx_v_self->handle, cmsInfoManufacturer); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/profile.pyx":145
+  /* "gravure/lcms2/profile.pyx":95
  * 
  *     @property
  *     def manufacturer(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoManufacturer)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoManufacturer)
  * 
  */
 
@@ -2839,11 +2229,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_12manufacturer___get
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":149
+/* "gravure/lcms2/profile.pyx":99
  * 
  *     @property
  *     def model(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoModel)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoModel)
  * 
  */
 
@@ -2869,25 +2259,25 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_5model___get__(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "gravure/lcms2/profile.pyx":150
+  /* "gravure/lcms2/profile.pyx":100
  *     @property
  *     def model(self):
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoModel)             # <<<<<<<<<<<<<<
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoModel)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile *)__pyx_v_self->__pyx_vtab)->get_profile_info(__pyx_v_self, cmsInfoModel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7gravure_5lcms2_7unicode_get_profile_info(__pyx_v_self->handle, cmsInfoModel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/profile.pyx":149
+  /* "gravure/lcms2/profile.pyx":99
  * 
  *     @property
  *     def model(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoModel)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoModel)
  * 
  */
 
@@ -2902,11 +2292,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_5model___get__(struc
   return __pyx_r;
 }
 
-/* "gravure/lcms2/profile.pyx":153
+/* "gravure/lcms2/profile.pyx":103
  * 
  *     @property
  *     def copyright(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoCopyright)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoCopyright)
  */
 
 /* Python wrapper */
@@ -2931,23 +2321,23 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_9copyright___get__(s
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "gravure/lcms2/profile.pyx":154
+  /* "gravure/lcms2/profile.pyx":104
  *     @property
  *     def copyright(self):
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoCopyright)             # <<<<<<<<<<<<<<
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoCopyright)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_7gravure_5lcms2_7profile_Profile *)__pyx_v_self->__pyx_vtab)->get_profile_info(__pyx_v_self, cmsInfoCopyright); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7gravure_5lcms2_7unicode_get_profile_info(__pyx_v_self->handle, cmsInfoCopyright); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/profile.pyx":153
+  /* "gravure/lcms2/profile.pyx":103
  * 
  *     @property
  *     def copyright(self):             # <<<<<<<<<<<<<<
- *         return self.get_profile_info(info=cmsInfoType.cmsInfoCopyright)
+ *         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoCopyright)
  */
 
   /* function exit code */
@@ -2996,7 +2386,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_8__reduce_cython__(C
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3053,7 +2443,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_7profile_7Profile_10__setstate_cython_
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3268,7 +2658,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Glossy, __pyx_k_Glossy, sizeof(__pyx_k_Glossy), 0, 0, 1, 1},
   {&__pyx_n_s_IOError, __pyx_k_IOError, sizeof(__pyx_k_IOError), 0, 0, 1, 1},
   {&__pyx_n_s_Matte, __pyx_k_Matte, sizeof(__pyx_k_Matte), 0, 0, 1, 1},
-  {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_n_s_Path, __pyx_k_Path, sizeof(__pyx_k_Path), 0, 0, 1, 1},
   {&__pyx_n_s_Profile, __pyx_k_Profile, sizeof(__pyx_k_Profile), 0, 0, 1, 1},
   {&__pyx_n_s_Reflective, __pyx_k_Reflective, sizeof(__pyx_k_Reflective), 0, 0, 1, 1},
@@ -3278,7 +2667,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_UndefinedError, __pyx_k_UndefinedError, sizeof(__pyx_k_UndefinedError), 0, 0, 1, 1},
   {&__pyx_kp_u_Unknown_error_in_opening_profile, __pyx_k_Unknown_error_in_opening_profile, sizeof(__pyx_k_Unknown_error_in_opening_profile), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
-  {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_contextlib, __pyx_k_contextlib, sizeof(__pyx_k_contextlib), 0, 0, 1, 1},
   {&__pyx_n_s_contextmanager, __pyx_k_contextmanager, sizeof(__pyx_k_contextmanager), 0, 0, 1, 1},
@@ -3288,7 +2676,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_errors_count, __pyx_k_errors_count, sizeof(__pyx_k_errors_count), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_kp_u_file_should_be_a_pathlib_Path_ob, __pyx_k_file_should_be_a_pathlib_Path_ob, sizeof(__pyx_k_file_should_be_a_pathlib_Path_ob), 0, 1, 0, 0},
-  {&__pyx_kp_u_get_profile_info, __pyx_k_get_profile_info, sizeof(__pyx_k_get_profile_info), 0, 1, 0, 0},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2__errors, __pyx_k_gravure_lcms2__errors, sizeof(__pyx_k_gravure_lcms2__errors), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2_profile, __pyx_k_gravure_lcms2_profile, sizeof(__pyx_k_gravure_lcms2_profile), 0, 0, 1, 1},
@@ -3315,9 +2702,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 100, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 105, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 85, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -3328,38 +2714,27 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "gravure/lcms2/profile.pyx":100
+  /* "gravure/lcms2/profile.pyx":80
  *                 profile = Profile.profile_from_file(c_name, c_access)
  *                 if not profile:
  *                     raise_error(IOError("Unknown error in opening profile"))             # <<<<<<<<<<<<<<
  *                 # yielding
  *                 #yield(profile)
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Unknown_error_in_opening_profile); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Unknown_error_in_opening_profile); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "gravure/lcms2/profile.pyx":105
+  /* "gravure/lcms2/profile.pyx":85
  *                 return profile
  *             else:
  *                 raise (ValueError("file should be a pathlib.Path object."))             # <<<<<<<<<<<<<<
  *         finally:
  *             # exit - cleanup is done by __dealloc__
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_file_should_be_a_pathlib_Path_ob); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_file_should_be_a_pathlib_Path_ob); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-
-  /* "gravure/lcms2/profile.pyx":125
- *         buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
- *         if not buffer:
- *             raise MemoryError("get_profile_info()")             # <<<<<<<<<<<<<<
- * 
- *         try:
- */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_get_profile_info); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -3367,18 +2742,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__3);
+  __Pyx_GIVEREF(__pyx_tuple__3);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3387,20 +2762,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
-  /* Common.init */
-  if (unlikely(__Pyx_check_twos_complement())) {
-    PyErr_WriteUnraisable(__pyx_m);
-}
-
-if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
-
-  /* SizeCheck.init */
-  if (unlikely(__Pyx_check_sane_size_t())) {
-    PyErr_WriteUnraisable(__pyx_m);
-}
-
-if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
-
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   return 0;
   __pyx_L1_error:;
@@ -3448,18 +2809,17 @@ static int __Pyx_modinit_type_init_code(void) {
   /*--- Type init code ---*/
   __pyx_vtabptr_7gravure_5lcms2_7profile_Profile = &__pyx_vtable_7gravure_5lcms2_7profile_Profile;
   __pyx_vtable_7gravure_5lcms2_7profile_Profile.profile_from_file = (struct __pyx_obj_7gravure_5lcms2_7profile_Profile *(*)(char const *, char const *))__pyx_f_7gravure_5lcms2_7profile_7Profile_profile_from_file;
-  __pyx_vtable_7gravure_5lcms2_7profile_Profile.get_profile_info = (PyObject *(*)(struct __pyx_obj_7gravure_5lcms2_7profile_Profile *, cmsInfoType))__pyx_f_7gravure_5lcms2_7profile_7Profile_get_profile_info;
-  if (PyType_Ready(&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7gravure_5lcms2_7profile_Profile.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7gravure_5lcms2_7profile_Profile.tp_dictoffset && __pyx_type_7gravure_5lcms2_7profile_Profile.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_7gravure_5lcms2_7profile_Profile.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_7gravure_5lcms2_7profile_Profile.tp_dict, __pyx_vtabptr_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Profile, (PyObject *)&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_7gravure_5lcms2_7profile_Profile.tp_dict, __pyx_vtabptr_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Profile, (PyObject *)&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   if (__pyx_type_7gravure_5lcms2_7profile_Profile.tp_weaklistoffset == 0) __pyx_type_7gravure_5lcms2_7profile_Profile.tp_weaklistoffset = offsetof(struct __pyx_obj_7gravure_5lcms2_7profile_Profile, __weakref__);
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_7gravure_5lcms2_7profile_Profile) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __pyx_ptype_7gravure_5lcms2_7profile_Profile = &__pyx_type_7gravure_5lcms2_7profile_Profile;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -3478,18 +2838,42 @@ static int __Pyx_modinit_type_import_code(void) {
 
 static int __Pyx_modinit_variable_import_code(void) {
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_variable_import_code", 0);
   /*--- Variable import code ---*/
+  __pyx_t_1 = PyImport_ImportModule("gravure.lcms2.unicode"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportVoidPtr(__pyx_t_1, "BYTE_KIND", (void **)&__pyx_vp_7gravure_5lcms2_7unicode_BYTE_KIND, "int") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 static int __Pyx_modinit_function_import_code(void) {
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_import_code", 0);
   /*--- Function import code ---*/
+  __pyx_t_1 = PyImport_ImportModule("gravure.lcms2.unicode"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__Pyx_ImportFunction(__pyx_t_1, "get_profile_info", (void (**)(void))&__pyx_f_7gravure_5lcms2_7unicode_get_profile_info, "PyObject *(cmsHPROFILE, cmsInfoType)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 
@@ -3688,8 +3072,8 @@ if (!__Pyx_RefNanny) {
   (void)__Pyx_modinit_function_export_code();
   if (unlikely(__Pyx_modinit_type_init_code() < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
   (void)__Pyx_modinit_type_import_code();
-  (void)__Pyx_modinit_variable_import_code();
-  (void)__Pyx_modinit_function_import_code();
+  if (unlikely(__Pyx_modinit_variable_import_code() < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (unlikely(__Pyx_modinit_function_import_code() < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -3742,7 +3126,7 @@ if (!__Pyx_RefNanny) {
  * from pathlib import Path
  * from contextlib import contextmanager             # <<<<<<<<<<<<<<
  * 
- * from cpython.mem cimport PyMem_Malloc, PyMem_Free
+ * from gravure.lcms2._errors import raise_error, UndefinedError, errors_count
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3758,14 +3142,14 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "gravure/lcms2/profile.pyx":27
+  /* "gravure/lcms2/profile.pyx":24
+ * from contextlib import contextmanager
  * 
- * from gravure.lcms2.constant cimport cmsNoLanguage, cmsNoCountry
  * from gravure.lcms2._errors import raise_error, UndefinedError, errors_count             # <<<<<<<<<<<<<<
- * 
+ * from gravure.lcms2.unicode cimport get_profile_info, cmsInfoType
  * 
  */
-  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_raise_error);
   __Pyx_GIVEREF(__pyx_n_s_raise_error);
@@ -3776,126 +3160,126 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_errors_count);
   __Pyx_GIVEREF(__pyx_n_s_errors_count);
   PyList_SET_ITEM(__pyx_t_2, 2, __pyx_n_s_errors_count);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_gravure_lcms2__errors, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_gravure_lcms2__errors, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_raise_error); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_raise_error, __pyx_t_2) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_raise_error, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_UndefinedError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_UndefinedError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_UndefinedError, __pyx_t_2) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_UndefinedError, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_errors_count); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_errors_count); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_errors_count, __pyx_t_2) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_errors_count, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gravure/lcms2/profile.pyx":48
- *     return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)
+  /* "gravure/lcms2/profile.pyx":28
+ * 
  * 
  * class DeviceAttribute(Enum):             # <<<<<<<<<<<<<<
  *     Reflective = cmsReflective
  *     Transparency = cmsTransparency
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_DeviceAttribute, __pyx_n_s_DeviceAttribute, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_profile, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_DeviceAttribute, __pyx_n_s_DeviceAttribute, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_profile, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "gravure/lcms2/profile.pyx":49
+  /* "gravure/lcms2/profile.pyx":29
  * 
  * class DeviceAttribute(Enum):
  *     Reflective = cmsReflective             # <<<<<<<<<<<<<<
  *     Transparency = cmsTransparency
  *     Glossy = cmsGlossy
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(cmsReflective); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsReflective); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Reflective, __pyx_t_4) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Reflective, __pyx_t_4) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/profile.pyx":50
+  /* "gravure/lcms2/profile.pyx":30
  * class DeviceAttribute(Enum):
  *     Reflective = cmsReflective
  *     Transparency = cmsTransparency             # <<<<<<<<<<<<<<
  *     Glossy = cmsGlossy
  *     Matte = cmsMatte
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(cmsTransparency); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsTransparency); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Transparency, __pyx_t_4) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Transparency, __pyx_t_4) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/profile.pyx":51
+  /* "gravure/lcms2/profile.pyx":31
  *     Reflective = cmsReflective
  *     Transparency = cmsTransparency
  *     Glossy = cmsGlossy             # <<<<<<<<<<<<<<
  *     Matte = cmsMatte
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(cmsGlossy); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsGlossy); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Glossy, __pyx_t_4) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Glossy, __pyx_t_4) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/profile.pyx":52
+  /* "gravure/lcms2/profile.pyx":32
  *     Transparency = cmsTransparency
  *     Glossy = cmsGlossy
  *     Matte = cmsMatte             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(cmsMatte); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(cmsMatte); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Matte, __pyx_t_4) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Matte, __pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/profile.pyx":48
- *     return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)
+  /* "gravure/lcms2/profile.pyx":28
+ * 
  * 
  * class DeviceAttribute(Enum):             # <<<<<<<<<<<<<<
  *     Reflective = cmsReflective
  *     Transparency = cmsTransparency
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_DeviceAttribute, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_DeviceAttribute, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DeviceAttribute, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DeviceAttribute, __pyx_t_4) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "gravure/lcms2/profile.pyx":88
+  /* "gravure/lcms2/profile.pyx":68
  *     @classmethod
  *     #@contextmanager
  *     def open(cls, file, mode="r"):             # <<<<<<<<<<<<<<
  *         cdef const char* c_name
  *         cdef const char* c_access
  */
-  __Pyx_GetNameInClass(__pyx_t_2, (PyObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GetNameInClass(__pyx_t_2, (PyObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "gravure/lcms2/profile.pyx":86
+  /* "gravure/lcms2/profile.pyx":66
  * 
  * 
  *     @classmethod             # <<<<<<<<<<<<<<
  *     #@contextmanager
  *     def open(cls, file, mode="r"):
  */
-  __pyx_t_1 = __Pyx_Method_ClassMethod(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Method_ClassMethod(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile->tp_dict, __pyx_n_s_open, __pyx_t_1) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_7gravure_5lcms2_7profile_Profile->tp_dict, __pyx_n_s_open, __pyx_t_1) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_7gravure_5lcms2_7profile_Profile);
 
@@ -4824,28 +4208,6 @@ static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject 
 }
 #endif
 
-/* PyObjectCallNoArg */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
-#if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(func)) {
-        return __Pyx_PyFunction_FastCall(func, NULL, 0);
-    }
-#endif
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
-#else
-    if (likely(PyCFunction_Check(func)))
-#endif
-    {
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
-            return __Pyx_PyObject_CallMethO(func, NULL);
-        }
-    }
-    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
-}
-#endif
-
 /* PyObject_GenericGetAttrNoDict */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static PyObject *__Pyx_RaiseGenericGetAttributeError(PyTypeObject *tp, PyObject *attr_name) {
@@ -5504,412 +4866,6 @@ bad:
     Py_XDECREF(py_frame);
 }
 
-/* BaseCaseSigned */
-static CYTHON_INLINE int __Pyx_add_int_checking_overflow(int a, int b, int *overflow) {
-    if ((sizeof(int) < sizeof(long))) {
-        long big_r = ((long) a) + ((long) b);
-        int r = (int) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(int) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
-        int r = (int) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        int r = (int) ((unsigned int) a + (unsigned int) b);
-        int sign_a = __PYX_SIGN_BIT(int) & a;
-        int sign_b = __PYX_SIGN_BIT(int) & b;
-        int sign_r = __PYX_SIGN_BIT(int) & r;
-        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
-        return r;
-    }
-}
-static CYTHON_INLINE int __Pyx_add_const_int_checking_overflow(int a, int b, int *overflow) {
-    if (b > 0) {
-        *overflow |= a > __PYX_MAX(int) - b;
-    } else if (b < 0) {
-        *overflow |= a < __PYX_MIN(int) - b;
-    }
-    return a + b;
-}
-static CYTHON_INLINE int __Pyx_sub_int_checking_overflow(int a, int b, int *overflow) {
-    *overflow |= b == __PYX_MIN(int);
-    return __Pyx_add_int_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE int __Pyx_sub_const_int_checking_overflow(int a, int b, int *overflow) {
-    *overflow |= b == __PYX_MIN(int);
-    return __Pyx_add_const_int_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE int __Pyx_mul_int_checking_overflow(int a, int b, int *overflow) {
-    if ((sizeof(int) < sizeof(long))) {
-        long big_r = ((long) a) * ((long) b);
-        int r = (int) big_r;
-        *overflow |= big_r != r;
-        return (int) r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(int) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
-        int r = (int) big_r;
-        *overflow |= big_r != r;
-        return (int) r;
-#endif
-    } else {
-        int prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(int) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE int __Pyx_mul_const_int_checking_overflow(int a, int b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(int) / b;
-        *overflow |= a < __PYX_MIN(int) / b;
-    } else if (b == -1) {
-        *overflow |= a == __PYX_MIN(int);
-    } else if (b < -1) {
-        *overflow |= a > __PYX_MIN(int) / b;
-        *overflow |= a < __PYX_MAX(int) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE int __Pyx_div_int_checking_overflow(int a, int b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    *overflow |= (a == __PYX_MIN(int)) & (b == -1);
-    return a / b;
-}
-
-/* BaseCaseSigned */
-static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
-    if ((sizeof(long) < sizeof(long))) {
-        long big_r = ((long) a) + ((long) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        long r = (long) ((unsigned long) a + (unsigned long) b);
-        long sign_a = __PYX_SIGN_BIT(long) & a;
-        long sign_b = __PYX_SIGN_BIT(long) & b;
-        long sign_r = __PYX_SIGN_BIT(long) & r;
-        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
-        return r;
-    }
-}
-static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow) {
-    if (b > 0) {
-        *overflow |= a > __PYX_MAX(long) - b;
-    } else if (b < 0) {
-        *overflow |= a < __PYX_MIN(long) - b;
-    }
-    return a + b;
-}
-static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long);
-    return __Pyx_add_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long);
-    return __Pyx_add_const_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow) {
-    if ((sizeof(long) < sizeof(long))) {
-        long big_r = ((long) a) * ((long) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return (long) r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
-        long r = (long) big_r;
-        *overflow |= big_r != r;
-        return (long) r;
-#endif
-    } else {
-        long prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(long) / b;
-        *overflow |= a < __PYX_MIN(long) / b;
-    } else if (b == -1) {
-        *overflow |= a == __PYX_MIN(long);
-    } else if (b < -1) {
-        *overflow |= a > __PYX_MIN(long) / b;
-        *overflow |= a < __PYX_MAX(long) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    *overflow |= (a == __PYX_MIN(long)) & (b == -1);
-    return a / b;
-}
-
-/* BaseCaseSigned */
-static CYTHON_INLINE long long __Pyx_add_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    if ((sizeof(long long) < sizeof(long))) {
-        long big_r = ((long) a) + ((long) b);
-        long long r = (long long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
-        long long r = (long long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        long long r = (long long) ((unsigned long long) a + (unsigned long long) b);
-        long long sign_a = __PYX_SIGN_BIT(long long) & a;
-        long long sign_b = __PYX_SIGN_BIT(long long) & b;
-        long long sign_r = __PYX_SIGN_BIT(long long) & r;
-        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
-        return r;
-    }
-}
-static CYTHON_INLINE long long __Pyx_add_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    if (b > 0) {
-        *overflow |= a > __PYX_MAX(long long) - b;
-    } else if (b < 0) {
-        *overflow |= a < __PYX_MIN(long long) - b;
-    }
-    return a + b;
-}
-static CYTHON_INLINE long long __Pyx_sub_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long long);
-    return __Pyx_add_long_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long long __Pyx_sub_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    *overflow |= b == __PYX_MIN(long long);
-    return __Pyx_add_const_long_long_checking_overflow(a, -b, overflow);
-}
-static CYTHON_INLINE long long __Pyx_mul_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    if ((sizeof(long long) < sizeof(long))) {
-        long big_r = ((long) a) * ((long) b);
-        long long r = (long long) big_r;
-        *overflow |= big_r != r;
-        return (long long) r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(long long) < sizeof(PY_LONG_LONG))) {
-        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
-        long long r = (long long) big_r;
-        *overflow |= big_r != r;
-        return (long long) r;
-#endif
-    } else {
-        long long prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long long) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE long long __Pyx_mul_const_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(long long) / b;
-        *overflow |= a < __PYX_MIN(long long) / b;
-    } else if (b == -1) {
-        *overflow |= a == __PYX_MIN(long long);
-    } else if (b < -1) {
-        *overflow |= a > __PYX_MIN(long long) / b;
-        *overflow |= a < __PYX_MAX(long long) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE long long __Pyx_div_long_long_checking_overflow(long long a, long long b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    *overflow |= (a == __PYX_MIN(long long)) & (b == -1);
-    return a / b;
-}
-
-/* BaseCaseUnsigned */
-static CYTHON_INLINE unsigned int __Pyx_add_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
-    unsigned int r = a + b;
-    *overflow |= r < a;
-    return r;
-}
-static CYTHON_INLINE unsigned int __Pyx_sub_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
-    unsigned int r = a - b;
-    *overflow |= r > a;
-    return r;
-}
-static CYTHON_INLINE unsigned int __Pyx_mul_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
-    if ((sizeof(unsigned int) < sizeof(unsigned long))) {
-        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
-        unsigned int r = (unsigned int) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(unsigned int) < sizeof(unsigned PY_LONG_LONG))) {
-        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
-        unsigned int r = (unsigned int) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        unsigned int prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned int) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE unsigned int __Pyx_mul_const_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(unsigned int) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE unsigned int __Pyx_div_unsigned_int_checking_overflow(unsigned int a, unsigned int b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    return a / b;
-}
-
-/* BaseCaseUnsigned */
-static CYTHON_INLINE unsigned long __Pyx_add_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
-    unsigned long r = a + b;
-    *overflow |= r < a;
-    return r;
-}
-static CYTHON_INLINE unsigned long __Pyx_sub_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
-    unsigned long r = a - b;
-    *overflow |= r > a;
-    return r;
-}
-static CYTHON_INLINE unsigned long __Pyx_mul_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
-    if ((sizeof(unsigned long) < sizeof(unsigned long))) {
-        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
-        unsigned long r = (unsigned long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(unsigned long) < sizeof(unsigned PY_LONG_LONG))) {
-        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
-        unsigned long r = (unsigned long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        unsigned long prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned long) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE unsigned long __Pyx_mul_const_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(unsigned long) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE unsigned long __Pyx_div_unsigned_long_checking_overflow(unsigned long a, unsigned long b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    return a / b;
-}
-
-/* BaseCaseUnsigned */
-static CYTHON_INLINE unsigned long long __Pyx_add_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
-    unsigned long long r = a + b;
-    *overflow |= r < a;
-    return r;
-}
-static CYTHON_INLINE unsigned long long __Pyx_sub_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
-    unsigned long long r = a - b;
-    *overflow |= r > a;
-    return r;
-}
-static CYTHON_INLINE unsigned long long __Pyx_mul_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
-    if ((sizeof(unsigned long long) < sizeof(unsigned long))) {
-        unsigned long big_r = ((unsigned long) a) * ((unsigned long) b);
-        unsigned long long r = (unsigned long long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#ifdef HAVE_LONG_LONG
-    } else if ((sizeof(unsigned long long) < sizeof(unsigned PY_LONG_LONG))) {
-        unsigned PY_LONG_LONG big_r = ((unsigned PY_LONG_LONG) a) * ((unsigned PY_LONG_LONG) b);
-        unsigned long long r = (unsigned long long) big_r;
-        *overflow |= big_r != r;
-        return r;
-#endif
-    } else {
-        unsigned long long prod = a * b;
-        double dprod = ((double) a) * ((double) b);
-        *overflow |= fabs(dprod - prod) > (__PYX_MAX(unsigned long long) / 2);
-        return prod;
-    }
-}
-static CYTHON_INLINE unsigned long long __Pyx_mul_const_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
-    if (b > 1) {
-        *overflow |= a > __PYX_MAX(unsigned long long) / b;
-    }
-    return a * b;
-}
-static CYTHON_INLINE unsigned long long __Pyx_div_unsigned_long_long_checking_overflow(unsigned long long a, unsigned long long b, int *overflow) {
-    if (b == 0) {
-        *overflow |= 1;
-        return 0;
-    }
-    return a / b;
-}
-
-/* Binop */
-static CYTHON_INLINE size_t __Pyx_mul_size_t_checking_overflow(size_t a, size_t b, int *overflow) {
-    if ((sizeof(size_t) < sizeof(int))) {
-        return __Pyx_mul_no_overflow(a, b, overflow);
-    } else if (__PYX_IS_UNSIGNED(size_t)) {
-        if ((sizeof(size_t) == sizeof(unsigned int))) {
-            return (size_t) __Pyx_mul_unsigned_int_checking_overflow(a, b, overflow);
-        } else if ((sizeof(size_t) == sizeof(unsigned long))) {
-            return (size_t) __Pyx_mul_unsigned_long_checking_overflow(a, b, overflow);
-#ifdef HAVE_LONG_LONG
-        } else if ((sizeof(size_t) == sizeof(unsigned PY_LONG_LONG))) {
-            return (size_t) __Pyx_mul_unsigned_long_long_checking_overflow(a, b, overflow);
-#endif
-        } else {
-            abort(); return 0;
-        }
-    } else {
-        if ((sizeof(size_t) == sizeof(int))) {
-            return (size_t) __Pyx_mul_int_checking_overflow(a, b, overflow);
-        } else if ((sizeof(size_t) == sizeof(long))) {
-            return (size_t) __Pyx_mul_long_checking_overflow(a, b, overflow);
-#ifdef HAVE_LONG_LONG
-        } else if ((sizeof(size_t) == sizeof(PY_LONG_LONG))) {
-            return (size_t) __Pyx_mul_long_long_checking_overflow(a, b, overflow);
-#endif
-        } else {
-            abort(); return 0;
-        }
-    }
-}
-
 /* CIntToPy */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -6515,6 +5471,109 @@ static int __Pyx_check_binary_version(void) {
     }
     return 0;
 }
+
+/* VoidPtrImport */
+#ifndef __PYX_HAVE_RT_ImportVoidPtr
+#define __PYX_HAVE_RT_ImportVoidPtr
+static int __Pyx_ImportVoidPtr(PyObject *module, const char *name, void **p, const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    d = PyObject_GetAttrString(module, (char *)"__pyx_capi__");
+    if (!d)
+        goto bad;
+    cobj = PyDict_GetItemString(d, name);
+    if (!cobj) {
+        PyErr_Format(PyExc_ImportError,
+            "%.200s does not export expected C variable %.200s",
+                PyModule_GetName(module), name);
+        goto bad;
+    }
+#if PY_VERSION_HEX >= 0x02070000
+    if (!PyCapsule_IsValid(cobj, sig)) {
+        PyErr_Format(PyExc_TypeError,
+            "C variable %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), name, sig, PyCapsule_GetName(cobj));
+        goto bad;
+    }
+    *p = PyCapsule_GetPointer(cobj, sig);
+#else
+    {const char *desc, *s1, *s2;
+    desc = (const char *)PyCObject_GetDesc(cobj);
+    if (!desc)
+        goto bad;
+    s1 = desc; s2 = sig;
+    while (*s1 != '\0' && *s1 == *s2) { s1++; s2++; }
+    if (*s1 != *s2) {
+        PyErr_Format(PyExc_TypeError,
+            "C variable %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), name, sig, desc);
+        goto bad;
+    }
+    *p = PyCObject_AsVoidPtr(cobj);}
+#endif
+    if (!(*p))
+        goto bad;
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(d);
+    return -1;
+}
+#endif
+
+/* FunctionImport */
+#ifndef __PYX_HAVE_RT_ImportFunction
+#define __PYX_HAVE_RT_ImportFunction
+static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**f)(void), const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    union {
+        void (*fp)(void);
+        void *p;
+    } tmp;
+    d = PyObject_GetAttrString(module, (char *)"__pyx_capi__");
+    if (!d)
+        goto bad;
+    cobj = PyDict_GetItemString(d, funcname);
+    if (!cobj) {
+        PyErr_Format(PyExc_ImportError,
+            "%.200s does not export expected C function %.200s",
+                PyModule_GetName(module), funcname);
+        goto bad;
+    }
+#if PY_VERSION_HEX >= 0x02070000
+    if (!PyCapsule_IsValid(cobj, sig)) {
+        PyErr_Format(PyExc_TypeError,
+            "C function %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), funcname, sig, PyCapsule_GetName(cobj));
+        goto bad;
+    }
+    tmp.p = PyCapsule_GetPointer(cobj, sig);
+#else
+    {const char *desc, *s1, *s2;
+    desc = (const char *)PyCObject_GetDesc(cobj);
+    if (!desc)
+        goto bad;
+    s1 = desc; s2 = sig;
+    while (*s1 != '\0' && *s1 == *s2) { s1++; s2++; }
+    if (*s1 != *s2) {
+        PyErr_Format(PyExc_TypeError,
+            "C function %.200s.%.200s has wrong signature (expected %.500s, got %.500s)",
+             PyModule_GetName(module), funcname, sig, desc);
+        goto bad;
+    }
+    tmp.p = PyCObject_AsVoidPtr(cobj);}
+#endif
+    *f = tmp.fp;
+    if (!(*f))
+        goto bad;
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(d);
+    return -1;
+}
+#endif
 
 /* InitStrings */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {

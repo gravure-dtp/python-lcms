@@ -20,6 +20,37 @@
 from enum import Enum, EnumMeta
 
 
+class Tag(int):
+    def __new__(cls, value):
+        if isinstance(value, int):
+            if not len(hex(value)) in (9, 10) or value < 0:
+                raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+        elif isinstance(value, str):
+            sign = "{:<4}".format(value[:4])
+            value = int.from_bytes(sign.encode(), byteorder="big")
+        elif isinstance(value, bytes):
+            sign = value[:4]
+            for i in range(0, 4 - len(sign)):
+                sign += b' '
+            value = int.from_bytes(sign, byteorder="big")
+        else:
+            raise ValueError(f"can't create a Tag from {value}")
+        return int.__new__(cls, value)
+
+    def to_bytes(self):
+        return super().to_bytes(4, byteorder="big")
+
+    def __repr__(self):
+        return f"Tag({self})"
+
+    def __str__(self):
+        return hex(self)
+
+    @property
+    def signature(self):
+        return self.to_bytes(4, byteorder="big").decode()
+
+
 class TagEnumMeta(EnumMeta):
     def __getitem__(cls, name):
         try:

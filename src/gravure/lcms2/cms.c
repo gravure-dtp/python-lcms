@@ -1251,6 +1251,7 @@ static const char __pyx_k_DN[] = "DN";
 static const char __pyx_k_DNN[] = "DNN";
 static const char __pyx_k_DNP[] = "DNP";
 static const char __pyx_k_SGI[] = "SGI";
+static const char __pyx_k_Tag[] = "Tag";
 static const char __pyx_k_all[] = "__all__";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_D50X[] = "D50X";
@@ -1644,7 +1645,7 @@ static const char __pyx_k_PERCEPTUAL_BLACK_Z[] = "PERCEPTUAL_BLACK_Z";
 static const char __pyx_k_RedMatrixColumnTag[] = "RedMatrixColumnTag";
 static const char __pyx_k_ViewingCondDescTag[] = "ViewingCondDescTag";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_gravure_lcms2_enum[] = "gravure.lcms2.enum";
+static const char __pyx_k_gravure_lcms2_tags[] = "gravure.lcms2.tags";
 static const char __pyx_k_AlreadyDefinedError[] = "AlreadyDefinedError";
 static const char __pyx_k_BlueMatrixColumnTag[] = "BlueMatrixColumnTag";
 static const char __pyx_k_ColorSpaceSignature[] = "ColorSpaceSignature";
@@ -2113,7 +2114,10 @@ static PyObject *__pyx_n_s_StatusE;
 static PyObject *__pyx_n_s_StatusI;
 static PyObject *__pyx_n_s_StatusM;
 static PyObject *__pyx_n_s_StatusT;
+static PyObject *__pyx_n_s_Tag;
+static PyObject *__pyx_n_u_Tag;
 static PyObject *__pyx_n_s_TagEnum;
+static PyObject *__pyx_n_u_TagEnum;
 static PyObject *__pyx_n_s_TagSignature;
 static PyObject *__pyx_n_u_TagSignature;
 static PyObject *__pyx_n_s_TagTypeSignature;
@@ -2178,8 +2182,8 @@ static PyObject *__pyx_n_s_enums;
 static PyObject *__pyx_n_s_errors;
 static PyObject *__pyx_n_s_gravure_lcms2__errors;
 static PyObject *__pyx_n_s_gravure_lcms2_cms;
-static PyObject *__pyx_n_s_gravure_lcms2_enum;
 static PyObject *__pyx_n_s_gravure_lcms2_profile;
+static PyObject *__pyx_n_s_gravure_lcms2_tags;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_init_logger;
 static PyObject *__pyx_n_s_lcmsSignature;
@@ -2645,7 +2649,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_StatusI, __pyx_k_StatusI, sizeof(__pyx_k_StatusI), 0, 0, 1, 1},
   {&__pyx_n_s_StatusM, __pyx_k_StatusM, sizeof(__pyx_k_StatusM), 0, 0, 1, 1},
   {&__pyx_n_s_StatusT, __pyx_k_StatusT, sizeof(__pyx_k_StatusT), 0, 0, 1, 1},
+  {&__pyx_n_s_Tag, __pyx_k_Tag, sizeof(__pyx_k_Tag), 0, 0, 1, 1},
+  {&__pyx_n_u_Tag, __pyx_k_Tag, sizeof(__pyx_k_Tag), 0, 1, 0, 1},
   {&__pyx_n_s_TagEnum, __pyx_k_TagEnum, sizeof(__pyx_k_TagEnum), 0, 0, 1, 1},
+  {&__pyx_n_u_TagEnum, __pyx_k_TagEnum, sizeof(__pyx_k_TagEnum), 0, 1, 0, 1},
   {&__pyx_n_s_TagSignature, __pyx_k_TagSignature, sizeof(__pyx_k_TagSignature), 0, 0, 1, 1},
   {&__pyx_n_u_TagSignature, __pyx_k_TagSignature, sizeof(__pyx_k_TagSignature), 0, 1, 0, 1},
   {&__pyx_n_s_TagTypeSignature, __pyx_k_TagTypeSignature, sizeof(__pyx_k_TagTypeSignature), 0, 0, 1, 1},
@@ -2710,8 +2717,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_errors, __pyx_k_errors, sizeof(__pyx_k_errors), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2__errors, __pyx_k_gravure_lcms2__errors, sizeof(__pyx_k_gravure_lcms2__errors), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2_cms, __pyx_k_gravure_lcms2_cms, sizeof(__pyx_k_gravure_lcms2_cms), 0, 0, 1, 1},
-  {&__pyx_n_s_gravure_lcms2_enum, __pyx_k_gravure_lcms2_enum, sizeof(__pyx_k_gravure_lcms2_enum), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2_profile, __pyx_k_gravure_lcms2_profile, sizeof(__pyx_k_gravure_lcms2_profile), 0, 0, 1, 1},
+  {&__pyx_n_s_gravure_lcms2_tags, __pyx_k_gravure_lcms2_tags, sizeof(__pyx_k_gravure_lcms2_tags), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_init_logger, __pyx_k_init_logger, sizeof(__pyx_k_init_logger), 0, 0, 1, 1},
   {&__pyx_n_s_lcmsSignature, __pyx_k_lcmsSignature, sizeof(__pyx_k_lcmsSignature), 0, 0, 1, 1},
@@ -3058,17 +3065,24 @@ if (!__Pyx_RefNanny) {
   /* "gravure/lcms2/cms.pyx":25
  * 
  * 
- * from gravure.lcms2.enum import TagEnum             # <<<<<<<<<<<<<<
+ * from gravure.lcms2.tags import Tag, TagEnum             # <<<<<<<<<<<<<<
  * from gravure.lcms2.constant cimport *
  * from gravure.lcms2.icctag cimport *
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_s_Tag);
+  __Pyx_GIVEREF(__pyx_n_s_Tag);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_Tag);
   __Pyx_INCREF(__pyx_n_s_TagEnum);
   __Pyx_GIVEREF(__pyx_n_s_TagEnum);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_TagEnum);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_gravure_lcms2_enum, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_TagEnum);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_gravure_lcms2_tags, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Tag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Tag, __pyx_t_2) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_TagEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -8790,20 +8804,26 @@ if (!__Pyx_RefNanny) {
   /* "gravure/lcms2/cms.pyx":55
  *              ]
  * 
- * __classes__ = ['Profile']             # <<<<<<<<<<<<<<
+ * __classes__ = ['Tag', 'TagEnum', 'Profile']             # <<<<<<<<<<<<<<
  * 
  * __all__ = __constants__ + __enums__ + __classes__ + _errors.__all__
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_u_Tag);
+  __Pyx_GIVEREF(__pyx_n_u_Tag);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_u_Tag);
+  __Pyx_INCREF(__pyx_n_u_TagEnum);
+  __Pyx_GIVEREF(__pyx_n_u_TagEnum);
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_TagEnum);
   __Pyx_INCREF(__pyx_n_u_Profile);
   __Pyx_GIVEREF(__pyx_n_u_Profile);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_u_Profile);
+  PyList_SET_ITEM(__pyx_t_2, 2, __pyx_n_u_Profile);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_classes, __pyx_t_2) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gravure/lcms2/cms.pyx":57
- * __classes__ = ['Profile']
+ * __classes__ = ['Tag', 'TagEnum', 'Profile']
  * 
  * __all__ = __constants__ + __enums__ + __classes__ + _errors.__all__             # <<<<<<<<<<<<<<
  * 

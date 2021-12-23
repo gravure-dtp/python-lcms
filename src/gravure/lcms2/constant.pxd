@@ -39,7 +39,3 @@ cdef extern from "lcms2.h":
 
     # Maximum number of channels in ICC profiles
     int cmsMAXCHANNELS
-
-    # for Multilocalized Unicode management
-    const char[3]  cmsNoLanguage
-    const char[3]  cmsNoCountry

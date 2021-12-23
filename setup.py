@@ -93,7 +93,9 @@ def create_c_files():
     try:
         cythonize(
             [
+                "src/gravure/lcms2/tags.pyx",
                 "src/gravure/lcms2/_errors.pyx",
+                "src/gravure/lcms2/unicode.pyx",
                 "src/gravure/lcms2/profile.pyx",
                 "src/gravure/lcms2/cms.pyx",
             ],
@@ -152,8 +154,26 @@ else:
 def get_extensions():
     return [
         Extension(
+            "tags",
+            sources=["src/gravure/lcms2/tags.c"],
+            # libraries=[get_pkg_lib("lcms2")],
+            include_dirs=[get_pkg_includedir("lcms2")],
+            library_dirs=[get_pkg_libdir("lcms2")],
+            extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+            extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
+        ),
+        Extension(
             "_errors",
             sources=["src/gravure/lcms2/_errors.c"],
+            # libraries=[get_pkg_lib("lcms2")],
+            include_dirs=[get_pkg_includedir("lcms2")],
+            library_dirs=[get_pkg_libdir("lcms2")],
+            extra_objects=["/usr/lib/x86_64-linux-gnu/liblcms2.so"],
+            extra_link_args=[f"-L{get_pkg_libdir('lcms2')}"],
+        ),
+        Extension(
+            "unicode",
+            sources=["src/gravure/lcms2/unicode.c"],
             # libraries=[get_pkg_lib("lcms2")],
             include_dirs=[get_pkg_includedir("lcms2")],
             library_dirs=[get_pkg_libdir("lcms2")],

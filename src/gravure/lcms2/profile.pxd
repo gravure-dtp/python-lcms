@@ -17,8 +17,6 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #
-from libc.stddef cimport wchar_t
-
 from gravure.lcms2.types cimport *
 from gravure.lcms2.icctag cimport *
 
@@ -83,19 +81,6 @@ cdef extern from "lcms2.h":
     cmsHPROFILE cmsOpenProfileFromFile(const char *ICCProfile, const char *sAccess) nogil
     cmsBool cmsCloseProfile(cmsHPROFILE hProfile) nogil
 
-    # Localized info
-    ctypedef enum cmsInfoType:
-                 cmsInfoDescription
-                 cmsInfoManufacturer
-                 cmsInfoModel
-                 cmsInfoCopyright
-
-    cmsUInt32Number cmsGetProfileInfo(cmsHPROFILE hProfile, cmsInfoType Info,
-                                      const char LanguageCode[3], const char CountryCode[3],
-                                      wchar_t* Buffer, cmsUInt32Number BufferSize)
-
-
-
 
 cdef class Profile:
     cdef object __weakref__
@@ -108,4 +93,3 @@ cdef class Profile:
     # C Methods
     @staticmethod
     cdef Profile profile_from_file(const char *c_name, const char *c_access)
-    cdef object get_profile_info(Profile self, cmsInfoType info)

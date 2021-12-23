@@ -22,7 +22,7 @@ import cython
 cimport cython
 
 
-from gravure.lcms2.enum import TagEnum
+from gravure.lcms2.tags import Tag, TagEnum
 from gravure.lcms2.constant cimport *
 from gravure.lcms2.icctag cimport *
 import gravure.lcms2._errors as _errors
@@ -52,7 +52,7 @@ __enums__ = [# From 'colortype.pxi'
              'DeviceAttribute'
              ]
 
-__classes__ = ['Profile']
+__classes__ = ['Tag', 'TagEnum', 'Profile']
 
 __all__ = __constants__ + __enums__ + __classes__ + _errors.__all__
 

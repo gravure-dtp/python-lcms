@@ -21,29 +21,9 @@ from enum import Enum
 from pathlib import Path
 from contextlib import contextmanager
 
-from cpython.mem cimport PyMem_Malloc, PyMem_Free
-
-from gravure.lcms2.constant cimport cmsNoLanguage, cmsNoCountry
 from gravure.lcms2._errors import raise_error, UndefinedError, errors_count
+from gravure.lcms2.unicode cimport get_profile_info, cmsInfoType
 
-
-cdef extern from *:
-    ctypedef struct PyObject
-    void Py_INCREF(PyObject *)
-    void Py_DECREF(PyObject *)
-
-    PyObject* PyUnicode_FromKindAndData(int kind, const void *buffer, Py_ssize_t size)
-
-    enum:
-        PyUnicode_WCHAR_KIND
-        PyUnicode_1BYTE_KIND
-        PyUnicode_2BYTE_KIND
-        PyUnicode_4BYTE_KIND
-
-
-cdef object unicode_from_wchar(const wchar_t *buffer, Py_ssize_t size) with gil:
-    #print("wchar_t: ", sizeof(wchar_t))
-    return <object> PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer, size)
 
 class DeviceAttribute(Enum):
     Reflective = cmsReflective
@@ -107,48 +87,18 @@ cdef class Profile():
             # exit - cleanup is done by __dealloc__
             pass
 
-
-    cdef object get_profile_info(Profile self, cmsInfoType info):
-        cdef wchar_t *buffer
-        cdef int buffer_size
-        py_string = ""
-
-        # 1st request the size of the cstring
-        buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", NULL, 0)
-        if buffer_size == 0:
-            if errors_count():
-                raise_error(UndefinedError("get_profile_info()"))
-            return py_string
-
-        buffer = <wchar_t*> PyMem_Malloc(buffer_size * sizeof(wchar_t))
-        if not buffer:
-            raise MemoryError("get_profile_info()")
-
-        try:
-            # 2nd request the cstring
-            buffer_size = cmsGetProfileInfo(self.handle, info, b"en", b"US", buffer, buffer_size)
-            if buffer_size == 0:
-                if errors_count():
-                    raise_error(UndefinedError("get_profile_info()"))
-            else:
-                py_string = unicode_from_wchar(buffer, buffer_size)
-        finally:
-            # last free buffer
-            PyMem_Free(buffer)
-        return py_string
-
     @property
     def description(self):
-        return self.get_profile_info(info=cmsInfoType.cmsInfoDescription)
+        return get_profile_info(self.handle, info=cmsInfoType.cmsInfoDescription)
 
     @property
     def manufacturer(self):
-        return self.get_profile_info(info=cmsInfoType.cmsInfoManufacturer)
+        return get_profile_info(self.handle, info=cmsInfoType.cmsInfoManufacturer)
 
     @property
     def model(self):
-        return self.get_profile_info(info=cmsInfoType.cmsInfoModel)
+        return get_profile_info(self.handle, info=cmsInfoType.cmsInfoModel)
 
     @property
     def copyright(self):
-        return self.get_profile_info(info=cmsInfoType.cmsInfoCopyright)
+        return get_profile_info(self.handle, info=cmsInfoType.cmsInfoCopyright)
