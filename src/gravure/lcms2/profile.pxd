@@ -81,6 +81,30 @@ cdef extern from "lcms2.h":
     cmsHPROFILE cmsOpenProfileFromFile(const char *ICCProfile, const char *sAccess) nogil
     cmsBool cmsCloseProfile(cmsHPROFILE hProfile) nogil
 
+    # Access header data
+    enum:
+         cmsEmbeddedProfileFalse
+         cmsEmbeddedProfileTrue
+         cmsUseAnywhere
+         cmsUseWithEmbeddedDataOnly
+
+    cmsUInt32Number cmsGetHeaderFlags(cmsHPROFILE hProfile) nogil
+    void cmsGetHeaderAttributes(cmsHPROFILE hProfile, cmsUInt64Number* Flags) nogil
+    void cmsGetHeaderProfileID(cmsHPROFILE hProfile, cmsUInt8Number* ProfileID) nogil
+    struct tm:
+        pass
+    bint cmsGetHeaderCreationDateTime(cmsHPROFILE hProfile, tm *Dest) nogil
+    cmsUInt32Number cmsGetHeaderRenderingIntent(cmsHPROFILE hProfile) nogil
+    void cmsSetHeaderFlags(cmsHPROFILE hProfile, cmsUInt32Number Flags) nogil
+    cmsUInt32Number cmsGetHeaderManufacturer(cmsHPROFILE hProfile) nogil
+    void cmsSetHeaderManufacturer(cmsHPROFILE hProfile, cmsUInt32Number manufacturer) nogil
+    cmsUInt32Number cmsGetHeaderCreator(cmsHPROFILE hProfile) nogil
+    cmsUInt32Number cmsGetHeaderModel(cmsHPROFILE hProfile) nogil
+    void cmsSetHeaderModel(cmsHPROFILE hProfile, cmsUInt32Number model) nogil
+    void cmsSetHeaderAttributes(cmsHPROFILE hProfile, cmsUInt64Number Flags) nogil
+    void cmsSetHeaderProfileID(cmsHPROFILE hProfile, cmsUInt8Number* ProfileID) nogil
+    void cmsSetHeaderRenderingIntent(cmsHPROFILE hProfile, cmsUInt32Number RenderingIntent) nogil
+
 
 cdef class Profile:
     cdef object __weakref__

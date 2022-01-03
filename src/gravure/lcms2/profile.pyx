@@ -23,6 +23,7 @@ from contextlib import contextmanager
 
 from gravure.lcms2._errors import raise_error, UndefinedError, errors_count
 from gravure.lcms2.unicode cimport get_profile_info, cmsInfoType
+from gravure.lcms2.tags import Tag
 
 
 class DeviceAttribute(Enum):
@@ -30,6 +31,35 @@ class DeviceAttribute(Enum):
     Transparency = cmsTransparency
     Glossy = cmsGlossy
     Matte = cmsMatte
+
+
+cdef class ctx():
+    cdef object path
+    cdef object mode
+    cdef Profile pro
+
+    def __init__(self, file, mode):
+        if isinstance(file, Path):
+            self.path = str(file)
+        else:
+            raise (ValueError("file should be a pathlib.Path object."))
+        self.mode = mode
+
+    def __enter__(self):
+        cdef const char* c_name
+        cdef const char* c_access
+        b_file = self.path.encode('UTF-8')
+        c_name = b_file
+        b_mode =  self.mode.encode('UTF-8')
+        c_access = b_mode
+        self.pro = Profile.profile_from_file(c_name, c_access)
+        if not self.pro:
+            raise_error(IOError("Unknown error in opening profile"))
+        return self.pro
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # exit - cleanup is done by __dealloc__
+        return False
 
 
 cdef class Profile():
@@ -47,45 +77,23 @@ cdef class Profile():
             ret = cmsCloseProfile(self.handle)
             self.handle = NULL
 
-
     @staticmethod
     cdef Profile profile_from_file(const char *c_name, const char *c_access):
-        cdef Profile instance
-        cdef cmsHPROFILE c_handle
-        c_handle = cmsOpenProfileFromFile(c_name, c_access)
-        if c_handle is NULL:
-            instance = None
-        else:
-            # Call to __new__ bypasses __init__ constructor
-            instance = Profile.__new__(Profile)
-            instance.handle = c_handle
-            instance.open_profile = True
-        return instance
-
+       cdef Profile instance
+       cdef cmsHPROFILE c_handle
+       c_handle = cmsOpenProfileFromFile(c_name, c_access)
+       if c_handle is NULL:
+           instance = None
+       else:
+           # Call to __new__ bypasses __init__ constructor
+           instance = Profile.__new__(Profile)
+           instance.handle = c_handle
+           instance.open_profile = True
+       return instance
 
     @classmethod
-    #@contextmanager
     def open(cls, file, mode="r"):
-        cdef const char* c_name
-        cdef const char* c_access
-        try:
-            # enter
-            if isinstance(file, Path):
-                b_file = str(file).encode('UTF-8')
-                c_name = b_file
-                b_mode =  mode.encode('UTF-8')
-                c_access = b_mode
-                profile = Profile.profile_from_file(c_name, c_access)
-                if not profile:
-                    raise_error(IOError("Unknown error in opening profile"))
-                # yielding
-                #yield(profile)
-                return profile
-            else:
-                raise (ValueError("file should be a pathlib.Path object."))
-        finally:
-            # exit - cleanup is done by __dealloc__
-            pass
+        return ctx(file, mode)
 
     @property
     def description(self):
@@ -102,3 +110,7 @@ cdef class Profile():
     @property
     def copyright(self):
         return get_profile_info(self.handle, info=cmsInfoType.cmsInfoCopyright)
+
+    @property
+    def header_manufacturer(self):
+        return Tag(cmsGetHeaderManufacturer(self.handle))

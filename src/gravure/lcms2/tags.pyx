@@ -48,7 +48,7 @@ class Tag(int):
 
     @property
     def signature(self):
-        return self.to_bytes(4, byteorder="big").decode()
+        return self.to_bytes().decode()
 
 
 class TagEnumMeta(EnumMeta):
@@ -57,16 +57,11 @@ class TagEnumMeta(EnumMeta):
             ret = super().__getitem__(name)
         except KeyError as ke:
             try:
-                ret = cls(cls.from_tag(name))
+                ret = cls(Tag(name))
             except ValueError:
                 raise (ke)
         return ret
 
-    def from_tag(cls, name):
-        name = "{:<4}".format(name[:4])
-        return int.from_bytes(name.encode(), byteorder="big")
 
-
-class TagEnum(Enum, metaclass=TagEnumMeta):
-    def to_string(self):
-        return self.value.to_bytes(4, byteorder="big").decode()
+class TagEnum(Tag, Enum, metaclass=TagEnumMeta):
+    """Enum where members are also (and must be) gravure.lcms2.tags.Tag object"""

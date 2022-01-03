@@ -3,7 +3,6 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [],
         "name": "gravure.lcms2.tags",
         "sources": [
             "src/gravure/lcms2/tags.pyx"
@@ -689,7 +688,6 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__gravure__lcms2__tags
 #define __PYX_HAVE_API__gravure__lcms2__tags
 /* Early includes */
-#include "lcms2.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1153,6 +1151,53 @@ static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject 
 static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 #endif
 
+/* PyDictVersioning.proto */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+#define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
+#define __PYX_GET_DICT_VERSION(dict)  (((PyDictObject*)(dict))->ma_version_tag)
+#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)\
+    (version_var) = __PYX_GET_DICT_VERSION(dict);\
+    (cache_var) = (value);
+#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP) {\
+    static PY_UINT64_T __pyx_dict_version = 0;\
+    static PyObject *__pyx_dict_cached_value = NULL;\
+    if (likely(__PYX_GET_DICT_VERSION(DICT) == __pyx_dict_version)) {\
+        (VAR) = __pyx_dict_cached_value;\
+    } else {\
+        (VAR) = __pyx_dict_cached_value = (LOOKUP);\
+        __pyx_dict_version = __PYX_GET_DICT_VERSION(DICT);\
+    }\
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj);
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj);
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version);
+#else
+#define __PYX_GET_DICT_VERSION(dict)  (0)
+#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
+#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
+#endif
+
+/* GetModuleGlobalName.proto */
+#if CYTHON_USE_DICT_VERSIONS
+#define __Pyx_GetModuleGlobalName(var, name)  {\
+    static PY_UINT64_T __pyx_dict_version = 0;\
+    static PyObject *__pyx_dict_cached_value = NULL;\
+    (var) = (likely(__pyx_dict_version == __PYX_GET_DICT_VERSION(__pyx_d))) ?\
+        (likely(__pyx_dict_cached_value) ? __Pyx_NewRef(__pyx_dict_cached_value) : __Pyx_GetBuiltinName(name)) :\
+        __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  {\
+    PY_UINT64_T __pyx_dict_version;\
+    PyObject *__pyx_dict_cached_value;\
+    (var) = __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value);
+#else
+#define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
+#endif
+
 /* SwapException.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
@@ -1252,53 +1297,6 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
 
 /* CyFunctionClassCell.proto */
 static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *classobj);
-
-/* PyDictVersioning.proto */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-#define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
-#define __PYX_GET_DICT_VERSION(dict)  (((PyDictObject*)(dict))->ma_version_tag)
-#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)\
-    (version_var) = __PYX_GET_DICT_VERSION(dict);\
-    (cache_var) = (value);
-#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP) {\
-    static PY_UINT64_T __pyx_dict_version = 0;\
-    static PyObject *__pyx_dict_cached_value = NULL;\
-    if (likely(__PYX_GET_DICT_VERSION(DICT) == __pyx_dict_version)) {\
-        (VAR) = __pyx_dict_cached_value;\
-    } else {\
-        (VAR) = __pyx_dict_cached_value = (LOOKUP);\
-        __pyx_dict_version = __PYX_GET_DICT_VERSION(DICT);\
-    }\
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj);
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj);
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version);
-#else
-#define __PYX_GET_DICT_VERSION(dict)  (0)
-#define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
-#define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
-#endif
-
-/* GetModuleGlobalName.proto */
-#if CYTHON_USE_DICT_VERSIONS
-#define __Pyx_GetModuleGlobalName(var, name)  {\
-    static PY_UINT64_T __pyx_dict_version = 0;\
-    static PyObject *__pyx_dict_cached_value = NULL;\
-    (var) = (likely(__pyx_dict_version == __PYX_GET_DICT_VERSION(__pyx_d))) ?\
-        (likely(__pyx_dict_cached_value) ? __Pyx_NewRef(__pyx_dict_cached_value) : __Pyx_GetBuiltinName(name)) :\
-        __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
-}
-#define __Pyx_GetModuleGlobalNameUncached(var, name)  {\
-    PY_UINT64_T __pyx_dict_version;\
-    PyObject *__pyx_dict_cached_value;\
-    (var) = __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
-}
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value);
-#else
-#define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
-#define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
-#endif
 
 /* CLineInTraceback.proto */
 #ifdef CYTHON_CLINE_IN_TRACEBACK
@@ -1464,10 +1462,6 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'cython' */
-
-/* Module declarations from 'gravure.lcms2.types' */
-
 /* Module declarations from 'gravure.lcms2.tags' */
 #define __Pyx_MODULE_NAME "gravure.lcms2.tags"
 extern int __pyx_module_is_main_gravure__lcms2__tags;
@@ -1516,7 +1510,6 @@ static const char __pyx_k_getitem[] = "__getitem__";
 static const char __pyx_k_prepare[] = "__prepare__";
 static const char __pyx_k_EnumMeta[] = "EnumMeta";
 static const char __pyx_k_KeyError[] = "KeyError";
-static const char __pyx_k_from_tag[] = "from_tag";
 static const char __pyx_k_property[] = "property";
 static const char __pyx_k_qualname[] = "__qualname__";
 static const char __pyx_k_to_bytes[] = "to_bytes";
@@ -1525,38 +1518,35 @@ static const char __pyx_k_Tag___str[] = "Tag.__str__";
 static const char __pyx_k_byteorder[] = "byteorder";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_signature[] = "signature";
-static const char __pyx_k_to_string[] = "to_string";
 static const char __pyx_k_Tag___repr[] = "Tag.__repr__";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_from_bytes[] = "from_bytes";
 static const char __pyx_k_TagEnumMeta[] = "TagEnumMeta";
 static const char __pyx_k_Tag_to_bytes[] = "Tag.to_bytes";
 static const char __pyx_k_Tag_signature[] = "Tag.signature";
-static const char __pyx_k_TagEnum_to_string[] = "TagEnum.to_string";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_gravure_lcms2_tags[] = "gravure.lcms2.tags";
-static const char __pyx_k_TagEnumMeta_from_tag[] = "TagEnumMeta.from_tag";
 static const char __pyx_k_TagEnumMeta___getitem[] = "TagEnumMeta.__getitem__";
 static const char __pyx_k_can_t_create_a_Tag_from[] = "can't create a Tag from ";
 static const char __pyx_k_src_gravure_lcms2_tags_pyx[] = "src/gravure/lcms2/tags.pyx";
-static const char __pyx_k_Should_be_a_positive_integer_wit[] = "Should be a positive integer with a 4 bytes length representation";
+static const char __pyx_k_Enum_where_members_are_also_and[] = "Enum where members are also (and must be) gravure.lcms2.tags.Tag object";
+static const char __pyx_k_Tag_value_hould_be_a_positive_in[] = "Tag value hould be a positive integer with a 4 bytes length representation";
 static PyObject *__pyx_kp_u_4;
 static PyObject *__pyx_n_s_Enum;
 static PyObject *__pyx_n_s_EnumMeta;
+static PyObject *__pyx_kp_s_Enum_where_members_are_also_and;
 static PyObject *__pyx_n_s_KeyError;
-static PyObject *__pyx_kp_u_Should_be_a_positive_integer_wit;
 static PyObject *__pyx_kp_u_Tag;
 static PyObject *__pyx_n_s_TagEnum;
 static PyObject *__pyx_n_s_TagEnumMeta;
 static PyObject *__pyx_n_s_TagEnumMeta___getitem;
-static PyObject *__pyx_n_s_TagEnumMeta_from_tag;
-static PyObject *__pyx_n_s_TagEnum_to_string;
 static PyObject *__pyx_n_s_Tag_2;
 static PyObject *__pyx_n_s_Tag___new;
 static PyObject *__pyx_n_s_Tag___repr;
 static PyObject *__pyx_n_s_Tag___str;
 static PyObject *__pyx_n_s_Tag_signature;
 static PyObject *__pyx_n_s_Tag_to_bytes;
+static PyObject *__pyx_kp_u_Tag_value_hould_be_a_positive_in;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_b__3;
 static PyObject *__pyx_kp_u__5;
@@ -1571,7 +1561,6 @@ static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_enum;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_from_bytes;
-static PyObject *__pyx_n_s_from_tag;
 static PyObject *__pyx_n_s_getitem;
 static PyObject *__pyx_n_s_gravure_lcms2_tags;
 static PyObject *__pyx_n_s_hex;
@@ -1598,7 +1587,6 @@ static PyObject *__pyx_n_s_str;
 static PyObject *__pyx_n_s_super;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_to_bytes;
-static PyObject *__pyx_n_s_to_string;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
@@ -1606,8 +1594,6 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
 static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_6__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_8signature(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_name); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta_2from_tag(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_cls, PyObject *__pyx_v_name); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_4tags_7TagEnum_to_string(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_4;
 static PyObject *__pyx_tuple_;
@@ -1619,16 +1605,12 @@ static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__12;
 static PyObject *__pyx_tuple__14;
 static PyObject *__pyx_tuple__16;
-static PyObject *__pyx_tuple__18;
-static PyObject *__pyx_tuple__20;
 static PyObject *__pyx_codeobj__7;
 static PyObject *__pyx_codeobj__9;
 static PyObject *__pyx_codeobj__11;
 static PyObject *__pyx_codeobj__13;
 static PyObject *__pyx_codeobj__15;
 static PyObject *__pyx_codeobj__17;
-static PyObject *__pyx_codeobj__19;
-static PyObject *__pyx_codeobj__21;
 /* Late includes */
 
 /* "gravure/lcms2/tags.pyx":24
@@ -1732,7 +1714,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):             # <<<<<<<<<<<<<<
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  */
   __pyx_t_1 = PyInt_Check(__pyx_v_value); 
   __pyx_t_2 = (__pyx_t_1 != 0);
@@ -1742,7 +1724,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  */
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_hex, __pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
@@ -1774,7 +1756,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
       /* "gravure/lcms2/tags.pyx":27
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])
  */
@@ -1788,7 +1770,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  */
     }
@@ -1798,14 +1780,14 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):             # <<<<<<<<<<<<<<
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  */
     goto __pyx_L3;
   }
 
   /* "gravure/lcms2/tags.pyx":28
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):             # <<<<<<<<<<<<<<
  *             sign = "{:<4}".format(value[:4])
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -1815,7 +1797,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   if (__pyx_t_5) {
 
     /* "gravure/lcms2/tags.pyx":29
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])             # <<<<<<<<<<<<<<
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -1888,7 +1870,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
 
     /* "gravure/lcms2/tags.pyx":28
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):             # <<<<<<<<<<<<<<
  *             sign = "{:<4}".format(value[:4])
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -1989,8 +1971,8 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *             value = int.from_bytes(sign, byteorder="big")
  *         else:
  *             raise ValueError(f"can't create a Tag from {value}")             # <<<<<<<<<<<<<<
- * 
  *         return int.__new__(cls, value)
+ * 
  */
   /*else*/ {
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
@@ -2007,15 +1989,15 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   }
   __pyx_L3:;
 
-  /* "gravure/lcms2/tags.pyx":39
+  /* "gravure/lcms2/tags.pyx":38
+ *         else:
  *             raise ValueError(f"can't create a Tag from {value}")
- * 
  *         return int.__new__(cls, value)             # <<<<<<<<<<<<<<
  * 
  *     def to_bytes(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)(&PyInt_Type)), __pyx_n_s_new); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)(&PyInt_Type)), __pyx_n_s_new); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_6 = NULL;
   __pyx_t_9 = 0;
@@ -2032,7 +2014,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_7)) {
     PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_cls, __pyx_v_value};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -2040,13 +2022,13 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
     PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_cls, __pyx_v_value};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_6) {
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -2057,7 +2039,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_value);
     __Pyx_GIVEREF(__pyx_v_value);
     PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_9, __pyx_v_value);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
@@ -2090,7 +2072,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "gravure/lcms2/tags.pyx":41
+/* "gravure/lcms2/tags.pyx":40
  *         return int.__new__(cls, value)
  * 
  *     def to_bytes(self):             # <<<<<<<<<<<<<<
@@ -2124,7 +2106,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("to_bytes", 0);
 
-  /* "gravure/lcms2/tags.pyx":42
+  /* "gravure/lcms2/tags.pyx":41
  * 
  *     def to_bytes(self):
  *         return super().to_bytes(4, byteorder="big")             # <<<<<<<<<<<<<<
@@ -2133,9 +2115,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyO
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 42, __pyx_L1_error) }
+  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 41, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -2143,16 +2125,16 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyO
   __Pyx_GIVEREF(__pyx_v_self);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_self);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_to_bytes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_to_bytes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_byteorder, __pyx_n_u_big) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_byteorder, __pyx_n_u_big) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2160,7 +2142,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyO
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/tags.pyx":41
+  /* "gravure/lcms2/tags.pyx":40
  *         return int.__new__(cls, value)
  * 
  *     def to_bytes(self):             # <<<<<<<<<<<<<<
@@ -2181,7 +2163,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_2to_bytes(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "gravure/lcms2/tags.pyx":44
+/* "gravure/lcms2/tags.pyx":43
  *         return super().to_bytes(4, byteorder="big")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2216,7 +2198,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "gravure/lcms2/tags.pyx":45
+  /* "gravure/lcms2/tags.pyx":44
  * 
  *     def __repr__(self):
  *         return f"Tag({self})"             # <<<<<<<<<<<<<<
@@ -2224,7 +2206,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
  *     def __str__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -2232,7 +2214,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
   __pyx_t_2 += 4;
   __Pyx_GIVEREF(__pyx_kp_u_Tag);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Tag);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_self, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_self, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -2243,14 +2225,14 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__5);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__5);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/tags.pyx":44
+  /* "gravure/lcms2/tags.pyx":43
  *         return super().to_bytes(4, byteorder="big")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2270,7 +2252,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_4__repr__(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "gravure/lcms2/tags.pyx":47
+/* "gravure/lcms2/tags.pyx":46
  *         return f"Tag({self})"
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -2302,7 +2284,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_6__str__(CYTHON_UNUSED PyOb
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "gravure/lcms2/tags.pyx":48
+  /* "gravure/lcms2/tags.pyx":47
  * 
  *     def __str__(self):
  *         return hex(self)             # <<<<<<<<<<<<<<
@@ -2310,13 +2292,13 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_6__str__(CYTHON_UNUSED PyOb
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_hex, __pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_hex, __pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/tags.pyx":47
+  /* "gravure/lcms2/tags.pyx":46
  *         return f"Tag({self})"
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -2335,11 +2317,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_6__str__(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "gravure/lcms2/tags.pyx":51
+/* "gravure/lcms2/tags.pyx":50
  * 
  *     @property
  *     def signature(self):             # <<<<<<<<<<<<<<
- *         return self.to_bytes(4, byteorder="big").decode()
+ *         return self.to_bytes().decode()
  * 
  */
 
@@ -2370,26 +2352,16 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_8signature(CYTHON_UNUSED Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("signature", 0);
 
-  /* "gravure/lcms2/tags.pyx":52
+  /* "gravure/lcms2/tags.pyx":51
  *     @property
  *     def signature(self):
- *         return self.to_bytes(4, byteorder="big").decode()             # <<<<<<<<<<<<<<
+ *         return self.to_bytes().decode()             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_to_bytes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_to_bytes); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_byteorder, __pyx_n_u_big) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__4, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_decode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
     __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
@@ -2400,20 +2372,38 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_8signature(CYTHON_UNUSED Py
       __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_decode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/tags.pyx":51
+  /* "gravure/lcms2/tags.pyx":50
  * 
  *     @property
  *     def signature(self):             # <<<<<<<<<<<<<<
- *         return self.to_bytes(4, byteorder="big").decode()
+ *         return self.to_bytes().decode()
  * 
  */
 
@@ -2431,7 +2421,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag_8signature(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "gravure/lcms2/tags.pyx":56
+/* "gravure/lcms2/tags.pyx":55
  * 
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):             # <<<<<<<<<<<<<<
@@ -2475,11 +2465,11 @@ static PyObject *__pyx_pw_7gravure_5lcms2_4tags_11TagEnumMeta_1__getitem__(PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, 1); __PYX_ERR(0, 56, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, 1); __PYX_ERR(0, 55, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__getitem__") < 0)) __PYX_ERR(0, 56, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__getitem__") < 0)) __PYX_ERR(0, 55, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2492,7 +2482,7 @@ static PyObject *__pyx_pw_7gravure_5lcms2_4tags_11TagEnumMeta_1__getitem__(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 56, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 55, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("gravure.lcms2.tags.TagEnumMeta.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2534,7 +2524,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "gravure/lcms2/tags.pyx":57
+  /* "gravure/lcms2/tags.pyx":56
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):
  *         try:             # <<<<<<<<<<<<<<
@@ -2550,7 +2540,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "gravure/lcms2/tags.pyx":58
+      /* "gravure/lcms2/tags.pyx":57
  *     def __getitem__(cls, name):
  *         try:
  *             ret = super().__getitem__(name)             # <<<<<<<<<<<<<<
@@ -2558,9 +2548,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
  *             try:
  */
       __pyx_t_5 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-      if (!__pyx_t_5) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 58, __pyx_L3_error) }
+      if (!__pyx_t_5) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 57, __pyx_L3_error) }
       __Pyx_INCREF(__pyx_t_5);
-      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L3_error)
+      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 57, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
@@ -2568,10 +2558,10 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
       __Pyx_GIVEREF(__pyx_v_cls);
       PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_v_cls);
       __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L3_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_getitem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L3_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_getitem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 57, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
@@ -2586,13 +2576,13 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
       }
       __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_5, __pyx_v_name) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_name);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L3_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_v_ret = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "gravure/lcms2/tags.pyx":57
+      /* "gravure/lcms2/tags.pyx":56
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):
  *         try:             # <<<<<<<<<<<<<<
@@ -2609,17 +2599,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "gravure/lcms2/tags.pyx":59
+    /* "gravure/lcms2/tags.pyx":58
  *         try:
  *             ret = super().__getitem__(name)
  *         except KeyError as ke:             # <<<<<<<<<<<<<<
  *             try:
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  */
     __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_7) {
       __Pyx_AddTraceback("gravure.lcms2.tags.TagEnumMeta.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 59, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 58, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_5);
@@ -2627,11 +2617,11 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
       __pyx_v_ke = __pyx_t_6;
       /*try:*/ {
 
-        /* "gravure/lcms2/tags.pyx":60
+        /* "gravure/lcms2/tags.pyx":59
  *             ret = super().__getitem__(name)
  *         except KeyError as ke:
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  *             except ValueError:
  */
         {
@@ -2643,17 +2633,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
           __Pyx_XGOTREF(__pyx_t_10);
           /*try:*/ {
 
-            /* "gravure/lcms2/tags.pyx":61
+            /* "gravure/lcms2/tags.pyx":60
  *         except KeyError as ke:
  *             try:
- *                 ret = cls(cls.from_tag(name))             # <<<<<<<<<<<<<<
+ *                 ret = cls(Tag(name))             # <<<<<<<<<<<<<<
  *             except ValueError:
  *                 raise (ke)
  */
-            __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_cls, __pyx_n_s_from_tag); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 61, __pyx_L16_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_Tag_2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 60, __pyx_L16_error)
             __Pyx_GOTREF(__pyx_t_13);
             __pyx_t_14 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
+            if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_13))) {
               __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_13);
               if (likely(__pyx_t_14)) {
                 PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
@@ -2664,7 +2654,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
             }
             __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_v_name) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_v_name);
             __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 61, __pyx_L16_error)
+            if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 60, __pyx_L16_error)
             __Pyx_GOTREF(__pyx_t_12);
             __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
             __Pyx_INCREF(__pyx_v_cls);
@@ -2681,17 +2671,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
             __pyx_t_11 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_t_12) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_12);
             __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 61, __pyx_L16_error)
+            if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 60, __pyx_L16_error)
             __Pyx_GOTREF(__pyx_t_11);
             __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
             __Pyx_XDECREF_SET(__pyx_v_ret, __pyx_t_11);
             __pyx_t_11 = 0;
 
-            /* "gravure/lcms2/tags.pyx":60
+            /* "gravure/lcms2/tags.pyx":59
  *             ret = super().__getitem__(name)
  *         except KeyError as ke:
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  *             except ValueError:
  */
           }
@@ -2705,9 +2695,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
           __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
           __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-          /* "gravure/lcms2/tags.pyx":62
+          /* "gravure/lcms2/tags.pyx":61
  *             try:
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  *             except ValueError:             # <<<<<<<<<<<<<<
  *                 raise (ke)
  *         return ret
@@ -2715,29 +2705,29 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
           __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_ValueError);
           if (__pyx_t_7) {
             __Pyx_AddTraceback("gravure.lcms2.tags.TagEnumMeta.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_13, &__pyx_t_12) < 0) __PYX_ERR(0, 62, __pyx_L18_except_error)
+            if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_13, &__pyx_t_12) < 0) __PYX_ERR(0, 61, __pyx_L18_except_error)
             __Pyx_GOTREF(__pyx_t_11);
             __Pyx_GOTREF(__pyx_t_13);
             __Pyx_GOTREF(__pyx_t_12);
 
-            /* "gravure/lcms2/tags.pyx":63
- *                 ret = cls(cls.from_tag(name))
+            /* "gravure/lcms2/tags.pyx":62
+ *                 ret = cls(Tag(name))
  *             except ValueError:
  *                 raise (ke)             # <<<<<<<<<<<<<<
  *         return ret
  * 
  */
             __Pyx_Raise(__pyx_v_ke, 0, 0, 0);
-            __PYX_ERR(0, 63, __pyx_L18_except_error)
+            __PYX_ERR(0, 62, __pyx_L18_except_error)
           }
           goto __pyx_L18_except_error;
           __pyx_L18_except_error:;
 
-          /* "gravure/lcms2/tags.pyx":60
+          /* "gravure/lcms2/tags.pyx":59
  *             ret = super().__getitem__(name)
  *         except KeyError as ke:
  *             try:             # <<<<<<<<<<<<<<
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  *             except ValueError:
  */
           __Pyx_XGIVEREF(__pyx_t_8);
@@ -2749,12 +2739,12 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
         }
       }
 
-      /* "gravure/lcms2/tags.pyx":59
+      /* "gravure/lcms2/tags.pyx":58
  *         try:
  *             ret = super().__getitem__(name)
  *         except KeyError as ke:             # <<<<<<<<<<<<<<
  *             try:
- *                 ret = cls(cls.from_tag(name))
+ *                 ret = cls(Tag(name))
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2808,7 +2798,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "gravure/lcms2/tags.pyx":57
+    /* "gravure/lcms2/tags.pyx":56
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):
  *         try:             # <<<<<<<<<<<<<<
@@ -2828,19 +2818,19 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
     __pyx_L8_try_end:;
   }
 
-  /* "gravure/lcms2/tags.pyx":64
+  /* "gravure/lcms2/tags.pyx":63
  *             except ValueError:
  *                 raise (ke)
  *         return ret             # <<<<<<<<<<<<<<
  * 
- *     def from_tag(cls, name):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_ret);
   __pyx_r = __pyx_v_ret;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/tags.pyx":56
+  /* "gravure/lcms2/tags.pyx":55
  * 
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):             # <<<<<<<<<<<<<<
@@ -2862,285 +2852,6 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta___getitem__(CYTHON
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ret);
   __Pyx_XDECREF(__pyx_v_ke);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "gravure/lcms2/tags.pyx":66
- *         return ret
- * 
- *     def from_tag(cls, name):             # <<<<<<<<<<<<<<
- *         name = "{:<4}".format(name[:4])
- *         return int.from_bytes(name.encode(), byteorder="big")
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_4tags_11TagEnumMeta_3from_tag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_4tags_11TagEnumMeta_2from_tag[] = "TagEnumMeta.from_tag(cls, name)";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_4tags_11TagEnumMeta_3from_tag = {"from_tag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7gravure_5lcms2_4tags_11TagEnumMeta_3from_tag, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7gravure_5lcms2_4tags_11TagEnumMeta_2from_tag};
-static PyObject *__pyx_pw_7gravure_5lcms2_4tags_11TagEnumMeta_3from_tag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  CYTHON_UNUSED PyObject *__pyx_v_cls = 0;
-  PyObject *__pyx_v_name = 0;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("from_tag (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_cls,&__pyx_n_s_name,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cls)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("from_tag", 1, 2, 2, 1); __PYX_ERR(0, 66, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "from_tag") < 0)) __PYX_ERR(0, 66, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_cls = values[0];
-    __pyx_v_name = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("from_tag", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 66, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("gravure.lcms2.tags.TagEnumMeta.from_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta_2from_tag(__pyx_self, __pyx_v_cls, __pyx_v_name);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7gravure_5lcms2_4tags_11TagEnumMeta_2from_tag(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_cls, PyObject *__pyx_v_name) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("from_tag", 0);
-  __Pyx_INCREF(__pyx_v_name);
-
-  /* "gravure/lcms2/tags.pyx":67
- * 
- *     def from_tag(cls, name):
- *         name = "{:<4}".format(name[:4])             # <<<<<<<<<<<<<<
- *         return int.from_bytes(name.encode(), byteorder="big")
- * 
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_4, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_v_name, 0, 4, NULL, NULL, &__pyx_slice__2, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF_SET(__pyx_v_name, __pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "gravure/lcms2/tags.pyx":68
- *     def from_tag(cls, name):
- *         name = "{:<4}".format(name[:4])
- *         return int.from_bytes(name.encode(), byteorder="big")             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)(&PyInt_Type)), __pyx_n_s_from_bytes); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_name, __pyx_n_s_encode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_byteorder, __pyx_n_u_big) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_4;
-  __pyx_t_4 = 0;
-  goto __pyx_L0;
-
-  /* "gravure/lcms2/tags.pyx":66
- *         return ret
- * 
- *     def from_tag(cls, name):             # <<<<<<<<<<<<<<
- *         name = "{:<4}".format(name[:4])
- *         return int.from_bytes(name.encode(), byteorder="big")
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("gravure.lcms2.tags.TagEnumMeta.from_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_name);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "gravure/lcms2/tags.pyx":72
- * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):
- *     def to_string(self):             # <<<<<<<<<<<<<<
- *         return self.value.to_bytes(4, byteorder="big").decode()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_4tags_7TagEnum_1to_string(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_4tags_7TagEnum_to_string[] = "TagEnum.to_string(self)";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_4tags_7TagEnum_1to_string = {"to_string", (PyCFunction)__pyx_pw_7gravure_5lcms2_4tags_7TagEnum_1to_string, METH_O, __pyx_doc_7gravure_5lcms2_4tags_7TagEnum_to_string};
-static PyObject *__pyx_pw_7gravure_5lcms2_4tags_7TagEnum_1to_string(PyObject *__pyx_self, PyObject *__pyx_v_self) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("to_string (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_4tags_7TagEnum_to_string(__pyx_self, ((PyObject *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7gravure_5lcms2_4tags_7TagEnum_to_string(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("to_string", 0);
-
-  /* "gravure/lcms2/tags.pyx":73
- * class TagEnum(Enum, metaclass=TagEnumMeta):
- *     def to_string(self):
- *         return self.value.to_bytes(4, byteorder="big").decode()             # <<<<<<<<<<<<<<
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_to_bytes); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_byteorder, __pyx_n_u_big) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__4, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_decode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "gravure/lcms2/tags.pyx":72
- * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):
- *     def to_string(self):             # <<<<<<<<<<<<<<
- *         return self.value.to_bytes(4, byteorder="big").decode()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("gravure.lcms2.tags.TagEnum.to_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -3195,20 +2906,19 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_4, __pyx_k_4, sizeof(__pyx_k_4), 0, 1, 0, 0},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
   {&__pyx_n_s_EnumMeta, __pyx_k_EnumMeta, sizeof(__pyx_k_EnumMeta), 0, 0, 1, 1},
+  {&__pyx_kp_s_Enum_where_members_are_also_and, __pyx_k_Enum_where_members_are_also_and, sizeof(__pyx_k_Enum_where_members_are_also_and), 0, 0, 1, 0},
   {&__pyx_n_s_KeyError, __pyx_k_KeyError, sizeof(__pyx_k_KeyError), 0, 0, 1, 1},
-  {&__pyx_kp_u_Should_be_a_positive_integer_wit, __pyx_k_Should_be_a_positive_integer_wit, sizeof(__pyx_k_Should_be_a_positive_integer_wit), 0, 1, 0, 0},
   {&__pyx_kp_u_Tag, __pyx_k_Tag, sizeof(__pyx_k_Tag), 0, 1, 0, 0},
   {&__pyx_n_s_TagEnum, __pyx_k_TagEnum, sizeof(__pyx_k_TagEnum), 0, 0, 1, 1},
   {&__pyx_n_s_TagEnumMeta, __pyx_k_TagEnumMeta, sizeof(__pyx_k_TagEnumMeta), 0, 0, 1, 1},
   {&__pyx_n_s_TagEnumMeta___getitem, __pyx_k_TagEnumMeta___getitem, sizeof(__pyx_k_TagEnumMeta___getitem), 0, 0, 1, 1},
-  {&__pyx_n_s_TagEnumMeta_from_tag, __pyx_k_TagEnumMeta_from_tag, sizeof(__pyx_k_TagEnumMeta_from_tag), 0, 0, 1, 1},
-  {&__pyx_n_s_TagEnum_to_string, __pyx_k_TagEnum_to_string, sizeof(__pyx_k_TagEnum_to_string), 0, 0, 1, 1},
   {&__pyx_n_s_Tag_2, __pyx_k_Tag_2, sizeof(__pyx_k_Tag_2), 0, 0, 1, 1},
   {&__pyx_n_s_Tag___new, __pyx_k_Tag___new, sizeof(__pyx_k_Tag___new), 0, 0, 1, 1},
   {&__pyx_n_s_Tag___repr, __pyx_k_Tag___repr, sizeof(__pyx_k_Tag___repr), 0, 0, 1, 1},
   {&__pyx_n_s_Tag___str, __pyx_k_Tag___str, sizeof(__pyx_k_Tag___str), 0, 0, 1, 1},
   {&__pyx_n_s_Tag_signature, __pyx_k_Tag_signature, sizeof(__pyx_k_Tag_signature), 0, 0, 1, 1},
   {&__pyx_n_s_Tag_to_bytes, __pyx_k_Tag_to_bytes, sizeof(__pyx_k_Tag_to_bytes), 0, 0, 1, 1},
+  {&__pyx_kp_u_Tag_value_hould_be_a_positive_in, __pyx_k_Tag_value_hould_be_a_positive_in, sizeof(__pyx_k_Tag_value_hould_be_a_positive_in), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
   {&__pyx_kp_u__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 1, 0, 0},
@@ -3223,7 +2933,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_enum, __pyx_k_enum, sizeof(__pyx_k_enum), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_from_bytes, __pyx_k_from_bytes, sizeof(__pyx_k_from_bytes), 0, 0, 1, 1},
-  {&__pyx_n_s_from_tag, __pyx_k_from_tag, sizeof(__pyx_k_from_tag), 0, 0, 1, 1},
   {&__pyx_n_s_getitem, __pyx_k_getitem, sizeof(__pyx_k_getitem), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2_tags, __pyx_k_gravure_lcms2_tags, sizeof(__pyx_k_gravure_lcms2_tags), 0, 0, 1, 1},
   {&__pyx_n_s_hex, __pyx_k_hex, sizeof(__pyx_k_hex), 0, 0, 1, 1},
@@ -3250,17 +2959,16 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_super, __pyx_k_super, sizeof(__pyx_k_super), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_to_bytes, __pyx_k_to_bytes, sizeof(__pyx_k_to_bytes), 0, 0, 1, 1},
-  {&__pyx_n_s_to_string, __pyx_k_to_string, sizeof(__pyx_k_to_string), 0, 0, 1, 1},
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_builtin_hex = __Pyx_GetBuiltinName(__pyx_n_s_hex); if (!__pyx_builtin_hex) __PYX_ERR(0, 26, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 27, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 33, __pyx_L1_error)
-  __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 58, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3273,16 +2981,16 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "gravure/lcms2/tags.pyx":27
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Should_be_a_positive_integer_wit); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Tag_value_hould_be_a_positive_in); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "gravure/lcms2/tags.pyx":29
- *                 raise ValueError("Should be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])             # <<<<<<<<<<<<<<
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -3292,14 +3000,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_slice__2);
   __Pyx_GIVEREF(__pyx_slice__2);
 
-  /* "gravure/lcms2/tags.pyx":42
+  /* "gravure/lcms2/tags.pyx":41
  * 
  *     def to_bytes(self):
  *         return super().to_bytes(4, byteorder="big")             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_int_4); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_int_4); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
@@ -3315,88 +3023,65 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__6);
   __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_new, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 24, __pyx_L1_error)
 
-  /* "gravure/lcms2/tags.pyx":41
+  /* "gravure/lcms2/tags.pyx":40
  *         return int.__new__(cls, value)
  * 
  *     def to_bytes(self):             # <<<<<<<<<<<<<<
  *         return super().to_bytes(4, byteorder="big")
  * 
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_to_bytes, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_to_bytes, 40, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 40, __pyx_L1_error)
 
-  /* "gravure/lcms2/tags.pyx":44
+  /* "gravure/lcms2/tags.pyx":43
  *         return super().to_bytes(4, byteorder="big")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"Tag({self})"
  * 
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_repr, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_repr, 43, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 43, __pyx_L1_error)
 
-  /* "gravure/lcms2/tags.pyx":47
+  /* "gravure/lcms2/tags.pyx":46
  *         return f"Tag({self})"
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
  *         return hex(self)
  * 
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_str, 47, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_str, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 46, __pyx_L1_error)
 
-  /* "gravure/lcms2/tags.pyx":51
+  /* "gravure/lcms2/tags.pyx":50
  * 
  *     @property
  *     def signature(self):             # <<<<<<<<<<<<<<
- *         return self.to_bytes(4, byteorder="big").decode()
+ *         return self.to_bytes().decode()
  * 
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_signature, 51, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_signature, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 50, __pyx_L1_error)
 
-  /* "gravure/lcms2/tags.pyx":56
+  /* "gravure/lcms2/tags.pyx":55
  * 
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):             # <<<<<<<<<<<<<<
  *         try:
  *             ret = super().__getitem__(name)
  */
-  __pyx_tuple__16 = PyTuple_Pack(4, __pyx_n_s_cls, __pyx_n_s_name, __pyx_n_s_ret, __pyx_n_s_ke); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(4, __pyx_n_s_cls, __pyx_n_s_name, __pyx_n_s_ret, __pyx_n_s_ke); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_getitem, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 56, __pyx_L1_error)
-
-  /* "gravure/lcms2/tags.pyx":66
- *         return ret
- * 
- *     def from_tag(cls, name):             # <<<<<<<<<<<<<<
- *         name = "{:<4}".format(name[:4])
- *         return int.from_bytes(name.encode(), byteorder="big")
- */
-  __pyx_tuple__18 = PyTuple_Pack(2, __pyx_n_s_cls, __pyx_n_s_name); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_from_tag, 66, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 66, __pyx_L1_error)
-
-  /* "gravure/lcms2/tags.pyx":72
- * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):
- *     def to_string(self):             # <<<<<<<<<<<<<<
- *         return self.value.to_bytes(4, byteorder="big").decode()
- */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 72, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_to_string, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_tags_pyx, __pyx_n_s_getitem, 55, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3755,66 +3440,66 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_new, __pyx_t_5) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/tags.pyx":41
+  /* "gravure/lcms2/tags.pyx":40
  *         return int.__new__(cls, value)
  * 
  *     def to_bytes(self):             # <<<<<<<<<<<<<<
  *         return super().to_bytes(4, byteorder="big")
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_3to_bytes, 0, __pyx_n_s_Tag_to_bytes, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_3to_bytes, 0, __pyx_n_s_Tag_to_bytes, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_t_5);
   PyList_Append(__pyx_t_4, __pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_to_bytes, __pyx_t_5) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_to_bytes, __pyx_t_5) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/tags.pyx":44
+  /* "gravure/lcms2/tags.pyx":43
  *         return super().to_bytes(4, byteorder="big")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"Tag({self})"
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_5__repr__, 0, __pyx_n_s_Tag___repr, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_5__repr__, 0, __pyx_n_s_Tag___repr, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_repr, __pyx_t_5) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_repr, __pyx_t_5) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/tags.pyx":47
+  /* "gravure/lcms2/tags.pyx":46
  *         return f"Tag({self})"
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
  *         return hex(self)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_7__str__, 0, __pyx_n_s_Tag___str, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_7__str__, 0, __pyx_n_s_Tag___str, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_str, __pyx_t_5) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_str, __pyx_t_5) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/tags.pyx":51
+  /* "gravure/lcms2/tags.pyx":50
  * 
  *     @property
  *     def signature(self):             # <<<<<<<<<<<<<<
- *         return self.to_bytes(4, byteorder="big").decode()
+ *         return self.to_bytes().decode()
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_9signature, 0, __pyx_n_s_Tag_signature, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_3Tag_9signature, 0, __pyx_n_s_Tag_signature, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/tags.pyx":50
+  /* "gravure/lcms2/tags.pyx":49
  *         return hex(self)
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def signature(self):
- *         return self.to_bytes(4, byteorder="big").decode()
+ *         return self.to_bytes().decode()
  */
-  __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_signature, __pyx_t_6) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_signature, __pyx_t_6) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
   /* "gravure/lcms2/tags.pyx":23
@@ -3834,128 +3519,101 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "gravure/lcms2/tags.pyx":55
+  /* "gravure/lcms2/tags.pyx":54
  * 
  * 
  * class TagEnumMeta(EnumMeta):             # <<<<<<<<<<<<<<
  *     def __getitem__(cls, name):
  *         try:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EnumMeta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EnumMeta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_TagEnumMeta, __pyx_n_s_TagEnumMeta, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_tags, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_TagEnumMeta, __pyx_n_s_TagEnumMeta, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_tags, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "gravure/lcms2/tags.pyx":56
+  /* "gravure/lcms2/tags.pyx":55
  * 
  * class TagEnumMeta(EnumMeta):
  *     def __getitem__(cls, name):             # <<<<<<<<<<<<<<
  *         try:
  *             ret = super().__getitem__(name)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_11TagEnumMeta_1__getitem__, 0, __pyx_n_s_TagEnumMeta___getitem, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_11TagEnumMeta_1__getitem__, 0, __pyx_n_s_TagEnumMeta___getitem, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_t_4);
   PyList_Append(__pyx_t_6, __pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_getitem, __pyx_t_4) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_getitem, __pyx_t_4) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/tags.pyx":66
- *         return ret
- * 
- *     def from_tag(cls, name):             # <<<<<<<<<<<<<<
- *         name = "{:<4}".format(name[:4])
- *         return int.from_bytes(name.encode(), byteorder="big")
- */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_11TagEnumMeta_3from_tag, 0, __pyx_n_s_TagEnumMeta_from_tag, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_from_tag, __pyx_t_4) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "gravure/lcms2/tags.pyx":55
+  /* "gravure/lcms2/tags.pyx":54
  * 
  * 
  * class TagEnumMeta(EnumMeta):             # <<<<<<<<<<<<<<
  *     def __getitem__(cls, name):
  *         try:
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_TagEnumMeta, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_TagEnumMeta, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_CyFunction_InitClassCell(__pyx_t_6, __pyx_t_4) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (__Pyx_CyFunction_InitClassCell(__pyx_t_6, __pyx_t_4) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagEnumMeta, __pyx_t_4) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagEnumMeta, __pyx_t_4) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gravure/lcms2/tags.pyx":71
+  /* "gravure/lcms2/tags.pyx":66
  * 
  * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):             # <<<<<<<<<<<<<<
- *     def to_string(self):
- *         return self.value.to_bytes(4, byteorder="big").decode()
+ * class TagEnum(Tag, Enum, metaclass=TagEnumMeta):             # <<<<<<<<<<<<<<
+ *     """Enum where members are also (and must be) gravure.lcms2.tags.Tag object"""
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Tag_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TagEnumMeta); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_2, __pyx_n_s_TagEnum, __pyx_n_s_TagEnum, __pyx_t_1, __pyx_n_s_gravure_lcms2_tags, (PyObject *) NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TagEnumMeta); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_3, __pyx_n_s_TagEnum, __pyx_n_s_TagEnum, __pyx_t_2, __pyx_n_s_gravure_lcms2_tags, __pyx_kp_s_Enum_where_members_are_also_and); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-
-  /* "gravure/lcms2/tags.pyx":72
- * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):
- *     def to_string(self):             # <<<<<<<<<<<<<<
- *         return self.value.to_bytes(4, byteorder="big").decode()
- */
-  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_4tags_7TagEnum_1to_string, 0, __pyx_n_s_TagEnum_to_string, NULL, __pyx_n_s_gravure_lcms2_tags, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TagEnum, __pyx_t_3, __pyx_t_4, __pyx_t_2, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (__Pyx_SetNameInClass(__pyx_t_4, __pyx_n_s_to_string, __pyx_t_6) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-  /* "gravure/lcms2/tags.pyx":71
- * 
- * 
- * class TagEnum(Enum, metaclass=TagEnumMeta):             # <<<<<<<<<<<<<<
- *     def to_string(self):
- *         return self.value.to_bytes(4, byteorder="big").decode()
- */
-  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_TagEnum, __pyx_t_2, __pyx_t_4, __pyx_t_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagEnum, __pyx_t_6) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TagEnum, __pyx_t_6) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "gravure/lcms2/tags.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
  * #
  * #       Copyright (c) Gilles Coissac 2021 <info@gillescoissac.fr>
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -4944,6 +4602,67 @@ bad:
     return -1;
 }
 
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
+        return NULL;
+    }
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+#endif
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+    PyErr_Clear();
+#endif
+    return __Pyx_GetBuiltinName(name);
+}
+
 /* SwapException */
 #if CYTHON_FAST_THREAD_STATE
 static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
@@ -5843,67 +5562,6 @@ static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *class
 #endif
     }
     return 0;
-}
-
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
-    }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
-}
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
-#endif
-
-/* GetModuleGlobalName */
-#if CYTHON_USE_DICT_VERSIONS
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
-#else
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
-#endif
-{
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    } else if (unlikely(PyErr_Occurred())) {
-        return NULL;
-    }
-#else
-    result = PyDict_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-#endif
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-    PyErr_Clear();
-#endif
-    return __Pyx_GetBuiltinName(name);
 }
 
 /* CLineInTraceback */
