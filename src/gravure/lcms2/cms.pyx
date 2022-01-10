@@ -24,15 +24,16 @@ cimport cython
 
 from gravure.lcms2.tags import Tag, TagEnum
 from gravure.lcms2.constant cimport *
+from gravure.lcms2.colortype import ColorType, PixelType, Type
 from gravure.lcms2.icctag cimport *
 import gravure.lcms2._errors as _errors
 from gravure.lcms2._errors import UndefinedError, FileError, RangeError, InternalError, NullError, ReadError, SeekError, WriteError, UnknownExtensionError, ColorSpaceCheckError, AlreadyDefinedError, BadSignatureError, CorruptionDetectedError, NotSuitableError
 from gravure.lcms2._errors import _init_logger
 from gravure.lcms2.profile import DeviceAttribute, Profile
+from gravure.lcms2.transform import Transform
 
 
 include "constant.pxi"
-include "colortype.pxi"
 include "icctag.pxi"
 
 
@@ -40,8 +41,8 @@ __constants__ = ['VERSION', 'D50X', 'D50Y', 'D50Z',
                  'PERCEPTUAL_BLACK_X', 'PERCEPTUAL_BLACK_Y',
                  'PERCEPTUAL_BLACK_Z', 'MAXCHANNELS']
 
-__enums__ = [# From 'colortype.pxi'
-             'COLORTYPE',
+__enums__ = [# From 'colortype.pyx'
+             'Type', 'PixelType',
              # From 'icctag.pxi'
              'ICCDef', 'TagTypeSignature', 'TagSignature',
              'TechnologySignature', 'ColorSpaceSignature',
@@ -52,7 +53,7 @@ __enums__ = [# From 'colortype.pxi'
              'DeviceAttribute'
              ]
 
-__classes__ = ['Tag', 'TagEnum', 'Profile']
+__classes__ = ['Tag', 'Profile', 'Transform', 'ColorType']
 
 __all__ = __constants__ + __enums__ + __classes__ + _errors.__all__
 

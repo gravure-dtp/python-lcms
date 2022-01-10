@@ -1530,7 +1530,7 @@ static const char __pyx_k_TagEnumMeta___getitem[] = "TagEnumMeta.__getitem__";
 static const char __pyx_k_can_t_create_a_Tag_from[] = "can't create a Tag from ";
 static const char __pyx_k_src_gravure_lcms2_tags_pyx[] = "src/gravure/lcms2/tags.pyx";
 static const char __pyx_k_Enum_where_members_are_also_and[] = "Enum where members are also (and must be) gravure.lcms2.tags.Tag object";
-static const char __pyx_k_Tag_value_hould_be_a_positive_in[] = "Tag value hould be a positive integer with a 4 bytes length representation";
+static const char __pyx_k_Tag_value_should_be_a_positive_i[] = "Tag value should be a positive integer with a 4 bytes length representation";
 static PyObject *__pyx_kp_u_4;
 static PyObject *__pyx_n_s_Enum;
 static PyObject *__pyx_n_s_EnumMeta;
@@ -1546,7 +1546,7 @@ static PyObject *__pyx_n_s_Tag___repr;
 static PyObject *__pyx_n_s_Tag___str;
 static PyObject *__pyx_n_s_Tag_signature;
 static PyObject *__pyx_n_s_Tag_to_bytes;
-static PyObject *__pyx_kp_u_Tag_value_hould_be_a_positive_in;
+static PyObject *__pyx_kp_u_Tag_value_should_be_a_positive_i;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_b__3;
 static PyObject *__pyx_kp_u__5;
@@ -1714,7 +1714,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):             # <<<<<<<<<<<<<<
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  */
   __pyx_t_1 = PyInt_Check(__pyx_v_value); 
   __pyx_t_2 = (__pyx_t_1 != 0);
@@ -1724,7 +1724,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  */
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_hex, __pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
@@ -1756,7 +1756,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
       /* "gravure/lcms2/tags.pyx":27
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])
  */
@@ -1770,7 +1770,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  */
     }
@@ -1780,14 +1780,14 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
  *     def __new__(cls, value):
  *         if isinstance(value, int):             # <<<<<<<<<<<<<<
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  */
     goto __pyx_L3;
   }
 
   /* "gravure/lcms2/tags.pyx":28
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):             # <<<<<<<<<<<<<<
  *             sign = "{:<4}".format(value[:4])
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -1797,7 +1797,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
   if (__pyx_t_5) {
 
     /* "gravure/lcms2/tags.pyx":29
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])             # <<<<<<<<<<<<<<
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -1870,7 +1870,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_4tags_3Tag___new__(CYTHON_UNUSED PyObj
 
     /* "gravure/lcms2/tags.pyx":28
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):             # <<<<<<<<<<<<<<
  *             sign = "{:<4}".format(value[:4])
  *             value = int.from_bytes(sign.encode(), byteorder="big")
@@ -2918,7 +2918,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Tag___str, __pyx_k_Tag___str, sizeof(__pyx_k_Tag___str), 0, 0, 1, 1},
   {&__pyx_n_s_Tag_signature, __pyx_k_Tag_signature, sizeof(__pyx_k_Tag_signature), 0, 0, 1, 1},
   {&__pyx_n_s_Tag_to_bytes, __pyx_k_Tag_to_bytes, sizeof(__pyx_k_Tag_to_bytes), 0, 0, 1, 1},
-  {&__pyx_kp_u_Tag_value_hould_be_a_positive_in, __pyx_k_Tag_value_hould_be_a_positive_in, sizeof(__pyx_k_Tag_value_hould_be_a_positive_in), 0, 1, 0, 0},
+  {&__pyx_kp_u_Tag_value_should_be_a_positive_i, __pyx_k_Tag_value_should_be_a_positive_i, sizeof(__pyx_k_Tag_value_should_be_a_positive_i), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
   {&__pyx_kp_u__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 1, 0, 0},
@@ -2981,16 +2981,16 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "gravure/lcms2/tags.pyx":27
  *         if isinstance(value, int):
  *             if not len(hex(value)) in (9, 10) or value < 0:
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")             # <<<<<<<<<<<<<<
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Tag_value_hould_be_a_positive_in); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Tag_value_should_be_a_positive_i); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "gravure/lcms2/tags.pyx":29
- *                 raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+ *                 raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
  *         elif isinstance(value, str):
  *             sign = "{:<4}".format(value[:4])             # <<<<<<<<<<<<<<
  *             value = int.from_bytes(sign.encode(), byteorder="big")

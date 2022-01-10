@@ -24,7 +24,7 @@ class Tag(int):
     def __new__(cls, value):
         if isinstance(value, int):
             if not len(hex(value)) in (9, 10) or value < 0:
-                raise ValueError("Tag value hould be a positive integer with a 4 bytes length representation")
+                raise ValueError("Tag value should be a positive integer with a 4 bytes length representation")
         elif isinstance(value, str):
             sign = "{:<4}".format(value[:4])
             value = int.from_bytes(sign.encode(), byteorder="big")
