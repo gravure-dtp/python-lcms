@@ -18,6 +18,18 @@
 #       MA 02110-1301, USA.
 #
 cdef extern from "lcms2.h":
+    unsigned int FLOAT_SH(int a)
+    unsigned int OPTIMIZED_SH(int s)
+    unsigned int COLORSPACE_SH(int s)
+    unsigned int SWAPFIRST_SH(int s)
+    unsigned int FLAVOR_SH(int s)
+    unsigned int PLANAR_SH(int p)
+    unsigned int ENDIAN16_SH(int e)
+    unsigned int DOSWAP_SH(int e)
+    unsigned int EXTRA_SH(int e)
+    unsigned int CHANNELS_SH(int c)
+    unsigned int BYTES_SH(int b)           
+
     int T_FLOAT(unsigned int a)
     int T_OPTIMIZED(unsigned int o)
     int T_COLORSPACE(unsigned int s)

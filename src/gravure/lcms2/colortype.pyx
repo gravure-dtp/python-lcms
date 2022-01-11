@@ -18,6 +18,7 @@
 #       MA 02110-1301, USA.
 #
 from enum import Enum, IntEnum, unique
+from gravure.lcms2.constant cimport cmsMAXCHANNELS
 
 
 @unique
@@ -54,9 +55,39 @@ class PixelType(IntEnum):
 
 
 class ColorType(int):
-    def __new__(cls, value):
-        if not isinstance(value, int):
+    def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,
+                isfloat=False, extra=0, planar=False, swap_endianness=False,
+                swap_first=False, do_swap=False, flavor=0):
+        if not isinstance(value, int) or value<0:
             raise ValueError(f"can't create a ColorType from {value}")
+
+        minargs = (colorspace is not None, channels is not None, sbytes is not None)
+        if any(minargs):
+            if all(minargs):
+                if not isinstance(colorspace, PixelType):
+                    raise ValueError(f"{colorspace} is not a valide Pixeltype")
+                if channels not in range(1, cmsMAXCHANNELS + 1):
+                    raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+                if sbytes not in [1, 2, 4, 8]:
+                    raise ValueError(f"sbytes should be 1, 2, 4 or 8")
+                # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+                # because 8 bytes overflows the bitfield
+                sbytes = 0 if sbytes==8 else sbytes
+                if extra not in range(0, cmsMAXCHANNELS + 1):
+                    raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")
+
+                value = value | FLOAT_SH(1) if isfloat else value
+                value = value | COLORSPACE_SH(colorspace)
+                value = value | EXTRA_SH(extra) if extra else value
+                value = value | CHANNELS_SH(channels)
+                value = value | BYTES_SH(sbytes)
+                value = value | FLAVOR_SH(1) if flavor else value
+                value = value | ENDIAN16_SH(1) if swap_endianness else value
+                value = value | DOSWAP_SH(1) if do_swap else value
+                value = value | SWAPFIRST_SH(1) if swap_first else value
+                value = value | PLANAR_SH(1) if planar else value
+            else:
+                raise ValueError("Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags")
         return int.__new__(cls, value)
 
 
@@ -69,7 +100,7 @@ class ColorType(int):
 
 
     @property
-    def color_space(self):
+    def colorspace(self):
         """
         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
         """
@@ -85,17 +116,17 @@ class ColorType(int):
 
 
     @property
-    def extra_channels(self):
+    def extra(self):
         """
-        Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
+        Return the numbers of extra channels (ie: alpha channels) holded by this ColorType. .
         """
         return T_EXTRA(self)
 
 
     @property
-    def bytes_per_sample(self):
+    def sbytes(self):
         """
-        Return the numbers of bytes use to store a channel's value for this ColorType. .
+        Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
         """
         tbytes = T_BYTES(self)
         # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
@@ -106,7 +137,7 @@ class ColorType(int):
 
 
     @property
-    def is_planar(self):
+    def planar(self):
         """
         Return True if this ColorType holds values as planar, False if chunky.
         """
@@ -114,20 +145,42 @@ class ColorType(int):
 
 
     @property
-    def min_is_black(self):
+    def flavor(self):
         """
-        Return True for this ColorType if values of zero means black, False if white.
+        Return 0 for this ColorType if values of zero means black, 1 if white.
         """
-        return not bool(T_FLAVOR(self))
+        return T_FLAVOR(self)
 
 
     @property
-    def is_float(self):
+    def isfloat(self):
         """
         Determine if this ColorType use floating point values.
         """
         return bool(T_FLOAT(self))
 
+
+    @property
+    def do_swap(self):
+        """
+        Determine if this ColorType have its components swapped (ie: BGR, KYMC).
+        """
+        return bool(T_DOSWAP(self))
+
+
+    @property
+    def swap_first(self):
+        """
+        Determine if this ColorType have its last component swapped first (ie: RGBA -> ARGB or CMYK -> KCMY).
+        """
+        return bool(T_SWAPFIRST(self))
+
+    @property
+    def swap_endianness(self):
+        """
+        Determine if this ColorType have its 16bts endianness swapped.
+        """
+        return bool(T_ENDIAN16(self))
 
     @property
     def nbytes(self):

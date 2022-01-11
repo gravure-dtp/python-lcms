@@ -978,10 +978,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
 /* RaiseDoubleKeywords.proto */
 static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
 
@@ -989,6 +985,10 @@ static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_n
 static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
+
+/* RaiseArgTupleInvalid.proto */
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
 
 /* PyObjectFormatSimple.proto */
 #if CYTHON_COMPILING_IN_PYPY
@@ -1098,13 +1098,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* JoinPyUnicode.proto */
-static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
-                                      Py_UCS4 max_char);
-
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -1151,6 +1144,37 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 #define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
+
+/* PySequenceContains.proto */
+static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
+    int result = PySequence_Contains(seq, item);
+    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
+}
+
+/* GCCDiagnostics.proto */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+#define __Pyx_HAS_GCC_DIAGNOSTIC
+#endif
+
+/* BuildPyUnicode.proto */
+static PyObject* __Pyx_PyUnicode_BuildFromAscii(Py_ssize_t ulength, char* chars, int clength,
+                                                int prepend_sign, char padding_char);
+
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* CIntToPyUnicode.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_int(int value, Py_ssize_t width, char padding_char, char format_char);
+
+/* JoinPyUnicode.proto */
+static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
+                                      Py_UCS4 max_char);
+
+/* PyIntCompare.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_NeObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
+
+/* PyIntCompare.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
 
 /* PyObjectCall2Args.proto */
 static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
@@ -1270,25 +1294,59 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object);
 static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
-/* GCCDiagnostics.proto */
-#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-#define __Pyx_HAS_GCC_DIAGNOSTIC
-#endif
+/* Common.proto */
+static int __Pyx_check_twos_complement(void) {
+    if ((-1 != ~0)) {
+        PyErr_SetString(PyExc_RuntimeError, "Two's complement required for overflow checks.");
+        return 1;
+    } else if ((sizeof(short) == sizeof(int))) {
+        PyErr_SetString(PyExc_RuntimeError, "sizeof(short) < sizeof(int) required for overflow checks.");
+        return 1;
+    } else {
+        return 0;
+    }
+}
+#define __PYX_IS_UNSIGNED(type) ((((type) -1) > 0))
+#define __PYX_SIGN_BIT(type)    ((((unsigned type) 1) << (sizeof(type) * 8 - 1)))
+#define __PYX_HALF_MAX(type)    ((((type) 1) << (sizeof(type) * 8 - 2)))
+#define __PYX_MIN(type)         ((__PYX_IS_UNSIGNED(type) ? (type) 0 : 0 - __PYX_HALF_MAX(type) - __PYX_HALF_MAX(type)))
+#define __PYX_MAX(type)         ((~__PYX_MIN(type)))
+#define __Pyx_add_no_overflow(a, b, overflow) ((a) + (b))
+#define __Pyx_add_const_no_overflow(a, b, overflow) ((a) + (b))
+#define __Pyx_sub_no_overflow(a, b, overflow) ((a) - (b))
+#define __Pyx_sub_const_no_overflow(a, b, overflow) ((a) - (b))
+#define __Pyx_mul_no_overflow(a, b, overflow) ((a) * (b))
+#define __Pyx_mul_const_no_overflow(a, b, overflow) ((a) * (b))
+#define __Pyx_div_no_overflow(a, b, overflow) ((a) / (b))
+#define __Pyx_div_const_no_overflow(a, b, overflow) ((a) / (b))
+
+/* BaseCaseSigned.proto */
+static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow);
+static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long constant, int *overflow);
+#define __Pyx_div_const_long_checking_overflow __Pyx_div_long_checking_overflow
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
-/* CIntFromPy.proto */
-static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
-/* CIntFromPy.proto */
-static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
+
+/* CIntFromPy.proto */
+static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
+
+/* CIntFromPy.proto */
+static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
 /* FastTypeChecks.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -1310,6 +1368,8 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
+/* Module declarations from 'gravure.lcms2.constant' */
+
 /* Module declarations from 'gravure.lcms2.colortype' */
 #define __Pyx_MODULE_NAME "gravure.lcms2.colortype"
 extern int __pyx_module_is_main_gravure__lcms2__colortype;
@@ -1318,7 +1378,11 @@ int __pyx_module_is_main_gravure__lcms2__colortype = 0;
 /* Implementation of 'gravure.lcms2.colortype' */
 static PyObject *__pyx_builtin_property;
 static PyObject *__pyx_builtin_ValueError;
-static const char __pyx_k_[] = ")";
+static PyObject *__pyx_builtin_any;
+static PyObject *__pyx_builtin_all;
+static PyObject *__pyx_builtin_range;
+static const char __pyx_k_[] = "]";
+static const char __pyx_k__4[] = ")";
 static const char __pyx_k_ANY[] = "ANY";
 static const char __pyx_k_CMY[] = "CMY";
 static const char __pyx_k_HLS[] = "HLS";
@@ -1328,6 +1392,8 @@ static const char __pyx_k_RGB[] = "RGB";
 static const char __pyx_k_XYZ[] = "XYZ";
 static const char __pyx_k_YUV[] = "YUV";
 static const char __pyx_k_Yxy[] = "Yxy";
+static const char __pyx_k_all[] = "all";
+static const char __pyx_k_any[] = "any";
 static const char __pyx_k_cls[] = "cls";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_new[] = "__new__";
@@ -1367,6 +1433,8 @@ static const char __pyx_k_MCH15[] = "MCH15";
 static const char __pyx_k_RGB_8[] = "RGB_8";
 static const char __pyx_k_YCbCr[] = "YCbCr";
 static const char __pyx_k_YUV_8[] = "YUV_8";
+static const char __pyx_k_extra[] = "extra";
+static const char __pyx_k_range[] = "range";
 static const char __pyx_k_value[] = "value";
 static const char __pyx_k_ABGR_8[] = "ABGR_8";
 static const char __pyx_k_ALab_8[] = "ALab_8";
@@ -1387,9 +1455,12 @@ static const char __pyx_k_XYZ_16[] = "XYZ_16";
 static const char __pyx_k_YUVK_8[] = "YUVK_8";
 static const char __pyx_k_YUV_16[] = "YUV_16";
 static const char __pyx_k_Yxy_16[] = "Yxy_16";
+static const char __pyx_k_flavor[] = "flavor";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_module[] = "__module__";
 static const char __pyx_k_nbytes[] = "nbytes";
+static const char __pyx_k_planar[] = "planar";
+static const char __pyx_k_sbytes[] = "sbytes";
 static const char __pyx_k_tbytes[] = "tbytes";
 static const char __pyx_k_unique[] = "unique";
 static const char __pyx_k_ABGR_16[] = "ABGR_16";
@@ -1423,6 +1494,9 @@ static const char __pyx_k_XYZ_DBL[] = "XYZ_DBL";
 static const char __pyx_k_XYZ_FLT[] = "XYZ_FLT";
 static const char __pyx_k_YCbCr_8[] = "YCbCr_8";
 static const char __pyx_k_YUVK_16[] = "YUVK_16";
+static const char __pyx_k_do_swap[] = "do_swap";
+static const char __pyx_k_isfloat[] = "isfloat";
+static const char __pyx_k_minargs[] = "minargs";
 static const char __pyx_k_prepare[] = "__prepare__";
 static const char __pyx_k_ABGR_FLT[] = "ABGR_FLT";
 static const char __pyx_k_ALabV2_8[] = "ALabV2_8";
@@ -1453,7 +1527,6 @@ static const char __pyx_k_LabV2_16[] = "LabV2_16";
 static const char __pyx_k_RGBA_FLT[] = "RGBA_FLT";
 static const char __pyx_k_YCbCr_16[] = "YCbCr_16";
 static const char __pyx_k_channels[] = "channels";
-static const char __pyx_k_is_float[] = "is_float";
 static const char __pyx_k_property[] = "property";
 static const char __pyx_k_qualname[] = "__qualname__";
 static const char __pyx_k_BGR_16_SE[] = "BGR_16_SE";
@@ -1470,7 +1543,6 @@ static const char __pyx_k_KYMC12_16[] = "KYMC12_16";
 static const char __pyx_k_PixelType[] = "PixelType";
 static const char __pyx_k_RGB_16_SE[] = "RGB_16_SE";
 static const char __pyx_k_YUV_16_SE[] = "YUV_16_SE";
-static const char __pyx_k_is_planar[] = "is_planar";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_ABGR_16_SE[] = "ABGR_16_SE";
 static const char __pyx_k_BGRA_16_SE[] = "BGRA_16_SE";
@@ -1483,6 +1555,8 @@ static const char __pyx_k_KCMY_8_REV[] = "KCMY_8_REV";
 static const char __pyx_k_KYMC_16_SE[] = "KYMC_16_SE";
 static const char __pyx_k_RGBA_16_SE[] = "RGBA_16_SE";
 static const char __pyx_k_ValueError[] = "ValueError";
+static const char __pyx_k_colorspace[] = "colorspace";
+static const char __pyx_k_swap_first[] = "swap_first";
 static const char __pyx_k_CMYK5_16_SE[] = "CMYK5_16_SE";
 static const char __pyx_k_CMYK6_16_SE[] = "CMYK6_16_SE";
 static const char __pyx_k_CMYK7_16_SE[] = "CMYK7_16_SE";
@@ -1498,7 +1572,6 @@ static const char __pyx_k_KYMC7_16_SE[] = "KYMC7_16_SE";
 static const char __pyx_k_KYMC8_16_SE[] = "KYMC8_16_SE";
 static const char __pyx_k_KYMC9_16_SE[] = "KYMC9_16_SE";
 static const char __pyx_k_YCbCr_16_SE[] = "YCbCr_16_SE";
-static const char __pyx_k_color_space[] = "color_space";
 static const char __pyx_k_BGR_8_PLANAR[] = "BGR_8_PLANAR";
 static const char __pyx_k_BGR_HALF_FLT[] = "BGR_HALF_FLT";
 static const char __pyx_k_CMYK10_16_SE[] = "CMYK10_16_SE";
@@ -1513,7 +1586,6 @@ static const char __pyx_k_KYMC12_16_SE[] = "KYMC12_16_SE";
 static const char __pyx_k_RGB_8_PLANAR[] = "RGB_8_PLANAR";
 static const char __pyx_k_RGB_HALF_FLT[] = "RGB_HALF_FLT";
 static const char __pyx_k_YUV_8_PLANAR[] = "YUV_8_PLANAR";
-static const char __pyx_k_min_is_black[] = "min_is_black";
 static const char __pyx_k_ABGR_8_PLANAR[] = "ABGR_8_PLANAR";
 static const char __pyx_k_ABGR_HALF_FLT[] = "ABGR_HALF_FLT";
 static const char __pyx_k_ARGB_8_PLANAR[] = "ARGB_8_PLANAR";
@@ -1542,24 +1614,30 @@ static const char __pyx_k_extra_channels[] = "extra_channels";
 static const char __pyx_k_CMYK6_16_PLANAR[] = "CMYK6_16_PLANAR";
 static const char __pyx_k_ColorType___new[] = "ColorType.__new__";
 static const char __pyx_k_ColorType___str[] = "ColorType.__str__";
+static const char __pyx_k_ColorType_extra[] = "ColorType.extra";
 static const char __pyx_k_GRAYA_16_PLANAR[] = "GRAYA_16_PLANAR";
 static const char __pyx_k_YCbCr_16_PLANAR[] = "YCbCr_16_PLANAR";
+static const char __pyx_k_swap_endianness[] = "swap_endianness";
 static const char __pyx_k_ColorType___repr[] = "ColorType.__repr__";
+static const char __pyx_k_ColorType_flavor[] = "ColorType.flavor";
 static const char __pyx_k_ColorType_nbytes[] = "ColorType.nbytes";
+static const char __pyx_k_ColorType_planar[] = "ColorType.planar";
+static const char __pyx_k_ColorType_sbytes[] = "ColorType.sbytes";
 static const char __pyx_k_bytes_per_sample[] = "bytes_per_sample";
+static const char __pyx_k_ColorType_isfloat[] = "ColorType.isfloat";
 static const char __pyx_k_NAMED_COLOR_INDEX[] = "NAMED_COLOR_INDEX";
 static const char __pyx_k_ColorType_channels[] = "ColorType.channels";
-static const char __pyx_k_ColorType_is_float[] = "ColorType.is_float";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_ColorType_is_planar[] = "ColorType.is_planar";
-static const char __pyx_k_ColorType_color_space[] = "ColorType.color_space";
-static const char __pyx_k_ColorType_min_is_black[] = "ColorType.min_is_black";
+static const char __pyx_k_ColorType_colorspace[] = "ColorType.colorspace";
 static const char __pyx_k_gravure_lcms2_colortype[] = "gravure.lcms2.colortype";
-static const char __pyx_k_ColorType_extra_channels[] = "ColorType.extra_channels";
-static const char __pyx_k_ColorType_bytes_per_sample[] = "ColorType.bytes_per_sample";
+static const char __pyx_k_is_not_a_valide_Pixeltype[] = " is not a valide Pixeltype";
+static const char __pyx_k_sbytes_should_be_1_2_4_or_8[] = "sbytes should be 1, 2, 4 or 8";
 static const char __pyx_k_can_t_create_a_ColorType_from[] = "can't create a ColorType from ";
+static const char __pyx_k_extra_should_be_in_the_range_0[] = "extra should be in the range[0, ";
 static const char __pyx_k_Enum_where_members_are_also_and[] = "Enum where members are also (and must be) gravure.lcms2.colortype.ColorType object.\n    ";
+static const char __pyx_k_channels_should_be_in_the_range[] = "channels should be in the range[1, ";
 static const char __pyx_k_src_gravure_lcms2_colortype_pyx[] = "src/gravure/lcms2/colortype.pyx";
+static const char __pyx_k_Need_at_least_colorspace_channel[] = "Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags";
 static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_ABGR_16;
 static PyObject *__pyx_n_s_ABGR_16_PLANAR;
@@ -1640,14 +1718,14 @@ static PyObject *__pyx_n_s_ColorType_2;
 static PyObject *__pyx_n_s_ColorType___new;
 static PyObject *__pyx_n_s_ColorType___repr;
 static PyObject *__pyx_n_s_ColorType___str;
-static PyObject *__pyx_n_s_ColorType_bytes_per_sample;
 static PyObject *__pyx_n_s_ColorType_channels;
-static PyObject *__pyx_n_s_ColorType_color_space;
-static PyObject *__pyx_n_s_ColorType_extra_channels;
-static PyObject *__pyx_n_s_ColorType_is_float;
-static PyObject *__pyx_n_s_ColorType_is_planar;
-static PyObject *__pyx_n_s_ColorType_min_is_black;
+static PyObject *__pyx_n_s_ColorType_colorspace;
+static PyObject *__pyx_n_s_ColorType_extra;
+static PyObject *__pyx_n_s_ColorType_flavor;
+static PyObject *__pyx_n_s_ColorType_isfloat;
 static PyObject *__pyx_n_s_ColorType_nbytes;
+static PyObject *__pyx_n_s_ColorType_planar;
+static PyObject *__pyx_n_s_ColorType_sbytes;
 static PyObject *__pyx_n_s_Enum;
 static PyObject *__pyx_kp_s_Enum_where_members_are_also_and;
 static PyObject *__pyx_n_s_GRAY;
@@ -1731,6 +1809,7 @@ static PyObject *__pyx_n_s_MCH7;
 static PyObject *__pyx_n_s_MCH8;
 static PyObject *__pyx_n_s_MCH9;
 static PyObject *__pyx_n_s_NAMED_COLOR_INDEX;
+static PyObject *__pyx_kp_u_Need_at_least_colorspace_channel;
 static PyObject *__pyx_n_s_PixelType;
 static PyObject *__pyx_n_s_RGB;
 static PyObject *__pyx_n_s_RGBA_16;
@@ -1771,51 +1850,71 @@ static PyObject *__pyx_n_s_YUV_8;
 static PyObject *__pyx_n_s_YUV_8_PLANAR;
 static PyObject *__pyx_n_s_Yxy;
 static PyObject *__pyx_n_s_Yxy_16;
+static PyObject *__pyx_kp_u__4;
+static PyObject *__pyx_n_s_all;
+static PyObject *__pyx_n_s_any;
 static PyObject *__pyx_n_s_bytes_per_sample;
 static PyObject *__pyx_kp_u_can_t_create_a_ColorType_from;
 static PyObject *__pyx_n_s_channels;
+static PyObject *__pyx_kp_u_channels_should_be_in_the_range;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_cls;
-static PyObject *__pyx_n_s_color_space;
+static PyObject *__pyx_n_s_colorspace;
+static PyObject *__pyx_n_s_do_swap;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_enum;
+static PyObject *__pyx_n_s_extra;
 static PyObject *__pyx_n_s_extra_channels;
+static PyObject *__pyx_kp_u_extra_should_be_in_the_range_0;
+static PyObject *__pyx_n_s_flavor;
 static PyObject *__pyx_n_s_gravure_lcms2_colortype;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_is_float;
-static PyObject *__pyx_n_s_is_planar;
+static PyObject *__pyx_kp_u_is_not_a_valide_Pixeltype;
+static PyObject *__pyx_n_s_isfloat;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_metaclass;
-static PyObject *__pyx_n_s_min_is_black;
+static PyObject *__pyx_n_s_minargs;
 static PyObject *__pyx_n_s_module;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_nbytes;
 static PyObject *__pyx_n_s_new;
+static PyObject *__pyx_n_s_planar;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_property;
 static PyObject *__pyx_n_s_qualname;
+static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_repr;
+static PyObject *__pyx_n_s_sbytes;
+static PyObject *__pyx_kp_u_sbytes_should_be_1_2_4_or_8;
 static PyObject *__pyx_n_s_self;
 static PyObject *__pyx_kp_s_src_gravure_lcms2_colortype_pyx;
 static PyObject *__pyx_n_s_str;
+static PyObject *__pyx_n_s_swap_endianness;
+static PyObject *__pyx_n_s_swap_first;
 static PyObject *__pyx_n_s_tbytes;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_unique;
 static PyObject *__pyx_n_s_value;
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_value, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_channels, PyObject *__pyx_v_sbytes, PyObject *__pyx_v_isfloat, PyObject *__pyx_v_extra, PyObject *__pyx_v_planar, PyObject *__pyx_v_swap_endianness, PyObject *__pyx_v_swap_first, PyObject *__pyx_v_do_swap, PyObject *__pyx_v_flavor); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_2__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_4__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6colorspace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_8channels(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_sample(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16min_is_black(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12sbytes(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14planar(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16flavor(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18isfloat(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_20nbytes(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_int_0;
+static PyObject *__pyx_int_1;
+static PyObject *__pyx_int_2;
+static PyObject *__pyx_int_4;
+static PyObject *__pyx_int_8;
 static PyObject *__pyx_tuple__2;
-static PyObject *__pyx_tuple__4;
-static PyObject *__pyx_tuple__6;
+static PyObject *__pyx_tuple__3;
+static PyObject *__pyx_tuple__5;
+static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__12;
@@ -1824,9 +1923,9 @@ static PyObject *__pyx_tuple__16;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__20;
 static PyObject *__pyx_tuple__22;
-static PyObject *__pyx_codeobj__3;
-static PyObject *__pyx_codeobj__5;
-static PyObject *__pyx_codeobj__7;
+static PyObject *__pyx_tuple__24;
+static PyObject *__pyx_tuple__26;
+static PyObject *__pyx_codeobj__6;
 static PyObject *__pyx_codeobj__9;
 static PyObject *__pyx_codeobj__11;
 static PyObject *__pyx_codeobj__13;
@@ -1835,23 +1934,35 @@ static PyObject *__pyx_codeobj__17;
 static PyObject *__pyx_codeobj__19;
 static PyObject *__pyx_codeobj__21;
 static PyObject *__pyx_codeobj__23;
+static PyObject *__pyx_codeobj__25;
+static PyObject *__pyx_codeobj__27;
 /* Late includes */
 
-/* "gravure/lcms2/colortype.pyx":57
+/* "gravure/lcms2/colortype.pyx":58
  * 
  * class ColorType(int):
- *     def __new__(cls, value):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, int):
- *             raise ValueError(f"can't create a ColorType from {value}")
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,             # <<<<<<<<<<<<<<
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_1__new__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType___new__[] = "ColorType.__new__(cls, value)";
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType___new__[] = "ColorType.__new__(cls, value=0, colorspace=None, channels=None, sbytes=None, isfloat=False, extra=0, planar=False, swap_endianness=False, swap_first=False, do_swap=False, flavor=0)";
 static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_1__new__ = {"__new__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_1__new__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType___new__};
 static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_1__new__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_cls = 0;
   PyObject *__pyx_v_value = 0;
+  PyObject *__pyx_v_colorspace = 0;
+  PyObject *__pyx_v_channels = 0;
+  PyObject *__pyx_v_sbytes = 0;
+  PyObject *__pyx_v_isfloat = 0;
+  PyObject *__pyx_v_extra = 0;
+  PyObject *__pyx_v_planar = 0;
+  PyObject *__pyx_v_swap_endianness = 0;
+  PyObject *__pyx_v_swap_first = 0;
+  PyObject *__pyx_v_do_swap = 0;
+  PyObject *__pyx_v_flavor = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1859,12 +1970,59 @@ static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_1__new__(PyObjec
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__new__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_cls,&__pyx_n_s_value,0};
-    PyObject* values[2] = {0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_cls,&__pyx_n_s_value,&__pyx_n_s_colorspace,&__pyx_n_s_channels,&__pyx_n_s_sbytes,&__pyx_n_s_isfloat,&__pyx_n_s_extra,&__pyx_n_s_planar,&__pyx_n_s_swap_endianness,&__pyx_n_s_swap_first,&__pyx_n_s_do_swap,&__pyx_n_s_flavor,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+    values[1] = ((PyObject *)((PyObject *)__pyx_int_0));
+    values[2] = ((PyObject *)((PyObject *)Py_None));
+    values[3] = ((PyObject *)((PyObject *)Py_None));
+    values[4] = ((PyObject *)((PyObject *)Py_None));
+
+    /* "gravure/lcms2/colortype.pyx":59
+ * class ColorType(int):
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,             # <<<<<<<<<<<<<<
+ *                 swap_first=False, do_swap=False, flavor=0):
+ *         if not isinstance(value, int) or value<0:
+ */
+    values[5] = ((PyObject *)((PyObject *)Py_False));
+    values[6] = ((PyObject *)((PyObject *)__pyx_int_0));
+    values[7] = ((PyObject *)((PyObject *)Py_False));
+    values[8] = ((PyObject *)((PyObject *)Py_False));
+
+    /* "gravure/lcms2/colortype.pyx":60
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):             # <<<<<<<<<<<<<<
+ *         if not isinstance(value, int) or value<0:
+ *             raise ValueError(f"can't create a ColorType from {value}")
+ */
+    values[9] = ((PyObject *)((PyObject *)Py_False));
+    values[10] = ((PyObject *)((PyObject *)Py_False));
+    values[11] = ((PyObject *)((PyObject *)__pyx_int_0));
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        CYTHON_FALLTHROUGH;
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        CYTHON_FALLTHROUGH;
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         CYTHON_FALLTHROUGH;
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -1879,174 +2037,877 @@ static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_1__new__(PyObjec
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("__new__", 1, 2, 2, 1); __PYX_ERR(0, 57, __pyx_L3_error)
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value);
+          if (value) { values[1] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colorspace);
+          if (value) { values[2] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_channels);
+          if (value) { values[3] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sbytes);
+          if (value) { values[4] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_isfloat);
+          if (value) { values[5] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  6:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_extra);
+          if (value) { values[6] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_planar);
+          if (value) { values[7] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  8:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_swap_endianness);
+          if (value) { values[8] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  9:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_swap_first);
+          if (value) { values[9] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 10:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_do_swap);
+          if (value) { values[10] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_flavor);
+          if (value) { values[11] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__new__") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__new__") < 0)) __PYX_ERR(0, 58, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
     } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        CYTHON_FALLTHROUGH;
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        CYTHON_FALLTHROUGH;
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
     }
     __pyx_v_cls = values[0];
     __pyx_v_value = values[1];
+    __pyx_v_colorspace = values[2];
+    __pyx_v_channels = values[3];
+    __pyx_v_sbytes = values[4];
+    __pyx_v_isfloat = values[5];
+    __pyx_v_extra = values[6];
+    __pyx_v_planar = values[7];
+    __pyx_v_swap_endianness = values[8];
+    __pyx_v_swap_first = values[9];
+    __pyx_v_do_swap = values[10];
+    __pyx_v_flavor = values[11];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__new__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__new__", 0, 1, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 58, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.__new__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(__pyx_self, __pyx_v_cls, __pyx_v_value);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(__pyx_self, __pyx_v_cls, __pyx_v_value, __pyx_v_colorspace, __pyx_v_channels, __pyx_v_sbytes, __pyx_v_isfloat, __pyx_v_extra, __pyx_v_planar, __pyx_v_swap_endianness, __pyx_v_swap_first, __pyx_v_do_swap, __pyx_v_flavor);
+
+  /* "gravure/lcms2/colortype.pyx":58
+ * 
+ * class ColorType(int):
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,             # <<<<<<<<<<<<<<
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
+ */
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType___new__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls, PyObject *__pyx_v_value, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_channels, PyObject *__pyx_v_sbytes, PyObject *__pyx_v_isfloat, PyObject *__pyx_v_extra, PyObject *__pyx_v_planar, PyObject *__pyx_v_swap_endianness, PyObject *__pyx_v_swap_first, PyObject *__pyx_v_do_swap, PyObject *__pyx_v_flavor) {
+  PyObject *__pyx_v_minargs = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_3;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  long __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_UCS4 __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__new__", 0);
+  __Pyx_INCREF(__pyx_v_value);
+  __Pyx_INCREF(__pyx_v_sbytes);
 
-  /* "gravure/lcms2/colortype.pyx":58
- * class ColorType(int):
- *     def __new__(cls, value):
- *         if not isinstance(value, int):             # <<<<<<<<<<<<<<
+  /* "gravure/lcms2/colortype.pyx":61
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
+ *         if not isinstance(value, int) or value<0:             # <<<<<<<<<<<<<<
  *             raise ValueError(f"can't create a ColorType from {value}")
- *         return int.__new__(cls, value)
- */
-  __pyx_t_1 = PyInt_Check(__pyx_v_value); 
-  __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
-  if (unlikely(__pyx_t_2)) {
-
-    /* "gravure/lcms2/colortype.pyx":59
- *     def __new__(cls, value):
- *         if not isinstance(value, int):
- *             raise ValueError(f"can't create a ColorType from {value}")             # <<<<<<<<<<<<<<
- *         return int.__new__(cls, value)
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_can_t_create_a_ColorType_from, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_2 = PyInt_Check(__pyx_v_value); 
+  __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_1 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_value, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_1 = __pyx_t_3;
+  __pyx_L4_bool_binop_done:;
+  if (unlikely(__pyx_t_1)) {
 
-    /* "gravure/lcms2/colortype.pyx":58
- * class ColorType(int):
- *     def __new__(cls, value):
- *         if not isinstance(value, int):             # <<<<<<<<<<<<<<
+    /* "gravure/lcms2/colortype.pyx":62
+ *                 swap_first=False, do_swap=False, flavor=0):
+ *         if not isinstance(value, int) or value<0:
+ *             raise ValueError(f"can't create a ColorType from {value}")             # <<<<<<<<<<<<<<
+ * 
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)
+ */
+    __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_kp_u_can_t_create_a_ColorType_from, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __PYX_ERR(0, 62, __pyx_L1_error)
+
+    /* "gravure/lcms2/colortype.pyx":61
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
+ *         if not isinstance(value, int) or value<0:             # <<<<<<<<<<<<<<
  *             raise ValueError(f"can't create a ColorType from {value}")
- *         return int.__new__(cls, value)
+ * 
  */
   }
 
-  /* "gravure/lcms2/colortype.pyx":60
- *         if not isinstance(value, int):
+  /* "gravure/lcms2/colortype.pyx":64
  *             raise ValueError(f"can't create a ColorType from {value}")
+ * 
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)             # <<<<<<<<<<<<<<
+ *         if any(minargs):
+ *             if all(minargs):
+ */
+  __pyx_t_1 = (__pyx_v_colorspace != Py_None);
+  __pyx_t_4 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = (__pyx_v_channels != Py_None);
+  __pyx_t_5 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_1 = (__pyx_v_sbytes != Py_None);
+  __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_t_6);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = 0;
+  __pyx_t_6 = 0;
+  __pyx_v_minargs = ((PyObject*)__pyx_t_7);
+  __pyx_t_7 = 0;
+
+  /* "gravure/lcms2/colortype.pyx":65
+ * 
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)
+ *         if any(minargs):             # <<<<<<<<<<<<<<
+ *             if all(minargs):
+ *                 if not isinstance(colorspace, PixelType):
+ */
+  __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_any, __pyx_v_minargs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (__pyx_t_1) {
+
+    /* "gravure/lcms2/colortype.pyx":66
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)
+ *         if any(minargs):
+ *             if all(minargs):             # <<<<<<<<<<<<<<
+ *                 if not isinstance(colorspace, PixelType):
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ */
+    __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_v_minargs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (likely(__pyx_t_1)) {
+
+      /* "gravure/lcms2/colortype.pyx":67
+ *         if any(minargs):
+ *             if all(minargs):
+ *                 if not isinstance(colorspace, PixelType):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_PixelType); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_1 = PyObject_IsInstance(__pyx_v_colorspace, __pyx_t_7); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 67, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
+      if (unlikely(__pyx_t_3)) {
+
+        /* "gravure/lcms2/colortype.pyx":68
+ *             if all(minargs):
+ *                 if not isinstance(colorspace, PixelType):
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")             # <<<<<<<<<<<<<<
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ */
+        __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_colorspace, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_t_7, __pyx_kp_u_is_not_a_valide_Pixeltype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 68, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_Raise(__pyx_t_7, 0, 0, 0);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __PYX_ERR(0, 68, __pyx_L1_error)
+
+        /* "gravure/lcms2/colortype.pyx":67
+ *         if any(minargs):
+ *             if all(minargs):
+ *                 if not isinstance(colorspace, PixelType):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ */
+      }
+
+      /* "gravure/lcms2/colortype.pyx":69
+ *                 if not isinstance(colorspace, PixelType):
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:
+ */
+      __pyx_t_8 = 0;
+      __pyx_t_9 = __Pyx_add_const_long_checking_overflow(cmsMAXCHANNELS, 1, &__pyx_t_8);
+      if (unlikely(__pyx_t_8)) {
+        PyErr_SetString(PyExc_OverflowError, "value too large");
+        __PYX_ERR(0, 69, __pyx_L1_error)
+      }
+      __pyx_t_7 = __Pyx_PyInt_From_long(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_INCREF(__pyx_int_1);
+      __Pyx_GIVEREF(__pyx_int_1);
+      PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_int_1);
+      __Pyx_GIVEREF(__pyx_t_7);
+      PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_7);
+      __pyx_t_7 = 0;
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_channels, __pyx_t_7, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_1 = (__pyx_t_3 != 0);
+      if (unlikely(__pyx_t_1)) {
+
+        /* "gravure/lcms2/colortype.pyx":70
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")             # <<<<<<<<<<<<<<
+ *                 if sbytes not in [1, 2, 4, 8]:
+ *                     raise ValueError(f"sbytes should be 1, 2, 4 or 8")
+ */
+        __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_10 = 0;
+        __pyx_t_11 = 127;
+        __Pyx_INCREF(__pyx_kp_u_channels_should_be_in_the_range);
+        __pyx_t_10 += 35;
+        __Pyx_GIVEREF(__pyx_kp_u_channels_should_be_in_the_range);
+        PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_kp_u_channels_should_be_in_the_range);
+        __pyx_t_6 = __Pyx_PyUnicode_From_int(cmsMAXCHANNELS, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_);
+        __pyx_t_10 += 1;
+        __Pyx_GIVEREF(__pyx_kp_u_);
+        PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_kp_u_);
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_7, 3, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_Raise(__pyx_t_7, 0, 0, 0);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __PYX_ERR(0, 70, __pyx_L1_error)
+
+        /* "gravure/lcms2/colortype.pyx":69
+ *                 if not isinstance(colorspace, PixelType):
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:
+ */
+      }
+
+      /* "gravure/lcms2/colortype.pyx":71
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"sbytes should be 1, 2, 4 or 8")
+ *                 # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+ */
+      __Pyx_INCREF(__pyx_v_sbytes);
+      __pyx_t_7 = __pyx_v_sbytes;
+      __pyx_t_6 = __Pyx_PyInt_NeObjC(__pyx_t_7, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (__pyx_t_3) {
+      } else {
+        __pyx_t_1 = __pyx_t_3;
+        goto __pyx_L11_bool_binop_done;
+      }
+      __pyx_t_6 = __Pyx_PyInt_NeObjC(__pyx_t_7, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (__pyx_t_3) {
+      } else {
+        __pyx_t_1 = __pyx_t_3;
+        goto __pyx_L11_bool_binop_done;
+      }
+      __pyx_t_6 = __Pyx_PyInt_NeObjC(__pyx_t_7, __pyx_int_4, 4, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (__pyx_t_3) {
+      } else {
+        __pyx_t_1 = __pyx_t_3;
+        goto __pyx_L11_bool_binop_done;
+      }
+      __pyx_t_6 = __Pyx_PyInt_NeObjC(__pyx_t_7, __pyx_int_8, 8, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_1 = __pyx_t_3;
+      __pyx_L11_bool_binop_done:;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_3 = (__pyx_t_1 != 0);
+      if (unlikely(__pyx_t_3)) {
+
+        /* "gravure/lcms2/colortype.pyx":72
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:
+ *                     raise ValueError(f"sbytes should be 1, 2, 4 or 8")             # <<<<<<<<<<<<<<
+ *                 # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+ *                 # because 8 bytes overflows the bitfield
+ */
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_Raise(__pyx_t_7, 0, 0, 0);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __PYX_ERR(0, 72, __pyx_L1_error)
+
+        /* "gravure/lcms2/colortype.pyx":71
+ *                 if channels not in range(1, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"sbytes should be 1, 2, 4 or 8")
+ *                 # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+ */
+      }
+
+      /* "gravure/lcms2/colortype.pyx":75
+ *                 # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+ *                 # because 8 bytes overflows the bitfield
+ *                 sbytes = 0 if sbytes==8 else sbytes             # <<<<<<<<<<<<<<
+ *                 if extra not in range(0, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")
+ */
+      __pyx_t_6 = __Pyx_PyInt_EqObjC(__pyx_v_sbytes, __pyx_int_8, 8, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (__pyx_t_3) {
+        __Pyx_INCREF(__pyx_int_0);
+        __pyx_t_7 = __pyx_int_0;
+      } else {
+        __Pyx_INCREF(__pyx_v_sbytes);
+        __pyx_t_7 = __pyx_v_sbytes;
+      }
+      __Pyx_DECREF_SET(__pyx_v_sbytes, __pyx_t_7);
+      __pyx_t_7 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":76
+ *                 # because 8 bytes overflows the bitfield
+ *                 sbytes = 0 if sbytes==8 else sbytes
+ *                 if extra not in range(0, cmsMAXCHANNELS + 1):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")
+ * 
+ */
+      __pyx_t_8 = 0;
+      __pyx_t_9 = __Pyx_add_const_long_checking_overflow(cmsMAXCHANNELS, 1, &__pyx_t_8);
+      if (unlikely(__pyx_t_8)) {
+        PyErr_SetString(PyExc_OverflowError, "value too large");
+        __PYX_ERR(0, 76, __pyx_L1_error)
+      }
+      __pyx_t_7 = __Pyx_PyInt_From_long(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_INCREF(__pyx_int_0);
+      __Pyx_GIVEREF(__pyx_int_0);
+      PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_int_0);
+      __Pyx_GIVEREF(__pyx_t_7);
+      PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_7);
+      __pyx_t_7 = 0;
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_extra, __pyx_t_7, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_1 = (__pyx_t_3 != 0);
+      if (unlikely(__pyx_t_1)) {
+
+        /* "gravure/lcms2/colortype.pyx":77
+ *                 sbytes = 0 if sbytes==8 else sbytes
+ *                 if extra not in range(0, cmsMAXCHANNELS + 1):
+ *                     raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")             # <<<<<<<<<<<<<<
+ * 
+ *                 value = value | FLOAT_SH(1) if isfloat else value
+ */
+        __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_10 = 0;
+        __pyx_t_11 = 127;
+        __Pyx_INCREF(__pyx_kp_u_extra_should_be_in_the_range_0);
+        __pyx_t_10 += 32;
+        __Pyx_GIVEREF(__pyx_kp_u_extra_should_be_in_the_range_0);
+        PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_kp_u_extra_should_be_in_the_range_0);
+        __pyx_t_6 = __Pyx_PyUnicode_From_int(cmsMAXCHANNELS, 0, ' ', 'd'); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_6);
+        PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __Pyx_INCREF(__pyx_kp_u_);
+        __pyx_t_10 += 1;
+        __Pyx_GIVEREF(__pyx_kp_u_);
+        PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_kp_u_);
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_7, 3, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_Raise(__pyx_t_7, 0, 0, 0);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __PYX_ERR(0, 77, __pyx_L1_error)
+
+        /* "gravure/lcms2/colortype.pyx":76
+ *                 # because 8 bytes overflows the bitfield
+ *                 sbytes = 0 if sbytes==8 else sbytes
+ *                 if extra not in range(0, cmsMAXCHANNELS + 1):             # <<<<<<<<<<<<<<
+ *                     raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")
+ * 
+ */
+      }
+
+      /* "gravure/lcms2/colortype.pyx":79
+ *                     raise ValueError(f"extra should be in the range[0, {cmsMAXCHANNELS}]")
+ * 
+ *                 value = value | FLOAT_SH(1) if isfloat else value             # <<<<<<<<<<<<<<
+ *                 value = value | COLORSPACE_SH(colorspace)
+ *                 value = value | EXTRA_SH(extra) if extra else value
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_isfloat); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 79, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(FLOAT_SH(1)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_5 = PyNumber_Or(__pyx_v_value, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_t_7 = __pyx_t_5;
+        __pyx_t_5 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_7 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_7);
+      __pyx_t_7 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":80
+ * 
+ *                 value = value | FLOAT_SH(1) if isfloat else value
+ *                 value = value | COLORSPACE_SH(colorspace)             # <<<<<<<<<<<<<<
+ *                 value = value | EXTRA_SH(extra) if extra else value
+ *                 value = value | CHANNELS_SH(channels)
+ */
+      __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_colorspace); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(COLORSPACE_SH(__pyx_t_8)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_5 = PyNumber_Or(__pyx_v_value, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":81
+ *                 value = value | FLOAT_SH(1) if isfloat else value
+ *                 value = value | COLORSPACE_SH(colorspace)
+ *                 value = value | EXTRA_SH(extra) if extra else value             # <<<<<<<<<<<<<<
+ *                 value = value | CHANNELS_SH(channels)
+ *                 value = value | BYTES_SH(sbytes)
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_extra); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_extra); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(EXTRA_SH(__pyx_t_8)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_6 = PyNumber_Or(__pyx_v_value, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_5 = __pyx_t_6;
+        __pyx_t_6 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":82
+ *                 value = value | COLORSPACE_SH(colorspace)
+ *                 value = value | EXTRA_SH(extra) if extra else value
+ *                 value = value | CHANNELS_SH(channels)             # <<<<<<<<<<<<<<
+ *                 value = value | BYTES_SH(sbytes)
+ *                 value = value | FLAVOR_SH(1) if flavor else value
+ */
+      __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_channels); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_From_unsigned_int(CHANNELS_SH(__pyx_t_8)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = PyNumber_Or(__pyx_v_value, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_6);
+      __pyx_t_6 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":83
+ *                 value = value | EXTRA_SH(extra) if extra else value
+ *                 value = value | CHANNELS_SH(channels)
+ *                 value = value | BYTES_SH(sbytes)             # <<<<<<<<<<<<<<
+ *                 value = value | FLAVOR_SH(1) if flavor else value
+ *                 value = value | ENDIAN16_SH(1) if swap_endianness else value
+ */
+      __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_sbytes); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(BYTES_SH(__pyx_t_8)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_5 = PyNumber_Or(__pyx_v_value, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":84
+ *                 value = value | CHANNELS_SH(channels)
+ *                 value = value | BYTES_SH(sbytes)
+ *                 value = value | FLAVOR_SH(1) if flavor else value             # <<<<<<<<<<<<<<
+ *                 value = value | ENDIAN16_SH(1) if swap_endianness else value
+ *                 value = value | DOSWAP_SH(1) if do_swap else value
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_flavor); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(FLAVOR_SH(1)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_7 = PyNumber_Or(__pyx_v_value, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_t_5 = __pyx_t_7;
+        __pyx_t_7 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":85
+ *                 value = value | BYTES_SH(sbytes)
+ *                 value = value | FLAVOR_SH(1) if flavor else value
+ *                 value = value | ENDIAN16_SH(1) if swap_endianness else value             # <<<<<<<<<<<<<<
+ *                 value = value | DOSWAP_SH(1) if do_swap else value
+ *                 value = value | SWAPFIRST_SH(1) if swap_first else value
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_swap_endianness); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 85, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(ENDIAN16_SH(1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 85, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_6 = PyNumber_Or(__pyx_v_value, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 85, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_5 = __pyx_t_6;
+        __pyx_t_6 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":86
+ *                 value = value | FLAVOR_SH(1) if flavor else value
+ *                 value = value | ENDIAN16_SH(1) if swap_endianness else value
+ *                 value = value | DOSWAP_SH(1) if do_swap else value             # <<<<<<<<<<<<<<
+ *                 value = value | SWAPFIRST_SH(1) if swap_first else value
+ *                 value = value | PLANAR_SH(1) if planar else value
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_do_swap); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 86, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(DOSWAP_SH(1)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_7 = PyNumber_Or(__pyx_v_value, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_t_5 = __pyx_t_7;
+        __pyx_t_7 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":87
+ *                 value = value | ENDIAN16_SH(1) if swap_endianness else value
+ *                 value = value | DOSWAP_SH(1) if do_swap else value
+ *                 value = value | SWAPFIRST_SH(1) if swap_first else value             # <<<<<<<<<<<<<<
+ *                 value = value | PLANAR_SH(1) if planar else value
+ *             else:
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_swap_first); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(SWAPFIRST_SH(1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_6 = PyNumber_Or(__pyx_v_value, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_5 = __pyx_t_6;
+        __pyx_t_6 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":88
+ *                 value = value | DOSWAP_SH(1) if do_swap else value
+ *                 value = value | SWAPFIRST_SH(1) if swap_first else value
+ *                 value = value | PLANAR_SH(1) if planar else value             # <<<<<<<<<<<<<<
+ *             else:
+ *                 raise ValueError("Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags")
+ */
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_planar); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+      if (__pyx_t_1) {
+        __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(PLANAR_SH(1)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_7 = PyNumber_Or(__pyx_v_value, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __pyx_t_5 = __pyx_t_7;
+        __pyx_t_7 = 0;
+      } else {
+        __Pyx_INCREF(__pyx_v_value);
+        __pyx_t_5 = __pyx_v_value;
+      }
+      __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "gravure/lcms2/colortype.pyx":66
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)
+ *         if any(minargs):
+ *             if all(minargs):             # <<<<<<<<<<<<<<
+ *                 if not isinstance(colorspace, PixelType):
+ *                     raise ValueError(f"{colorspace} is not a valide Pixeltype")
+ */
+      goto __pyx_L7;
+    }
+
+    /* "gravure/lcms2/colortype.pyx":90
+ *                 value = value | PLANAR_SH(1) if planar else value
+ *             else:
+ *                 raise ValueError("Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags")             # <<<<<<<<<<<<<<
+ *         return int.__new__(cls, value)
+ * 
+ */
+    /*else*/ {
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_Raise(__pyx_t_5, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __PYX_ERR(0, 90, __pyx_L1_error)
+    }
+    __pyx_L7:;
+
+    /* "gravure/lcms2/colortype.pyx":65
+ * 
+ *         minargs = (colorspace is not None, channels is not None, sbytes is not None)
+ *         if any(minargs):             # <<<<<<<<<<<<<<
+ *             if all(minargs):
+ *                 if not isinstance(colorspace, PixelType):
+ */
+  }
+
+  /* "gravure/lcms2/colortype.pyx":91
+ *             else:
+ *                 raise ValueError("Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags")
  *         return int.__new__(cls, value)             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)(&PyInt_Type)), __pyx_n_s_new); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_5);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)(&PyInt_Type)), __pyx_n_s_new); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_6 = NULL;
+  __pyx_t_8 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_6 = 1;
+      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __pyx_t_8 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_cls, __pyx_v_value};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_3);
+  if (PyFunction_Check(__pyx_t_7)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_cls, __pyx_v_value};
+    __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_GOTREF(__pyx_t_5);
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_cls, __pyx_v_value};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_3);
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_cls, __pyx_v_value};
+    __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_GOTREF(__pyx_t_5);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    __pyx_t_4 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    if (__pyx_t_6) {
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __pyx_t_6 = NULL;
     }
     __Pyx_INCREF(__pyx_v_cls);
     __Pyx_GIVEREF(__pyx_v_cls);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_v_cls);
+    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_8, __pyx_v_cls);
     __Pyx_INCREF(__pyx_v_value);
     __Pyx_GIVEREF(__pyx_v_value);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_v_value);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_8, __pyx_v_value);
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_r = __pyx_t_5;
+  __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":57
+  /* "gravure/lcms2/colortype.pyx":58
  * 
  * class ColorType(int):
- *     def __new__(cls, value):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, int):
- *             raise ValueError(f"can't create a ColorType from {value}")
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,             # <<<<<<<<<<<<<<
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.__new__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_minargs);
+  __Pyx_XDECREF(__pyx_v_value);
+  __Pyx_XDECREF(__pyx_v_sbytes);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":63
+/* "gravure/lcms2/colortype.pyx":94
  * 
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2081,7 +2942,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_2__repr__(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "gravure/lcms2/colortype.pyx":64
+  /* "gravure/lcms2/colortype.pyx":95
  * 
  *     def __repr__(self):
  *         return f"ColorType({self})"             # <<<<<<<<<<<<<<
@@ -2089,7 +2950,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_2__repr__(CYTHON
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -2097,25 +2958,25 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_2__repr__(CYTHON
   __pyx_t_2 += 10;
   __Pyx_GIVEREF(__pyx_kp_u_ColorType);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_ColorType);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_self, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_self, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
   __pyx_t_4 = 0;
-  __Pyx_INCREF(__pyx_kp_u_);
+  __Pyx_INCREF(__pyx_kp_u__4);
   __pyx_t_2 += 1;
-  __Pyx_GIVEREF(__pyx_kp_u_);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_kp_u__4);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__4);
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":63
+  /* "gravure/lcms2/colortype.pyx":94
  * 
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2135,7 +2996,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_2__repr__(CYTHON
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":67
+/* "gravure/lcms2/colortype.pyx":98
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -2168,7 +3029,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_4__str__(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "gravure/lcms2/colortype.pyx":68
+  /* "gravure/lcms2/colortype.pyx":99
  * 
  *     def __str__(self):
  *         return str(int(self))             # <<<<<<<<<<<<<<
@@ -2176,16 +3037,16 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_4__str__(CYTHON_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":67
+  /* "gravure/lcms2/colortype.pyx":98
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -2205,30 +3066,30 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_4__str__(CYTHON_
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":72
+/* "gravure/lcms2/colortype.pyx":103
  * 
  *     @property
- *     def color_space(self):             # <<<<<<<<<<<<<<
+ *     def colorspace(self):             # <<<<<<<<<<<<<<
  *         """
  *         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7color_space(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_6color_space[] = "ColorType.color_space(self)\n\n        The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_7color_space = {"color_space", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7color_space, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_6color_space};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7color_space(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7colorspace(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_6colorspace[] = "ColorType.colorspace(self)\n\n        The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_7colorspace = {"colorspace", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7colorspace, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_6colorspace};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_7colorspace(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("color_space (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("colorspace (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6colorspace(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6colorspace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2239,9 +3100,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYT
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("color_space", 0);
+  __Pyx_RefNannySetupContext("colorspace", 0);
 
-  /* "gravure/lcms2/colortype.pyx":76
+  /* "gravure/lcms2/colortype.pyx":107
  *         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
  *         """
  *         return PixelType(T_COLORSPACE(self))             # <<<<<<<<<<<<<<
@@ -2249,10 +3110,10 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYT
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PixelType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PixelType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_From_int(T_COLORSPACE(__pyx_t_3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(T_COLORSPACE(__pyx_t_3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2267,17 +3128,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYT
   __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":72
+  /* "gravure/lcms2/colortype.pyx":103
  * 
  *     @property
- *     def color_space(self):             # <<<<<<<<<<<<<<
+ *     def colorspace(self):             # <<<<<<<<<<<<<<
  *         """
  *         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
  */
@@ -2288,7 +3149,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYT
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.color_space", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.colorspace", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2296,7 +3157,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_6color_space(CYT
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":80
+/* "gravure/lcms2/colortype.pyx":111
  * 
  *     @property
  *     def channels(self):             # <<<<<<<<<<<<<<
@@ -2329,7 +3190,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_8channels(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("channels", 0);
 
-  /* "gravure/lcms2/colortype.pyx":84
+  /* "gravure/lcms2/colortype.pyx":115
  *         Return the numbers of channels (Samples per pixel) holded by this ColorType.
  *         """
  *         return T_CHANNELS(self)             # <<<<<<<<<<<<<<
@@ -2337,14 +3198,14 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_8channels(CYTHON
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(T_CHANNELS(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(T_CHANNELS(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":80
+  /* "gravure/lcms2/colortype.pyx":111
  * 
  *     @property
  *     def channels(self):             # <<<<<<<<<<<<<<
@@ -2363,30 +3224,30 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_8channels(CYTHON
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":88
+/* "gravure/lcms2/colortype.pyx":119
  * 
  *     @property
- *     def extra_channels(self):             # <<<<<<<<<<<<<<
+ *     def extra(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra_channels(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_10extra_channels[] = "ColorType.extra_channels(self)\n\n        Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_11extra_channels = {"extra_channels", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra_channels, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_10extra_channels};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra_channels(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_10extra[] = "ColorType.extra(self)\n\n        Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_11extra = {"extra", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_10extra};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_11extra(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("extra_channels (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("extra (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   unsigned int __pyx_t_1;
@@ -2394,9 +3255,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("extra_channels", 0);
+  __Pyx_RefNannySetupContext("extra", 0);
 
-  /* "gravure/lcms2/colortype.pyx":92
+  /* "gravure/lcms2/colortype.pyx":123
  *         Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
  *         """
  *         return T_EXTRA(self)             # <<<<<<<<<<<<<<
@@ -2404,17 +3265,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(T_EXTRA(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(T_EXTRA(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":88
+  /* "gravure/lcms2/colortype.pyx":119
  * 
  *     @property
- *     def extra_channels(self):             # <<<<<<<<<<<<<<
+ *     def extra(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
  */
@@ -2422,7 +3283,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.extra_channels", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.extra", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2430,30 +3291,30 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_10extra_channels
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":96
+/* "gravure/lcms2/colortype.pyx":127
  * 
  *     @property
- *     def bytes_per_sample(self):             # <<<<<<<<<<<<<<
+ *     def sbytes(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return the numbers of bytes use to store a channel's value for this ColorType. .
+ *         Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13bytes_per_sample(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_sample[] = "ColorType.bytes_per_sample(self)\n\n        Return the numbers of bytes use to store a channel's value for this ColorType. .\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_13bytes_per_sample = {"bytes_per_sample", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13bytes_per_sample, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_sample};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13bytes_per_sample(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13sbytes(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_12sbytes[] = "ColorType.sbytes(self)\n\n        Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_13sbytes = {"sbytes", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13sbytes, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_12sbytes};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_13sbytes(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("bytes_per_sample (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_sample(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("sbytes (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12sbytes(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_sample(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12sbytes(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   long __pyx_v_tbytes;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2463,19 +3324,19 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("bytes_per_sample", 0);
+  __Pyx_RefNannySetupContext("sbytes", 0);
 
-  /* "gravure/lcms2/colortype.pyx":100
- *         Return the numbers of bytes use to store a channel's value for this ColorType. .
+  /* "gravure/lcms2/colortype.pyx":131
+ *         Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
  *         """
  *         tbytes = T_BYTES(self)             # <<<<<<<<<<<<<<
  *         # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
  *         # because 8 bytes overflows the bitfield
  */
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
   __pyx_v_tbytes = T_BYTES(__pyx_t_1);
 
-  /* "gravure/lcms2/colortype.pyx":103
+  /* "gravure/lcms2/colortype.pyx":134
  *         # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
  *         # because 8 bytes overflows the bitfield
  *         if tbytes == 0:             # <<<<<<<<<<<<<<
@@ -2485,7 +3346,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
   __pyx_t_2 = ((__pyx_v_tbytes == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "gravure/lcms2/colortype.pyx":104
+    /* "gravure/lcms2/colortype.pyx":135
  *         # because 8 bytes overflows the bitfield
  *         if tbytes == 0:
  *             tbytes = 8             # <<<<<<<<<<<<<<
@@ -2494,7 +3355,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
  */
     __pyx_v_tbytes = 8;
 
-    /* "gravure/lcms2/colortype.pyx":103
+    /* "gravure/lcms2/colortype.pyx":134
  *         # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
  *         # because 8 bytes overflows the bitfield
  *         if tbytes == 0:             # <<<<<<<<<<<<<<
@@ -2503,7 +3364,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
  */
   }
 
-  /* "gravure/lcms2/colortype.pyx":105
+  /* "gravure/lcms2/colortype.pyx":136
  *         if tbytes == 0:
  *             tbytes = 8
  *         return tbytes             # <<<<<<<<<<<<<<
@@ -2511,24 +3372,24 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_tbytes); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_tbytes); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":96
+  /* "gravure/lcms2/colortype.pyx":127
  * 
  *     @property
- *     def bytes_per_sample(self):             # <<<<<<<<<<<<<<
+ *     def sbytes(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return the numbers of bytes use to store a channel's value for this ColorType. .
+ *         Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.bytes_per_sample", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.sbytes", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2536,30 +3397,30 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_12bytes_per_samp
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":109
+/* "gravure/lcms2/colortype.pyx":140
  * 
  *     @property
- *     def is_planar(self):             # <<<<<<<<<<<<<<
+ *     def planar(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return True if this ColorType holds values as planar, False if chunky.
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15is_planar(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_14is_planar[] = "ColorType.is_planar(self)\n\n        Return True if this ColorType holds values as planar, False if chunky.\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_15is_planar = {"is_planar", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15is_planar, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_14is_planar};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15is_planar(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15planar(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_14planar[] = "ColorType.planar(self)\n\n        Return True if this ColorType holds values as planar, False if chunky.\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_15planar = {"planar", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15planar, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_14planar};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_15planar(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_planar (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("planar (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14planar(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14planar(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   unsigned int __pyx_t_1;
@@ -2568,9 +3429,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTH
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("is_planar", 0);
+  __Pyx_RefNannySetupContext("planar", 0);
 
-  /* "gravure/lcms2/colortype.pyx":113
+  /* "gravure/lcms2/colortype.pyx":144
  *         Return True if this ColorType holds values as planar, False if chunky.
  *         """
  *         return bool(T_PLANAR(self))             # <<<<<<<<<<<<<<
@@ -2578,21 +3439,21 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTH
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(T_PLANAR(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(T_PLANAR(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!(!__pyx_t_3))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong((!(!__pyx_t_3))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":109
+  /* "gravure/lcms2/colortype.pyx":140
  * 
  *     @property
- *     def is_planar(self):             # <<<<<<<<<<<<<<
+ *     def planar(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return True if this ColorType holds values as planar, False if chunky.
  */
@@ -2600,7 +3461,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTH
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.is_planar", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.planar", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2608,71 +3469,66 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_14is_planar(CYTH
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":117
+/* "gravure/lcms2/colortype.pyx":148
  * 
  *     @property
- *     def min_is_black(self):             # <<<<<<<<<<<<<<
+ *     def flavor(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return True for this ColorType if values of zero means black, False if white.
+ *         Return 0 for this ColorType if values of zero means black, 1 if white.
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17min_is_black(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_16min_is_black[] = "ColorType.min_is_black(self)\n\n        Return True for this ColorType if values of zero means black, False if white.\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_17min_is_black = {"min_is_black", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17min_is_black, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_16min_is_black};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17min_is_black(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17flavor(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_16flavor[] = "ColorType.flavor(self)\n\n        Return 0 for this ColorType if values of zero means black, 1 if white.\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_17flavor = {"flavor", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17flavor, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_16flavor};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_17flavor(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("min_is_black (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16min_is_black(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("flavor (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16flavor(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16min_is_black(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16flavor(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   unsigned int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("min_is_black", 0);
+  __Pyx_RefNannySetupContext("flavor", 0);
 
-  /* "gravure/lcms2/colortype.pyx":121
- *         Return True for this ColorType if values of zero means black, False if white.
+  /* "gravure/lcms2/colortype.pyx":152
+ *         Return 0 for this ColorType if values of zero means black, 1 if white.
  *         """
- *         return not bool(T_FLAVOR(self))             # <<<<<<<<<<<<<<
+ *         return T_FLAVOR(self)             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(T_FLAVOR(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 121, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!((!(!__pyx_t_3)) != 0))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(T_FLAVOR(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":117
+  /* "gravure/lcms2/colortype.pyx":148
  * 
  *     @property
- *     def min_is_black(self):             # <<<<<<<<<<<<<<
+ *     def flavor(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return True for this ColorType if values of zero means black, False if white.
+ *         Return 0 for this ColorType if values of zero means black, 1 if white.
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.min_is_black", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.flavor", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2680,30 +3536,30 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_16min_is_black(C
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":125
+/* "gravure/lcms2/colortype.pyx":156
  * 
  *     @property
- *     def is_float(self):             # <<<<<<<<<<<<<<
+ *     def isfloat(self):             # <<<<<<<<<<<<<<
  *         """
  *         Determine if this ColorType use floating point values.
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19is_float(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_18is_float[] = "ColorType.is_float(self)\n\n        Determine if this ColorType use floating point values.\n        ";
-static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_19is_float = {"is_float", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19is_float, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_18is_float};
-static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19is_float(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19isfloat(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_18isfloat[] = "ColorType.isfloat(self)\n\n        Determine if this ColorType use floating point values.\n        ";
+static PyMethodDef __pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_19isfloat = {"isfloat", (PyCFunction)__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19isfloat, METH_O, __pyx_doc_7gravure_5lcms2_9colortype_9ColorType_18isfloat};
+static PyObject *__pyx_pw_7gravure_5lcms2_9colortype_9ColorType_19isfloat(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_float (wrapper)", 0);
-  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(__pyx_self, ((PyObject *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("isfloat (wrapper)", 0);
+  __pyx_r = __pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18isfloat(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18isfloat(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   unsigned int __pyx_t_1;
@@ -2712,9 +3568,9 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHO
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("is_float", 0);
+  __Pyx_RefNannySetupContext("isfloat", 0);
 
-  /* "gravure/lcms2/colortype.pyx":129
+  /* "gravure/lcms2/colortype.pyx":160
  *         Determine if this ColorType use floating point values.
  *         """
  *         return bool(T_FLOAT(self))             # <<<<<<<<<<<<<<
@@ -2722,21 +3578,21 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHO
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(T_FLOAT(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_unsigned_int(__pyx_v_self); if (unlikely((__pyx_t_1 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(T_FLOAT(__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!(!__pyx_t_3))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong((!(!__pyx_t_3))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":125
+  /* "gravure/lcms2/colortype.pyx":156
  * 
  *     @property
- *     def is_float(self):             # <<<<<<<<<<<<<<
+ *     def isfloat(self):             # <<<<<<<<<<<<<<
  *         """
  *         Determine if this ColorType use floating point values.
  */
@@ -2744,7 +3600,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHO
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.is_float", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("gravure.lcms2.colortype.ColorType.isfloat", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2752,7 +3608,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_18is_float(CYTHO
   return __pyx_r;
 }
 
-/* "gravure/lcms2/colortype.pyx":133
+/* "gravure/lcms2/colortype.pyx":164
  * 
  *     @property
  *     def nbytes(self):             # <<<<<<<<<<<<<<
@@ -2787,7 +3643,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_20nbytes(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nbytes", 0);
 
-  /* "gravure/lcms2/colortype.pyx":137
+  /* "gravure/lcms2/colortype.pyx":168
  *         size in bytes for this ColorType necessary to store all channels values for a sample.
  *         """
  *         return self.bytes_per_sample * (self.channels + self.extra_channels)             # <<<<<<<<<<<<<<
@@ -2795,17 +3651,17 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_20nbytes(CYTHON_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_bytes_per_sample); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_bytes_per_sample); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_channels); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_channels); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_extra_channels); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_extra_channels); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyNumber_Add(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_Add(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -2813,7 +3669,7 @@ static PyObject *__pyx_pf_7gravure_5lcms2_9colortype_9ColorType_20nbytes(CYTHON_
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "gravure/lcms2/colortype.pyx":133
+  /* "gravure/lcms2/colortype.pyx":164
  * 
  *     @property
  *     def nbytes(self):             # <<<<<<<<<<<<<<
@@ -2961,14 +3817,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ColorType___new, __pyx_k_ColorType___new, sizeof(__pyx_k_ColorType___new), 0, 0, 1, 1},
   {&__pyx_n_s_ColorType___repr, __pyx_k_ColorType___repr, sizeof(__pyx_k_ColorType___repr), 0, 0, 1, 1},
   {&__pyx_n_s_ColorType___str, __pyx_k_ColorType___str, sizeof(__pyx_k_ColorType___str), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_bytes_per_sample, __pyx_k_ColorType_bytes_per_sample, sizeof(__pyx_k_ColorType_bytes_per_sample), 0, 0, 1, 1},
   {&__pyx_n_s_ColorType_channels, __pyx_k_ColorType_channels, sizeof(__pyx_k_ColorType_channels), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_color_space, __pyx_k_ColorType_color_space, sizeof(__pyx_k_ColorType_color_space), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_extra_channels, __pyx_k_ColorType_extra_channels, sizeof(__pyx_k_ColorType_extra_channels), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_is_float, __pyx_k_ColorType_is_float, sizeof(__pyx_k_ColorType_is_float), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_is_planar, __pyx_k_ColorType_is_planar, sizeof(__pyx_k_ColorType_is_planar), 0, 0, 1, 1},
-  {&__pyx_n_s_ColorType_min_is_black, __pyx_k_ColorType_min_is_black, sizeof(__pyx_k_ColorType_min_is_black), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_colorspace, __pyx_k_ColorType_colorspace, sizeof(__pyx_k_ColorType_colorspace), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_extra, __pyx_k_ColorType_extra, sizeof(__pyx_k_ColorType_extra), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_flavor, __pyx_k_ColorType_flavor, sizeof(__pyx_k_ColorType_flavor), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_isfloat, __pyx_k_ColorType_isfloat, sizeof(__pyx_k_ColorType_isfloat), 0, 0, 1, 1},
   {&__pyx_n_s_ColorType_nbytes, __pyx_k_ColorType_nbytes, sizeof(__pyx_k_ColorType_nbytes), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_planar, __pyx_k_ColorType_planar, sizeof(__pyx_k_ColorType_planar), 0, 0, 1, 1},
+  {&__pyx_n_s_ColorType_sbytes, __pyx_k_ColorType_sbytes, sizeof(__pyx_k_ColorType_sbytes), 0, 0, 1, 1},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
   {&__pyx_kp_s_Enum_where_members_are_also_and, __pyx_k_Enum_where_members_are_also_and, sizeof(__pyx_k_Enum_where_members_are_also_and), 0, 0, 1, 0},
   {&__pyx_n_s_GRAY, __pyx_k_GRAY, sizeof(__pyx_k_GRAY), 0, 0, 1, 1},
@@ -3052,6 +3908,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MCH8, __pyx_k_MCH8, sizeof(__pyx_k_MCH8), 0, 0, 1, 1},
   {&__pyx_n_s_MCH9, __pyx_k_MCH9, sizeof(__pyx_k_MCH9), 0, 0, 1, 1},
   {&__pyx_n_s_NAMED_COLOR_INDEX, __pyx_k_NAMED_COLOR_INDEX, sizeof(__pyx_k_NAMED_COLOR_INDEX), 0, 0, 1, 1},
+  {&__pyx_kp_u_Need_at_least_colorspace_channel, __pyx_k_Need_at_least_colorspace_channel, sizeof(__pyx_k_Need_at_least_colorspace_channel), 0, 1, 0, 0},
   {&__pyx_n_s_PixelType, __pyx_k_PixelType, sizeof(__pyx_k_PixelType), 0, 0, 1, 1},
   {&__pyx_n_s_RGB, __pyx_k_RGB, sizeof(__pyx_k_RGB), 0, 0, 1, 1},
   {&__pyx_n_s_RGBA_16, __pyx_k_RGBA_16, sizeof(__pyx_k_RGBA_16), 0, 0, 1, 1},
@@ -3092,33 +3949,47 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_YUV_8_PLANAR, __pyx_k_YUV_8_PLANAR, sizeof(__pyx_k_YUV_8_PLANAR), 0, 0, 1, 1},
   {&__pyx_n_s_Yxy, __pyx_k_Yxy, sizeof(__pyx_k_Yxy), 0, 0, 1, 1},
   {&__pyx_n_s_Yxy_16, __pyx_k_Yxy_16, sizeof(__pyx_k_Yxy_16), 0, 0, 1, 1},
+  {&__pyx_kp_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 0},
+  {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
+  {&__pyx_n_s_any, __pyx_k_any, sizeof(__pyx_k_any), 0, 0, 1, 1},
   {&__pyx_n_s_bytes_per_sample, __pyx_k_bytes_per_sample, sizeof(__pyx_k_bytes_per_sample), 0, 0, 1, 1},
   {&__pyx_kp_u_can_t_create_a_ColorType_from, __pyx_k_can_t_create_a_ColorType_from, sizeof(__pyx_k_can_t_create_a_ColorType_from), 0, 1, 0, 0},
   {&__pyx_n_s_channels, __pyx_k_channels, sizeof(__pyx_k_channels), 0, 0, 1, 1},
+  {&__pyx_kp_u_channels_should_be_in_the_range, __pyx_k_channels_should_be_in_the_range, sizeof(__pyx_k_channels_should_be_in_the_range), 0, 1, 0, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_cls, __pyx_k_cls, sizeof(__pyx_k_cls), 0, 0, 1, 1},
-  {&__pyx_n_s_color_space, __pyx_k_color_space, sizeof(__pyx_k_color_space), 0, 0, 1, 1},
+  {&__pyx_n_s_colorspace, __pyx_k_colorspace, sizeof(__pyx_k_colorspace), 0, 0, 1, 1},
+  {&__pyx_n_s_do_swap, __pyx_k_do_swap, sizeof(__pyx_k_do_swap), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_enum, __pyx_k_enum, sizeof(__pyx_k_enum), 0, 0, 1, 1},
+  {&__pyx_n_s_extra, __pyx_k_extra, sizeof(__pyx_k_extra), 0, 0, 1, 1},
   {&__pyx_n_s_extra_channels, __pyx_k_extra_channels, sizeof(__pyx_k_extra_channels), 0, 0, 1, 1},
+  {&__pyx_kp_u_extra_should_be_in_the_range_0, __pyx_k_extra_should_be_in_the_range_0, sizeof(__pyx_k_extra_should_be_in_the_range_0), 0, 1, 0, 0},
+  {&__pyx_n_s_flavor, __pyx_k_flavor, sizeof(__pyx_k_flavor), 0, 0, 1, 1},
   {&__pyx_n_s_gravure_lcms2_colortype, __pyx_k_gravure_lcms2_colortype, sizeof(__pyx_k_gravure_lcms2_colortype), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_is_float, __pyx_k_is_float, sizeof(__pyx_k_is_float), 0, 0, 1, 1},
-  {&__pyx_n_s_is_planar, __pyx_k_is_planar, sizeof(__pyx_k_is_planar), 0, 0, 1, 1},
+  {&__pyx_kp_u_is_not_a_valide_Pixeltype, __pyx_k_is_not_a_valide_Pixeltype, sizeof(__pyx_k_is_not_a_valide_Pixeltype), 0, 1, 0, 0},
+  {&__pyx_n_s_isfloat, __pyx_k_isfloat, sizeof(__pyx_k_isfloat), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
-  {&__pyx_n_s_min_is_black, __pyx_k_min_is_black, sizeof(__pyx_k_min_is_black), 0, 0, 1, 1},
+  {&__pyx_n_s_minargs, __pyx_k_minargs, sizeof(__pyx_k_minargs), 0, 0, 1, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_nbytes, __pyx_k_nbytes, sizeof(__pyx_k_nbytes), 0, 0, 1, 1},
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
+  {&__pyx_n_s_planar, __pyx_k_planar, sizeof(__pyx_k_planar), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_property, __pyx_k_property, sizeof(__pyx_k_property), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
+  {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_repr, __pyx_k_repr, sizeof(__pyx_k_repr), 0, 0, 1, 1},
+  {&__pyx_n_s_sbytes, __pyx_k_sbytes, sizeof(__pyx_k_sbytes), 0, 0, 1, 1},
+  {&__pyx_kp_u_sbytes_should_be_1_2_4_or_8, __pyx_k_sbytes_should_be_1_2_4_or_8, sizeof(__pyx_k_sbytes_should_be_1_2_4_or_8), 0, 1, 0, 0},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
   {&__pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_k_src_gravure_lcms2_colortype_pyx, sizeof(__pyx_k_src_gravure_lcms2_colortype_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_str, __pyx_k_str, sizeof(__pyx_k_str), 0, 0, 1, 1},
+  {&__pyx_n_s_swap_endianness, __pyx_k_swap_endianness, sizeof(__pyx_k_swap_endianness), 0, 0, 1, 1},
+  {&__pyx_n_s_swap_first, __pyx_k_swap_first, sizeof(__pyx_k_swap_first), 0, 0, 1, 1},
   {&__pyx_n_s_tbytes, __pyx_k_tbytes, sizeof(__pyx_k_tbytes), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_unique, __pyx_k_unique, sizeof(__pyx_k_unique), 0, 0, 1, 1},
@@ -3126,8 +3997,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 71, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_builtin_any = __Pyx_GetBuiltinName(__pyx_n_s_any); if (!__pyx_builtin_any) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_builtin_all = __Pyx_GetBuiltinName(__pyx_n_s_all); if (!__pyx_builtin_all) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 69, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3137,137 +4011,162 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "gravure/lcms2/colortype.pyx":57
- * 
- * class ColorType(int):
- *     def __new__(cls, value):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, int):
- *             raise ValueError(f"can't create a ColorType from {value}")
+  /* "gravure/lcms2/colortype.pyx":72
+ *                     raise ValueError(f"channels should be in the range[1, {cmsMAXCHANNELS}]")
+ *                 if sbytes not in [1, 2, 4, 8]:
+ *                     raise ValueError(f"sbytes should be 1, 2, 4 or 8")             # <<<<<<<<<<<<<<
+ *                 # NOTE THAT 'BYTES' FIELD IS SET TO ZERO ON DLB
+ *                 # because 8 bytes overflows the bitfield
  */
-  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_n_s_cls, __pyx_n_s_value); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_sbytes_should_be_1_2_4_or_8); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_new, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 57, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":63
+  /* "gravure/lcms2/colortype.pyx":90
+ *                 value = value | PLANAR_SH(1) if planar else value
+ *             else:
+ *                 raise ValueError("Need at least colorspace, channels and sbytes to be set to create a new ColorType from flags")             # <<<<<<<<<<<<<<
+ *         return int.__new__(cls, value)
+ * 
+ */
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Need_at_least_colorspace_channel); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__3);
+  __Pyx_GIVEREF(__pyx_tuple__3);
+
+  /* "gravure/lcms2/colortype.pyx":58
+ * 
+ * class ColorType(int):
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,             # <<<<<<<<<<<<<<
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
+ */
+  __pyx_tuple__5 = PyTuple_Pack(13, __pyx_n_s_cls, __pyx_n_s_value, __pyx_n_s_colorspace, __pyx_n_s_channels, __pyx_n_s_sbytes, __pyx_n_s_isfloat, __pyx_n_s_extra, __pyx_n_s_planar, __pyx_n_s_swap_endianness, __pyx_n_s_swap_first, __pyx_n_s_do_swap, __pyx_n_s_flavor, __pyx_n_s_minargs); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(12, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_new, 58, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(11, ((PyObject *)__pyx_int_0), ((PyObject *)Py_None), ((PyObject *)Py_None), ((PyObject *)Py_None), ((PyObject *)Py_False), ((PyObject *)__pyx_int_0), ((PyObject *)Py_False), ((PyObject *)Py_False), ((PyObject *)Py_False), ((PyObject *)Py_False), ((PyObject *)__pyx_int_0)); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+
+  /* "gravure/lcms2/colortype.pyx":94
  * 
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"ColorType({self})"
  * 
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 63, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_repr, 63, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_repr, 94, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 94, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":67
+  /* "gravure/lcms2/colortype.pyx":98
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
  *         return str(int(self))
  * 
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_str, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_str, 98, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 98, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":72
+  /* "gravure/lcms2/colortype.pyx":103
  * 
  *     @property
- *     def color_space(self):             # <<<<<<<<<<<<<<
+ *     def colorspace(self):             # <<<<<<<<<<<<<<
  *         """
  *         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 72, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_color_space, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_colorspace, 103, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 103, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":80
+  /* "gravure/lcms2/colortype.pyx":111
  * 
  *     @property
  *     def channels(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of channels (Samples per pixel) holded by this ColorType.
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_channels, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_channels, 111, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 111, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":88
+  /* "gravure/lcms2/colortype.pyx":119
  * 
  *     @property
- *     def extra_channels(self):             # <<<<<<<<<<<<<<
+ *     def extra(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 88, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_extra_channels, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_extra, 119, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 119, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":96
+  /* "gravure/lcms2/colortype.pyx":127
  * 
  *     @property
- *     def bytes_per_sample(self):             # <<<<<<<<<<<<<<
+ *     def sbytes(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return the numbers of bytes use to store a channel's value for this ColorType. .
+ *         Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
  */
-  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tbytes); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_bytes_per_sample, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tbytes); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_sbytes, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 127, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":109
+  /* "gravure/lcms2/colortype.pyx":140
  * 
  *     @property
- *     def is_planar(self):             # <<<<<<<<<<<<<<
+ *     def planar(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return True if this ColorType holds values as planar, False if chunky.
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 109, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_is_planar, 109, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_planar, 140, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 140, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":117
+  /* "gravure/lcms2/colortype.pyx":148
  * 
  *     @property
- *     def min_is_black(self):             # <<<<<<<<<<<<<<
+ *     def flavor(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return True for this ColorType if values of zero means black, False if white.
+ *         Return 0 for this ColorType if values of zero means black, 1 if white.
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 117, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_min_is_black, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_flavor, 148, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 148, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":125
+  /* "gravure/lcms2/colortype.pyx":156
  * 
  *     @property
- *     def is_float(self):             # <<<<<<<<<<<<<<
+ *     def isfloat(self):             # <<<<<<<<<<<<<<
  *         """
  *         Determine if this ColorType use floating point values.
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_is_float, 125, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_isfloat, 156, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 156, __pyx_L1_error)
 
-  /* "gravure/lcms2/colortype.pyx":133
+  /* "gravure/lcms2/colortype.pyx":164
  * 
  *     @property
  *     def nbytes(self):             # <<<<<<<<<<<<<<
  *         """
  *         size in bytes for this ColorType necessary to store all channels values for a sample.
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 133, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_nbytes, 133, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_gravure_lcms2_colortype_pyx, __pyx_n_s_nbytes, 164, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3276,7 +4175,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
+  /* Common.init */
+  if (unlikely(__Pyx_check_twos_complement())) {
+    PyErr_WriteUnraisable(__pyx_m);
+}
+
+if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
+
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_4 = PyInt_FromLong(4); if (unlikely(!__pyx_int_4)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_8 = PyInt_FromLong(8); if (unlikely(!__pyx_int_8)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3556,7 +4467,7 @@ if (!__Pyx_RefNanny) {
  * #       MA 02110-1301, USA.
  * #
  * from enum import Enum, IntEnum, unique             # <<<<<<<<<<<<<<
- * 
+ * from gravure.lcms2.constant cimport cmsMAXCHANNELS
  * 
  */
   __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
@@ -3587,391 +4498,391 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":24
+  /* "gravure/lcms2/colortype.pyx":25
  * 
  * @unique
  * class PixelType(IntEnum):             # <<<<<<<<<<<<<<
  *     ANY = PT_ANY
  *     GRAY = PT_GRAY
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_IntEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_IntEnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_PixelType, __pyx_n_s_PixelType, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_PixelType, __pyx_n_s_PixelType, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "gravure/lcms2/colortype.pyx":25
+  /* "gravure/lcms2/colortype.pyx":26
  * @unique
  * class PixelType(IntEnum):
  *     ANY = PT_ANY             # <<<<<<<<<<<<<<
  *     GRAY = PT_GRAY
  *     RGB = PT_RGB
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_ANY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_ANY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ANY, __pyx_t_4) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_ANY, __pyx_t_4) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":26
+  /* "gravure/lcms2/colortype.pyx":27
  * class PixelType(IntEnum):
  *     ANY = PT_ANY
  *     GRAY = PT_GRAY             # <<<<<<<<<<<<<<
  *     RGB = PT_RGB
  *     CMY = PT_CMY
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_GRAY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_GRAY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY, __pyx_t_4) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_GRAY, __pyx_t_4) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":27
+  /* "gravure/lcms2/colortype.pyx":28
  *     ANY = PT_ANY
  *     GRAY = PT_GRAY
  *     RGB = PT_RGB             # <<<<<<<<<<<<<<
  *     CMY = PT_CMY
  *     CMYK = PT_CMYK
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_RGB); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_RGB); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB, __pyx_t_4) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_RGB, __pyx_t_4) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":28
+  /* "gravure/lcms2/colortype.pyx":29
  *     GRAY = PT_GRAY
  *     RGB = PT_RGB
  *     CMY = PT_CMY             # <<<<<<<<<<<<<<
  *     CMYK = PT_CMYK
  *     YCbCr = PT_YCbCr
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_CMY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_CMY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY, __pyx_t_4) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMY, __pyx_t_4) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":29
+  /* "gravure/lcms2/colortype.pyx":30
  *     RGB = PT_RGB
  *     CMY = PT_CMY
  *     CMYK = PT_CMYK             # <<<<<<<<<<<<<<
  *     YCbCr = PT_YCbCr
  *     YUV = PT_YUV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_CMYK); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_CMYK); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK, __pyx_t_4) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CMYK, __pyx_t_4) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":30
+  /* "gravure/lcms2/colortype.pyx":31
  *     CMY = PT_CMY
  *     CMYK = PT_CMYK
  *     YCbCr = PT_YCbCr             # <<<<<<<<<<<<<<
  *     YUV = PT_YUV
  *     XYZ = PT_XYZ
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YCbCr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YCbCr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr, __pyx_t_4) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YCbCr, __pyx_t_4) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":31
+  /* "gravure/lcms2/colortype.pyx":32
  *     CMYK = PT_CMYK
  *     YCbCr = PT_YCbCr
  *     YUV = PT_YUV             # <<<<<<<<<<<<<<
  *     XYZ = PT_XYZ
  *     Lab = PT_Lab
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YUV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YUV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV, __pyx_t_4) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUV, __pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":32
+  /* "gravure/lcms2/colortype.pyx":33
  *     YCbCr = PT_YCbCr
  *     YUV = PT_YUV
  *     XYZ = PT_XYZ             # <<<<<<<<<<<<<<
  *     Lab = PT_Lab
  *     YUVK = PT_YUVK
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_XYZ); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_XYZ); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ, __pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_XYZ, __pyx_t_4) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":33
+  /* "gravure/lcms2/colortype.pyx":34
  *     YUV = PT_YUV
  *     XYZ = PT_XYZ
  *     Lab = PT_Lab             # <<<<<<<<<<<<<<
  *     YUVK = PT_YUVK
  *     HSV = PT_HSV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_Lab); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_Lab); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab, __pyx_t_4) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Lab, __pyx_t_4) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":34
+  /* "gravure/lcms2/colortype.pyx":35
  *     XYZ = PT_XYZ
  *     Lab = PT_Lab
  *     YUVK = PT_YUVK             # <<<<<<<<<<<<<<
  *     HSV = PT_HSV
  *     HLS = PT_HLS
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YUVK); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_YUVK); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK, __pyx_t_4) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_YUVK, __pyx_t_4) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":35
+  /* "gravure/lcms2/colortype.pyx":36
  *     Lab = PT_Lab
  *     YUVK = PT_YUVK
  *     HSV = PT_HSV             # <<<<<<<<<<<<<<
  *     HLS = PT_HLS
  *     Yxy = PT_Yxy
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_HSV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_HSV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV, __pyx_t_4) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HSV, __pyx_t_4) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":36
+  /* "gravure/lcms2/colortype.pyx":37
  *     YUVK = PT_YUVK
  *     HSV = PT_HSV
  *     HLS = PT_HLS             # <<<<<<<<<<<<<<
  *     Yxy = PT_Yxy
  *     MCH1 = PT_MCH1
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_HLS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_HLS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS, __pyx_t_4) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_HLS, __pyx_t_4) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":37
+  /* "gravure/lcms2/colortype.pyx":38
  *     HSV = PT_HSV
  *     HLS = PT_HLS
  *     Yxy = PT_Yxy             # <<<<<<<<<<<<<<
  *     MCH1 = PT_MCH1
  *     MCH2 = PT_MCH2
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_Yxy); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_Yxy); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Yxy, __pyx_t_4) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_Yxy, __pyx_t_4) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":38
+  /* "gravure/lcms2/colortype.pyx":39
  *     HLS = PT_HLS
  *     Yxy = PT_Yxy
  *     MCH1 = PT_MCH1             # <<<<<<<<<<<<<<
  *     MCH2 = PT_MCH2
  *     MCH3 = PT_MCH3
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH1, __pyx_t_4) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH1, __pyx_t_4) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":39
+  /* "gravure/lcms2/colortype.pyx":40
  *     Yxy = PT_Yxy
  *     MCH1 = PT_MCH1
  *     MCH2 = PT_MCH2             # <<<<<<<<<<<<<<
  *     MCH3 = PT_MCH3
  *     MCH4 = PT_MCH4
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH2, __pyx_t_4) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH2, __pyx_t_4) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":40
+  /* "gravure/lcms2/colortype.pyx":41
  *     MCH1 = PT_MCH1
  *     MCH2 = PT_MCH2
  *     MCH3 = PT_MCH3             # <<<<<<<<<<<<<<
  *     MCH4 = PT_MCH4
  *     MCH5 = PT_MCH5
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH3, __pyx_t_4) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH3, __pyx_t_4) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":41
+  /* "gravure/lcms2/colortype.pyx":42
  *     MCH2 = PT_MCH2
  *     MCH3 = PT_MCH3
  *     MCH4 = PT_MCH4             # <<<<<<<<<<<<<<
  *     MCH5 = PT_MCH5
  *     MCH6 = PT_MCH6
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH4, __pyx_t_4) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH4, __pyx_t_4) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":42
+  /* "gravure/lcms2/colortype.pyx":43
  *     MCH3 = PT_MCH3
  *     MCH4 = PT_MCH4
  *     MCH5 = PT_MCH5             # <<<<<<<<<<<<<<
  *     MCH6 = PT_MCH6
  *     MCH7 = PT_MCH7
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH5, __pyx_t_4) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH5, __pyx_t_4) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":43
+  /* "gravure/lcms2/colortype.pyx":44
  *     MCH4 = PT_MCH4
  *     MCH5 = PT_MCH5
  *     MCH6 = PT_MCH6             # <<<<<<<<<<<<<<
  *     MCH7 = PT_MCH7
  *     MCH8 = PT_MCH8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH6, __pyx_t_4) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH6, __pyx_t_4) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":44
+  /* "gravure/lcms2/colortype.pyx":45
  *     MCH5 = PT_MCH5
  *     MCH6 = PT_MCH6
  *     MCH7 = PT_MCH7             # <<<<<<<<<<<<<<
  *     MCH8 = PT_MCH8
  *     MCH9 = PT_MCH9
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH7, __pyx_t_4) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH7, __pyx_t_4) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":45
+  /* "gravure/lcms2/colortype.pyx":46
  *     MCH6 = PT_MCH6
  *     MCH7 = PT_MCH7
  *     MCH8 = PT_MCH8             # <<<<<<<<<<<<<<
  *     MCH9 = PT_MCH9
  *     MCH10 = PT_MCH10
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH8, __pyx_t_4) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH8, __pyx_t_4) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":46
+  /* "gravure/lcms2/colortype.pyx":47
  *     MCH7 = PT_MCH7
  *     MCH8 = PT_MCH8
  *     MCH9 = PT_MCH9             # <<<<<<<<<<<<<<
  *     MCH10 = PT_MCH10
  *     MCH11 = PT_MCH11
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH9, __pyx_t_4) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH9, __pyx_t_4) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":47
+  /* "gravure/lcms2/colortype.pyx":48
  *     MCH8 = PT_MCH8
  *     MCH9 = PT_MCH9
  *     MCH10 = PT_MCH10             # <<<<<<<<<<<<<<
  *     MCH11 = PT_MCH11
  *     MCH12 = PT_MCH12
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH10, __pyx_t_4) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH10, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":48
+  /* "gravure/lcms2/colortype.pyx":49
  *     MCH9 = PT_MCH9
  *     MCH10 = PT_MCH10
  *     MCH11 = PT_MCH11             # <<<<<<<<<<<<<<
  *     MCH12 = PT_MCH12
  *     MCH13 = PT_MCH13
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH11, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH11, __pyx_t_4) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":49
+  /* "gravure/lcms2/colortype.pyx":50
  *     MCH10 = PT_MCH10
  *     MCH11 = PT_MCH11
  *     MCH12 = PT_MCH12             # <<<<<<<<<<<<<<
  *     MCH13 = PT_MCH13
  *     MCH14 = PT_MCH14
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH12, __pyx_t_4) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH12, __pyx_t_4) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":50
+  /* "gravure/lcms2/colortype.pyx":51
  *     MCH11 = PT_MCH11
  *     MCH12 = PT_MCH12
  *     MCH13 = PT_MCH13             # <<<<<<<<<<<<<<
  *     MCH14 = PT_MCH14
  *     MCH15 = PT_MCH15
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH13, __pyx_t_4) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH13, __pyx_t_4) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":51
+  /* "gravure/lcms2/colortype.pyx":52
  *     MCH12 = PT_MCH12
  *     MCH13 = PT_MCH13
  *     MCH14 = PT_MCH14             # <<<<<<<<<<<<<<
  *     MCH15 = PT_MCH15
  *     LabV2 = PT_LabV2
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH14, __pyx_t_4) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH14, __pyx_t_4) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":52
+  /* "gravure/lcms2/colortype.pyx":53
  *     MCH13 = PT_MCH13
  *     MCH14 = PT_MCH14
  *     MCH15 = PT_MCH15             # <<<<<<<<<<<<<<
  *     LabV2 = PT_LabV2
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH15); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_MCH15); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH15, __pyx_t_4) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_MCH15, __pyx_t_4) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":53
+  /* "gravure/lcms2/colortype.pyx":54
  *     MCH14 = PT_MCH14
  *     MCH15 = PT_MCH15
  *     LabV2 = PT_LabV2             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(PT_LabV2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(PT_LabV2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2, __pyx_t_4) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_LabV2, __pyx_t_4) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":23
+  /* "gravure/lcms2/colortype.pyx":24
  * 
  * 
  * @unique             # <<<<<<<<<<<<<<
  * class PixelType(IntEnum):
  *     ANY = PT_ANY
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_unique); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/colortype.pyx":24
+  /* "gravure/lcms2/colortype.pyx":25
  * 
  * @unique
  * class PixelType(IntEnum):             # <<<<<<<<<<<<<<
  *     ANY = PT_ANY
  *     GRAY = PT_GRAY
  */
-  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_PixelType, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_PixelType, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -3986,279 +4897,280 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PixelType, __pyx_t_4) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PixelType, __pyx_t_4) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":56
+  /* "gravure/lcms2/colortype.pyx":57
  * 
  * 
  * class ColorType(int):             # <<<<<<<<<<<<<<
- *     def __new__(cls, value):
- *         if not isinstance(value, int):
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)(&PyInt_Type)));
   __Pyx_GIVEREF(((PyObject *)(&PyInt_Type)));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&PyInt_Type)));
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorType_2, __pyx_n_s_ColorType_2, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ColorType_2, __pyx_n_s_ColorType_2, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "gravure/lcms2/colortype.pyx":57
+  /* "gravure/lcms2/colortype.pyx":58
  * 
  * class ColorType(int):
- *     def __new__(cls, value):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, int):
- *             raise ValueError(f"can't create a ColorType from {value}")
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,             # <<<<<<<<<<<<<<
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
+ *                 swap_first=False, do_swap=False, flavor=0):
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_1__new__, __Pyx_CYFUNCTION_STATICMETHOD, __pyx_n_s_ColorType___new, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_1__new__, __Pyx_CYFUNCTION_STATICMETHOD, __pyx_n_s_ColorType___new, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_new, __pyx_t_4) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__7);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_new, __pyx_t_4) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":63
+  /* "gravure/lcms2/colortype.pyx":94
  * 
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return f"ColorType({self})"
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_3__repr__, 0, __pyx_n_s_ColorType___repr, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_3__repr__, 0, __pyx_n_s_ColorType___repr, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_repr, __pyx_t_4) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_repr, __pyx_t_4) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":67
+  /* "gravure/lcms2/colortype.pyx":98
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
  *         return str(int(self))
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_5__str__, 0, __pyx_n_s_ColorType___str, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_5__str__, 0, __pyx_n_s_ColorType___str, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_str, __pyx_t_4) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_str, __pyx_t_4) < 0) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":72
+  /* "gravure/lcms2/colortype.pyx":103
  * 
  *     @property
- *     def color_space(self):             # <<<<<<<<<<<<<<
+ *     def colorspace(self):             # <<<<<<<<<<<<<<
  *         """
  *         The color space used by this ColorType as a member of the gravure.lcms2.colortype.PixelType enum.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_7color_space, 0, __pyx_n_s_ColorType_color_space, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_7colorspace, 0, __pyx_n_s_ColorType_colorspace, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gravure/lcms2/colortype.pyx":71
+  /* "gravure/lcms2/colortype.pyx":102
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def color_space(self):
+ *     def colorspace(self):
  *         """
  */
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_color_space, __pyx_t_5) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_colorspace, __pyx_t_5) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":80
+  /* "gravure/lcms2/colortype.pyx":111
  * 
  *     @property
  *     def channels(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of channels (Samples per pixel) holded by this ColorType.
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_9channels, 0, __pyx_n_s_ColorType_channels, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_9channels, 0, __pyx_n_s_ColorType_channels, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/colortype.pyx":79
+  /* "gravure/lcms2/colortype.pyx":110
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def channels(self):
  *         """
  */
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_channels, __pyx_t_4) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_channels, __pyx_t_4) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":88
+  /* "gravure/lcms2/colortype.pyx":119
  * 
  *     @property
- *     def extra_channels(self):             # <<<<<<<<<<<<<<
+ *     def extra(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the numbers of extra channels (eg: alpha channels) holded by this ColorType. .
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_11extra_channels, 0, __pyx_n_s_ColorType_extra_channels, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_11extra, 0, __pyx_n_s_ColorType_extra, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gravure/lcms2/colortype.pyx":87
+  /* "gravure/lcms2/colortype.pyx":118
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def extra_channels(self):
+ *     def extra(self):
  *         """
  */
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_extra_channels, __pyx_t_5) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_extra, __pyx_t_5) < 0) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":96
+  /* "gravure/lcms2/colortype.pyx":127
  * 
  *     @property
- *     def bytes_per_sample(self):             # <<<<<<<<<<<<<<
+ *     def sbytes(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return the numbers of bytes use to store a channel's value for this ColorType. .
+ *         Return bytes per sample, the numbers of bytes use to store a channel's value for this ColorType. .
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_13bytes_per_sample, 0, __pyx_n_s_ColorType_bytes_per_sample, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_13sbytes, 0, __pyx_n_s_ColorType_sbytes, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/colortype.pyx":95
+  /* "gravure/lcms2/colortype.pyx":126
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def bytes_per_sample(self):
+ *     def sbytes(self):
  *         """
  */
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bytes_per_sample, __pyx_t_4) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_sbytes, __pyx_t_4) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":109
+  /* "gravure/lcms2/colortype.pyx":140
  * 
  *     @property
- *     def is_planar(self):             # <<<<<<<<<<<<<<
+ *     def planar(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return True if this ColorType holds values as planar, False if chunky.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_15is_planar, 0, __pyx_n_s_ColorType_is_planar, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_15planar, 0, __pyx_n_s_ColorType_planar, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gravure/lcms2/colortype.pyx":108
+  /* "gravure/lcms2/colortype.pyx":139
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def is_planar(self):
+ *     def planar(self):
  *         """
  */
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_is_planar, __pyx_t_5) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_planar, __pyx_t_5) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":117
+  /* "gravure/lcms2/colortype.pyx":148
  * 
  *     @property
- *     def min_is_black(self):             # <<<<<<<<<<<<<<
+ *     def flavor(self):             # <<<<<<<<<<<<<<
  *         """
- *         Return True for this ColorType if values of zero means black, False if white.
+ *         Return 0 for this ColorType if values of zero means black, 1 if white.
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_17min_is_black, 0, __pyx_n_s_ColorType_min_is_black, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_17flavor, 0, __pyx_n_s_ColorType_flavor, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/colortype.pyx":116
+  /* "gravure/lcms2/colortype.pyx":147
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def min_is_black(self):
+ *     def flavor(self):
  *         """
  */
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_min_is_black, __pyx_t_4) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_flavor, __pyx_t_4) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":125
+  /* "gravure/lcms2/colortype.pyx":156
  * 
  *     @property
- *     def is_float(self):             # <<<<<<<<<<<<<<
+ *     def isfloat(self):             # <<<<<<<<<<<<<<
  *         """
  *         Determine if this ColorType use floating point values.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_19is_float, 0, __pyx_n_s_ColorType_is_float, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_19isfloat, 0, __pyx_n_s_ColorType_isfloat, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "gravure/lcms2/colortype.pyx":124
+  /* "gravure/lcms2/colortype.pyx":155
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
- *     def is_float(self):
+ *     def isfloat(self):
  *         """
  */
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_is_float, __pyx_t_5) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_isfloat, __pyx_t_5) < 0) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":133
+  /* "gravure/lcms2/colortype.pyx":164
  * 
  *     @property
  *     def nbytes(self):             # <<<<<<<<<<<<<<
  *         """
  *         size in bytes for this ColorType necessary to store all channels values for a sample.
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_21nbytes, 0, __pyx_n_s_ColorType_nbytes, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7gravure_5lcms2_9colortype_9ColorType_21nbytes, 0, __pyx_n_s_ColorType_nbytes, NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "gravure/lcms2/colortype.pyx":132
+  /* "gravure/lcms2/colortype.pyx":163
  * 
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def nbytes(self):
  *         """
  */
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 132, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_nbytes, __pyx_t_4) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_nbytes, __pyx_t_4) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":56
+  /* "gravure/lcms2/colortype.pyx":57
  * 
  * 
  * class ColorType(int):             # <<<<<<<<<<<<<<
- *     def __new__(cls, value):
- *         if not isinstance(value, int):
+ *     def __new__(cls, value=0, colorspace=None, channels=None, sbytes=None,
+ *                 isfloat=False, extra=0, planar=False, swap_endianness=False,
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorType_2, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorType_2, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorType_2, __pyx_t_4) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorType_2, __pyx_t_4) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":140
+  /* "gravure/lcms2/colortype.pyx":171
  * 
  * 
  * class ColorTypeEnum(ColorType, Enum):             # <<<<<<<<<<<<<<
  *     """Enum where members are also (and must be) gravure.lcms2.colortype.ColorType object.
  *     """
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ColorType_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ColorType_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -4266,1976 +5178,1976 @@ if (!__Pyx_RefNanny) {
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_3, __pyx_n_s_ColorTypeEnum, __pyx_n_s_ColorTypeEnum, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_kp_s_Enum_where_members_are_also_and); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_3, __pyx_n_s_ColorTypeEnum, __pyx_n_s_ColorTypeEnum, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, __pyx_kp_s_Enum_where_members_are_also_and); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorTypeEnum, __pyx_t_3, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ColorTypeEnum, __pyx_t_3, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorTypeEnum, __pyx_t_4) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ColorTypeEnum, __pyx_t_4) < 0) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":145
+  /* "gravure/lcms2/colortype.pyx":176
  * 
  * 
  * class Type(ColorTypeEnum):             # <<<<<<<<<<<<<<
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ColorTypeEnum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ColorTypeEnum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_2, __pyx_n_s_Type, __pyx_n_s_Type, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_2, __pyx_n_s_Type, __pyx_n_s_Type, (PyObject *) NULL, __pyx_n_s_gravure_lcms2_colortype, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "gravure/lcms2/colortype.pyx":146
+  /* "gravure/lcms2/colortype.pyx":177
  * 
  * class Type(ColorTypeEnum):
  *     GRAY_8 = TYPE_GRAY_8             # <<<<<<<<<<<<<<
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_8, __pyx_t_4) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_8, __pyx_t_4) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":147
+  /* "gravure/lcms2/colortype.pyx":178
  * class Type(ColorTypeEnum):
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV             # <<<<<<<<<<<<<<
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":148
+  /* "gravure/lcms2/colortype.pyx":179
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16             # <<<<<<<<<<<<<<
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16, __pyx_t_4) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16, __pyx_t_4) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":149
+  /* "gravure/lcms2/colortype.pyx":180
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV             # <<<<<<<<<<<<<<
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 180, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 180, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":150
+  /* "gravure/lcms2/colortype.pyx":181
  *     GRAY_16 = TYPE_GRAY_16
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE             # <<<<<<<<<<<<<<
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":151
+  /* "gravure/lcms2/colortype.pyx":182
  *     GRAY_16_REV = TYPE_GRAY_16_REV
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8             # <<<<<<<<<<<<<<
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_8, __pyx_t_4) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_8, __pyx_t_4) < 0) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":152
+  /* "gravure/lcms2/colortype.pyx":183
  *     GRAY_16_SE = TYPE_GRAY_16_SE
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16             # <<<<<<<<<<<<<<
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16, __pyx_t_4) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16, __pyx_t_4) < 0) __PYX_ERR(0, 183, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":153
+  /* "gravure/lcms2/colortype.pyx":184
  *     GRAYA_8 = TYPE_GRAYA_8
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE             # <<<<<<<<<<<<<<
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":154
+  /* "gravure/lcms2/colortype.pyx":185
  *     GRAYA_16 = TYPE_GRAYA_16
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR             # <<<<<<<<<<<<<<
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":155
+  /* "gravure/lcms2/colortype.pyx":186
  *     GRAYA_16_SE = TYPE_GRAYA_16_SE
  *     GRAYA_8_PLANAR = TYPE_GRAYA_8_PLANAR
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR             # <<<<<<<<<<<<<<
  * 
  *     RGB_8 = TYPE_RGB_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAYA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAYA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":157
+  /* "gravure/lcms2/colortype.pyx":188
  *     GRAYA_16_PLANAR = TYPE_GRAYA_16_PLANAR
  * 
  *     RGB_8 = TYPE_RGB_8             # <<<<<<<<<<<<<<
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_8, __pyx_t_4) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_8, __pyx_t_4) < 0) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":158
+  /* "gravure/lcms2/colortype.pyx":189
  * 
  *     RGB_8 = TYPE_RGB_8
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR             # <<<<<<<<<<<<<<
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":159
+  /* "gravure/lcms2/colortype.pyx":190
  *     RGB_8 = TYPE_RGB_8
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8             # <<<<<<<<<<<<<<
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_8, __pyx_t_4) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_8, __pyx_t_4) < 0) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":160
+  /* "gravure/lcms2/colortype.pyx":191
  *     RGB_8_PLANAR = TYPE_RGB_8_PLANAR
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR             # <<<<<<<<<<<<<<
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":161
+  /* "gravure/lcms2/colortype.pyx":192
  *     BGR_8 = TYPE_BGR_8
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16             # <<<<<<<<<<<<<<
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16, __pyx_t_4) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16, __pyx_t_4) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":162
+  /* "gravure/lcms2/colortype.pyx":193
  *     BGR_8_PLANAR = TYPE_BGR_8_PLANAR
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR             # <<<<<<<<<<<<<<
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 162, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 193, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":163
+  /* "gravure/lcms2/colortype.pyx":194
  *     RGB_16 = TYPE_RGB_16
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE             # <<<<<<<<<<<<<<
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 163, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":164
+  /* "gravure/lcms2/colortype.pyx":195
  *     RGB_16_PLANAR = TYPE_RGB_16_PLANAR
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16             # <<<<<<<<<<<<<<
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  *     BGR_16_SE = TYPE_BGR_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16, __pyx_t_4) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16, __pyx_t_4) < 0) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":165
+  /* "gravure/lcms2/colortype.pyx":196
  *     RGB_16_SE = TYPE_RGB_16_SE
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR             # <<<<<<<<<<<<<<
  *     BGR_16_SE = TYPE_BGR_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":166
+  /* "gravure/lcms2/colortype.pyx":197
  *     BGR_16 = TYPE_BGR_16
  *     BGR_16_PLANAR = TYPE_BGR_16_PLANAR
  *     BGR_16_SE = TYPE_BGR_16_SE             # <<<<<<<<<<<<<<
  * 
  *     RGBA_8 = TYPE_RGBA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":168
+  /* "gravure/lcms2/colortype.pyx":199
  *     BGR_16_SE = TYPE_BGR_16_SE
  * 
  *     RGBA_8 = TYPE_RGBA_8             # <<<<<<<<<<<<<<
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_8, __pyx_t_4) < 0) __PYX_ERR(0, 168, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_8, __pyx_t_4) < 0) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":169
+  /* "gravure/lcms2/colortype.pyx":200
  * 
  *     RGBA_8 = TYPE_RGBA_8
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR             # <<<<<<<<<<<<<<
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 169, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":170
+  /* "gravure/lcms2/colortype.pyx":201
  *     RGBA_8 = TYPE_RGBA_8
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16             # <<<<<<<<<<<<<<
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16, __pyx_t_4) < 0) __PYX_ERR(0, 170, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16, __pyx_t_4) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":171
+  /* "gravure/lcms2/colortype.pyx":202
  *     RGBA_8_PLANAR = TYPE_RGBA_8_PLANAR
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR             # <<<<<<<<<<<<<<
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 171, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 202, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":172
+  /* "gravure/lcms2/colortype.pyx":203
  *     RGBA_16 = TYPE_RGBA_16
  *     RGBA_16_PLANAR = TYPE_RGBA_16_PLANAR
  *     RGBA_16_SE = TYPE_RGBA_16_SE             # <<<<<<<<<<<<<<
  * 
  *     ARGB_8 = TYPE_ARGB_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 172, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":174
+  /* "gravure/lcms2/colortype.pyx":205
  *     RGBA_16_SE = TYPE_RGBA_16_SE
  * 
  *     ARGB_8 = TYPE_ARGB_8             # <<<<<<<<<<<<<<
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR
  *     ARGB_16 = TYPE_ARGB_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_8, __pyx_t_4) < 0) __PYX_ERR(0, 174, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_8, __pyx_t_4) < 0) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":175
+  /* "gravure/lcms2/colortype.pyx":206
  * 
  *     ARGB_8 = TYPE_ARGB_8
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR             # <<<<<<<<<<<<<<
  *     ARGB_16 = TYPE_ARGB_16
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 175, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":176
+  /* "gravure/lcms2/colortype.pyx":207
  *     ARGB_8 = TYPE_ARGB_8
  *     ARGB_8_PLANAR = TYPE_ARGB_8_PLANAR
  *     ARGB_16 = TYPE_ARGB_16             # <<<<<<<<<<<<<<
  * 
  *     ABGR_8 = TYPE_ABGR_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_16, __pyx_t_4) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_16, __pyx_t_4) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":178
+  /* "gravure/lcms2/colortype.pyx":209
  *     ARGB_16 = TYPE_ARGB_16
  * 
  *     ABGR_8 = TYPE_ABGR_8             # <<<<<<<<<<<<<<
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_8, __pyx_t_4) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_8, __pyx_t_4) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":179
+  /* "gravure/lcms2/colortype.pyx":210
  * 
  *     ABGR_8 = TYPE_ABGR_8
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR             # <<<<<<<<<<<<<<
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":180
+  /* "gravure/lcms2/colortype.pyx":211
  *     ABGR_8 = TYPE_ABGR_8
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16             # <<<<<<<<<<<<<<
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16, __pyx_t_4) < 0) __PYX_ERR(0, 180, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16, __pyx_t_4) < 0) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":181
+  /* "gravure/lcms2/colortype.pyx":212
  *     ABGR_8_PLANAR = TYPE_ABGR_8_PLANAR
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR             # <<<<<<<<<<<<<<
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 181, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":182
+  /* "gravure/lcms2/colortype.pyx":213
  *     ABGR_16 = TYPE_ABGR_16
  *     ABGR_16_PLANAR = TYPE_ABGR_16_PLANAR
  *     ABGR_16_SE = TYPE_ABGR_16_SE             # <<<<<<<<<<<<<<
  * 
  *     BGRA_8 = TYPE_BGRA_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 182, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 182, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":184
+  /* "gravure/lcms2/colortype.pyx":215
  *     ABGR_16_SE = TYPE_ABGR_16_SE
  * 
  *     BGRA_8 = TYPE_BGRA_8             # <<<<<<<<<<<<<<
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_8, __pyx_t_4) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_8, __pyx_t_4) < 0) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":185
+  /* "gravure/lcms2/colortype.pyx":216
  * 
  *     BGRA_8 = TYPE_BGRA_8
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR             # <<<<<<<<<<<<<<
  *     BGRA_16 = TYPE_BGRA_16
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 185, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":186
+  /* "gravure/lcms2/colortype.pyx":217
  *     BGRA_8 = TYPE_BGRA_8
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16             # <<<<<<<<<<<<<<
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_16, __pyx_t_4) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_16, __pyx_t_4) < 0) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":187
+  /* "gravure/lcms2/colortype.pyx":218
  *     BGRA_8_PLANAR = TYPE_BGRA_8_PLANAR
  *     BGRA_16 = TYPE_BGRA_16
  *     BGRA_16_SE = TYPE_BGRA_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMY_8 = TYPE_CMY_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 187, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":189
+  /* "gravure/lcms2/colortype.pyx":220
  *     BGRA_16_SE = TYPE_BGRA_16_SE
  * 
  *     CMY_8 = TYPE_CMY_8             # <<<<<<<<<<<<<<
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_8, __pyx_t_4) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_8, __pyx_t_4) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":190
+  /* "gravure/lcms2/colortype.pyx":221
  * 
  *     CMY_8 = TYPE_CMY_8
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":191
+  /* "gravure/lcms2/colortype.pyx":222
  *     CMY_8 = TYPE_CMY_8
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16             # <<<<<<<<<<<<<<
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  *     CMY_16_SE = TYPE_CMY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16, __pyx_t_4) < 0) __PYX_ERR(0, 191, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16, __pyx_t_4) < 0) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":192
+  /* "gravure/lcms2/colortype.pyx":223
  *     CMY_8_PLANAR = TYPE_CMY_8_PLANAR
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMY_16_SE = TYPE_CMY_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":193
+  /* "gravure/lcms2/colortype.pyx":224
  *     CMY_16 = TYPE_CMY_16
  *     CMY_16_PLANAR = TYPE_CMY_16_PLANAR
  *     CMY_16_SE = TYPE_CMY_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK_8 = TYPE_CMYK_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 193, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":195
+  /* "gravure/lcms2/colortype.pyx":226
  *     CMY_16_SE = TYPE_CMY_16_SE
  * 
  *     CMYK_8 = TYPE_CMYK_8             # <<<<<<<<<<<<<<
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 195, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8, __pyx_t_4) < 0) __PYX_ERR(0, 195, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8, __pyx_t_4) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":196
+  /* "gravure/lcms2/colortype.pyx":227
  * 
  *     CMYK_8 = TYPE_CMYK_8
  *     CMYKA_8 = TYPE_CMYKA_8             # <<<<<<<<<<<<<<
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYKA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYKA_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYKA_8, __pyx_t_4) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYKA_8, __pyx_t_4) < 0) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":197
+  /* "gravure/lcms2/colortype.pyx":228
  *     CMYK_8 = TYPE_CMYK_8
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV             # <<<<<<<<<<<<<<
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":198
+  /* "gravure/lcms2/colortype.pyx":229
  *     CMYKA_8 = TYPE_CMYKA_8
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8             # <<<<<<<<<<<<<<
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUVK_8, __pyx_t_4) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUVK_8, __pyx_t_4) < 0) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":199
+  /* "gravure/lcms2/colortype.pyx":230
  *     CMYK_8_REV = TYPE_CMYK_8_REV
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":200
+  /* "gravure/lcms2/colortype.pyx":231
  *     YUVK_8 = TYPE_YUVK_8
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16             # <<<<<<<<<<<<<<
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16, __pyx_t_4) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16, __pyx_t_4) < 0) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":201
+  /* "gravure/lcms2/colortype.pyx":232
  *     CMYK_8_PLANAR = TYPE_CMYK_8_PLANAR
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV             # <<<<<<<<<<<<<<
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":202
+  /* "gravure/lcms2/colortype.pyx":233
  *     CMYK_16 = TYPE_CMYK_16
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16             # <<<<<<<<<<<<<<
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUVK_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUVK_16, __pyx_t_4) < 0) __PYX_ERR(0, 202, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUVK_16, __pyx_t_4) < 0) __PYX_ERR(0, 233, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":203
+  /* "gravure/lcms2/colortype.pyx":234
  *     CMYK_16_REV = TYPE_CMYK_16_REV
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":204
+  /* "gravure/lcms2/colortype.pyx":235
  *     YUVK_16 = TYPE_YUVK_16
  *     CMYK_16_PLANAR = TYPE_CMYK_16_PLANAR
  *     CMYK_16_SE = TYPE_CMYK_16_SE             # <<<<<<<<<<<<<<
  * 
  *     KYMC_8 = TYPE_KYMC_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 204, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 235, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":206
+  /* "gravure/lcms2/colortype.pyx":237
  *     CMYK_16_SE = TYPE_CMYK_16_SE
  * 
  *     KYMC_8 = TYPE_KYMC_8             # <<<<<<<<<<<<<<
  *     KYMC_16 = TYPE_KYMC_16
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_8, __pyx_t_4) < 0) __PYX_ERR(0, 206, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_8, __pyx_t_4) < 0) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":207
+  /* "gravure/lcms2/colortype.pyx":238
  * 
  *     KYMC_8 = TYPE_KYMC_8
  *     KYMC_16 = TYPE_KYMC_16             # <<<<<<<<<<<<<<
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_16, __pyx_t_4) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_16, __pyx_t_4) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":208
+  /* "gravure/lcms2/colortype.pyx":239
  *     KYMC_8 = TYPE_KYMC_8
  *     KYMC_16 = TYPE_KYMC_16
  *     KYMC_16_SE = TYPE_KYMC_16_SE             # <<<<<<<<<<<<<<
  * 
  *     KCMY_8 = TYPE_KCMY_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":210
+  /* "gravure/lcms2/colortype.pyx":241
  *     KYMC_16_SE = TYPE_KYMC_16_SE
  * 
  *     KCMY_8 = TYPE_KCMY_8             # <<<<<<<<<<<<<<
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_8, __pyx_t_4) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_8, __pyx_t_4) < 0) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":211
+  /* "gravure/lcms2/colortype.pyx":242
  * 
  *     KCMY_8 = TYPE_KCMY_8
  *     KCMY_8_REV = TYPE_KCMY_8_REV             # <<<<<<<<<<<<<<
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_8_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 211, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_8_REV, __pyx_t_4) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":212
+  /* "gravure/lcms2/colortype.pyx":243
  *     KCMY_8 = TYPE_KCMY_8
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16             # <<<<<<<<<<<<<<
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16, __pyx_t_4) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16, __pyx_t_4) < 0) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":213
+  /* "gravure/lcms2/colortype.pyx":244
  *     KCMY_8_REV = TYPE_KCMY_8_REV
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV             # <<<<<<<<<<<<<<
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_REV); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16_REV, __pyx_t_4) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":214
+  /* "gravure/lcms2/colortype.pyx":245
  *     KCMY_16 = TYPE_KCMY_16
  *     KCMY_16_REV = TYPE_KCMY_16_REV
  *     KCMY_16_SE = TYPE_KCMY_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK5_8 = TYPE_CMYK5_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KCMY_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 245, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KCMY_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":216
+  /* "gravure/lcms2/colortype.pyx":247
  *     KCMY_16_SE = TYPE_KCMY_16_SE
  * 
  *     CMYK5_8 = TYPE_CMYK5_8             # <<<<<<<<<<<<<<
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_8, __pyx_t_4) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_8, __pyx_t_4) < 0) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":217
+  /* "gravure/lcms2/colortype.pyx":248
  * 
  *     CMYK5_8 = TYPE_CMYK5_8
  *     CMYK5_16 = TYPE_CMYK5_16             # <<<<<<<<<<<<<<
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_16, __pyx_t_4) < 0) __PYX_ERR(0, 217, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_16, __pyx_t_4) < 0) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":218
+  /* "gravure/lcms2/colortype.pyx":249
  *     CMYK5_8 = TYPE_CMYK5_8
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE             # <<<<<<<<<<<<<<
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK5_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":219
+  /* "gravure/lcms2/colortype.pyx":250
  *     CMYK5_16 = TYPE_CMYK5_16
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8             # <<<<<<<<<<<<<<
  *     KYMC5_16 = TYPE_KYMC5_16
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_8, __pyx_t_4) < 0) __PYX_ERR(0, 219, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_8, __pyx_t_4) < 0) __PYX_ERR(0, 250, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":220
+  /* "gravure/lcms2/colortype.pyx":251
  *     CMYK5_16_SE = TYPE_CMYK5_16_SE
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16             # <<<<<<<<<<<<<<
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_16, __pyx_t_4) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_16, __pyx_t_4) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":221
+  /* "gravure/lcms2/colortype.pyx":252
  *     KYMC5_8 = TYPE_KYMC5_8
  *     KYMC5_16 = TYPE_KYMC5_16
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK6_8 = TYPE_CMYK6_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC5_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC5_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":223
+  /* "gravure/lcms2/colortype.pyx":254
  *     KYMC5_16_SE = TYPE_KYMC5_16_SE
  * 
  *     CMYK6_8 = TYPE_CMYK6_8             # <<<<<<<<<<<<<<
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_8, __pyx_t_4) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_8, __pyx_t_4) < 0) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":224
+  /* "gravure/lcms2/colortype.pyx":255
  * 
  *     CMYK6_8 = TYPE_CMYK6_8
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 224, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":225
+  /* "gravure/lcms2/colortype.pyx":256
  *     CMYK6_8 = TYPE_CMYK6_8
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16             # <<<<<<<<<<<<<<
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16, __pyx_t_4) < 0) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16, __pyx_t_4) < 0) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":226
+  /* "gravure/lcms2/colortype.pyx":257
  *     CMYK6_8_PLANAR = TYPE_CMYK6_8_PLANAR
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR             # <<<<<<<<<<<<<<
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":227
+  /* "gravure/lcms2/colortype.pyx":258
  *     CMYK6_16 = TYPE_CMYK6_16
  *     CMYK6_16_PLANAR = TYPE_CMYK6_16_PLANAR
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK7_8 = TYPE_CMYK7_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK6_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 227, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK6_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":229
+  /* "gravure/lcms2/colortype.pyx":260
  *     CMYK6_16_SE = TYPE_CMYK6_16_SE
  * 
  *     CMYK7_8 = TYPE_CMYK7_8             # <<<<<<<<<<<<<<
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_8, __pyx_t_4) < 0) __PYX_ERR(0, 229, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_8, __pyx_t_4) < 0) __PYX_ERR(0, 260, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":230
+  /* "gravure/lcms2/colortype.pyx":261
  * 
  *     CMYK7_8 = TYPE_CMYK7_8
  *     CMYK7_16 = TYPE_CMYK7_16             # <<<<<<<<<<<<<<
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_16, __pyx_t_4) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_16, __pyx_t_4) < 0) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":231
+  /* "gravure/lcms2/colortype.pyx":262
  *     CMYK7_8 = TYPE_CMYK7_8
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE             # <<<<<<<<<<<<<<
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 231, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK7_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":232
+  /* "gravure/lcms2/colortype.pyx":263
  *     CMYK7_16 = TYPE_CMYK7_16
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8             # <<<<<<<<<<<<<<
  *     KYMC7_16 = TYPE_KYMC7_16
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_8, __pyx_t_4) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_8, __pyx_t_4) < 0) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":233
+  /* "gravure/lcms2/colortype.pyx":264
  *     CMYK7_16_SE = TYPE_CMYK7_16_SE
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16             # <<<<<<<<<<<<<<
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_16, __pyx_t_4) < 0) __PYX_ERR(0, 233, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_16, __pyx_t_4) < 0) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":234
+  /* "gravure/lcms2/colortype.pyx":265
  *     KYMC7_8 = TYPE_KYMC7_8
  *     KYMC7_16 = TYPE_KYMC7_16
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK8_8 = TYPE_CMYK8_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC7_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC7_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":236
+  /* "gravure/lcms2/colortype.pyx":267
  *     KYMC7_16_SE = TYPE_KYMC7_16_SE
  * 
  *     CMYK8_8 = TYPE_CMYK8_8             # <<<<<<<<<<<<<<
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_8, __pyx_t_4) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_8, __pyx_t_4) < 0) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":237
+  /* "gravure/lcms2/colortype.pyx":268
  * 
  *     CMYK8_8 = TYPE_CMYK8_8
  *     CMYK8_16 = TYPE_CMYK8_16             # <<<<<<<<<<<<<<
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_16, __pyx_t_4) < 0) __PYX_ERR(0, 237, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_16, __pyx_t_4) < 0) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":238
+  /* "gravure/lcms2/colortype.pyx":269
  *     CMYK8_8 = TYPE_CMYK8_8
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE             # <<<<<<<<<<<<<<
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK8_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":239
+  /* "gravure/lcms2/colortype.pyx":270
  *     CMYK8_16 = TYPE_CMYK8_16
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8             # <<<<<<<<<<<<<<
  *     KYMC8_16 = TYPE_KYMC8_16
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_8, __pyx_t_4) < 0) __PYX_ERR(0, 239, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_8, __pyx_t_4) < 0) __PYX_ERR(0, 270, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":240
+  /* "gravure/lcms2/colortype.pyx":271
  *     CMYK8_16_SE = TYPE_CMYK8_16_SE
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16             # <<<<<<<<<<<<<<
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_16, __pyx_t_4) < 0) __PYX_ERR(0, 240, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_16, __pyx_t_4) < 0) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":241
+  /* "gravure/lcms2/colortype.pyx":272
  *     KYMC8_8 = TYPE_KYMC8_8
  *     KYMC8_16 = TYPE_KYMC8_16
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK9_8 = TYPE_CMYK9_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC8_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 241, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC8_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":243
+  /* "gravure/lcms2/colortype.pyx":274
  *     KYMC8_16_SE = TYPE_KYMC8_16_SE
  * 
  *     CMYK9_8 = TYPE_CMYK9_8             # <<<<<<<<<<<<<<
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_8, __pyx_t_4) < 0) __PYX_ERR(0, 243, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_8, __pyx_t_4) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":244
+  /* "gravure/lcms2/colortype.pyx":275
  * 
  *     CMYK9_8 = TYPE_CMYK9_8
  *     CMYK9_16 = TYPE_CMYK9_16             # <<<<<<<<<<<<<<
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_16, __pyx_t_4) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_16, __pyx_t_4) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":245
+  /* "gravure/lcms2/colortype.pyx":276
  *     CMYK9_8 = TYPE_CMYK9_8
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE             # <<<<<<<<<<<<<<
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK9_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":246
+  /* "gravure/lcms2/colortype.pyx":277
  *     CMYK9_16 = TYPE_CMYK9_16
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8             # <<<<<<<<<<<<<<
  *     KYMC9_16 = TYPE_KYMC9_16
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 277, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_8, __pyx_t_4) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_8, __pyx_t_4) < 0) __PYX_ERR(0, 277, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":247
+  /* "gravure/lcms2/colortype.pyx":278
  *     CMYK9_16_SE = TYPE_CMYK9_16_SE
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16             # <<<<<<<<<<<<<<
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_16, __pyx_t_4) < 0) __PYX_ERR(0, 247, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_16, __pyx_t_4) < 0) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":248
+  /* "gravure/lcms2/colortype.pyx":279
  *     KYMC9_8 = TYPE_KYMC9_8
  *     KYMC9_16 = TYPE_KYMC9_16
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK10_8 = TYPE_CMYK10_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC9_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 248, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC9_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 279, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":250
+  /* "gravure/lcms2/colortype.pyx":281
  *     KYMC9_16_SE = TYPE_KYMC9_16_SE
  * 
  *     CMYK10_8 = TYPE_CMYK10_8             # <<<<<<<<<<<<<<
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_8, __pyx_t_4) < 0) __PYX_ERR(0, 250, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_8, __pyx_t_4) < 0) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":251
+  /* "gravure/lcms2/colortype.pyx":282
  * 
  *     CMYK10_8 = TYPE_CMYK10_8
  *     CMYK10_16 = TYPE_CMYK10_16             # <<<<<<<<<<<<<<
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_16, __pyx_t_4) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_16, __pyx_t_4) < 0) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":252
+  /* "gravure/lcms2/colortype.pyx":283
  *     CMYK10_8 = TYPE_CMYK10_8
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE             # <<<<<<<<<<<<<<
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 252, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK10_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":253
+  /* "gravure/lcms2/colortype.pyx":284
  *     CMYK10_16 = TYPE_CMYK10_16
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8             # <<<<<<<<<<<<<<
  *     KYMC10_16 = TYPE_KYMC10_16
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_8, __pyx_t_4) < 0) __PYX_ERR(0, 253, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_8, __pyx_t_4) < 0) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":254
+  /* "gravure/lcms2/colortype.pyx":285
  *     CMYK10_16_SE = TYPE_CMYK10_16_SE
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16             # <<<<<<<<<<<<<<
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_16, __pyx_t_4) < 0) __PYX_ERR(0, 254, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_16, __pyx_t_4) < 0) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":255
+  /* "gravure/lcms2/colortype.pyx":286
  *     KYMC10_8 = TYPE_KYMC10_8
  *     KYMC10_16 = TYPE_KYMC10_16
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK11_8 = TYPE_CMYK11_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC10_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC10_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":257
+  /* "gravure/lcms2/colortype.pyx":288
  *     KYMC10_16_SE = TYPE_KYMC10_16_SE
  * 
  *     CMYK11_8 = TYPE_CMYK11_8             # <<<<<<<<<<<<<<
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 257, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_8, __pyx_t_4) < 0) __PYX_ERR(0, 257, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_8, __pyx_t_4) < 0) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":258
+  /* "gravure/lcms2/colortype.pyx":289
  * 
  *     CMYK11_8 = TYPE_CMYK11_8
  *     CMYK11_16 = TYPE_CMYK11_16             # <<<<<<<<<<<<<<
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_16, __pyx_t_4) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_16, __pyx_t_4) < 0) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":259
+  /* "gravure/lcms2/colortype.pyx":290
  *     CMYK11_8 = TYPE_CMYK11_8
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE             # <<<<<<<<<<<<<<
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 259, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK11_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":260
+  /* "gravure/lcms2/colortype.pyx":291
  *     CMYK11_16 = TYPE_CMYK11_16
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8             # <<<<<<<<<<<<<<
  *     KYMC11_16 = TYPE_KYMC11_16
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_8, __pyx_t_4) < 0) __PYX_ERR(0, 260, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_8, __pyx_t_4) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":261
+  /* "gravure/lcms2/colortype.pyx":292
  *     CMYK11_16_SE = TYPE_CMYK11_16_SE
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16             # <<<<<<<<<<<<<<
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_16, __pyx_t_4) < 0) __PYX_ERR(0, 261, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_16, __pyx_t_4) < 0) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":262
+  /* "gravure/lcms2/colortype.pyx":293
  *     KYMC11_8 = TYPE_KYMC11_8
  *     KYMC11_16 = TYPE_KYMC11_16
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE             # <<<<<<<<<<<<<<
  * 
  *     CMYK12_8 = TYPE_CMYK12_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC11_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC11_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":264
+  /* "gravure/lcms2/colortype.pyx":295
  *     KYMC11_16_SE = TYPE_KYMC11_16_SE
  * 
  *     CMYK12_8 = TYPE_CMYK12_8             # <<<<<<<<<<<<<<
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_8, __pyx_t_4) < 0) __PYX_ERR(0, 264, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_8, __pyx_t_4) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":265
+  /* "gravure/lcms2/colortype.pyx":296
  * 
  *     CMYK12_8 = TYPE_CMYK12_8
  *     CMYK12_16 = TYPE_CMYK12_16             # <<<<<<<<<<<<<<
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 265, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_16, __pyx_t_4) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_16, __pyx_t_4) < 0) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":266
+  /* "gravure/lcms2/colortype.pyx":297
  *     CMYK12_8 = TYPE_CMYK12_8
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE             # <<<<<<<<<<<<<<
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 266, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK12_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":267
+  /* "gravure/lcms2/colortype.pyx":298
  *     CMYK12_16 = TYPE_CMYK12_16
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8             # <<<<<<<<<<<<<<
  *     KYMC12_16 = TYPE_KYMC12_16
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 267, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_8, __pyx_t_4) < 0) __PYX_ERR(0, 267, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_8, __pyx_t_4) < 0) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":268
+  /* "gravure/lcms2/colortype.pyx":299
  *     CMYK12_16_SE = TYPE_CMYK12_16_SE
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16             # <<<<<<<<<<<<<<
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_16, __pyx_t_4) < 0) __PYX_ERR(0, 268, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_16, __pyx_t_4) < 0) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":269
+  /* "gravure/lcms2/colortype.pyx":300
  *     KYMC12_8 = TYPE_KYMC12_8
  *     KYMC12_16 = TYPE_KYMC12_16
  *     KYMC12_16_SE = TYPE_KYMC12_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # Colorimetric
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_KYMC12_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 300, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 269, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_KYMC12_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 300, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":272
+  /* "gravure/lcms2/colortype.pyx":303
  * 
  *     # Colorimetric
  *     XYZ_16 = TYPE_XYZ_16             # <<<<<<<<<<<<<<
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_16, __pyx_t_4) < 0) __PYX_ERR(0, 272, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_16, __pyx_t_4) < 0) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":273
+  /* "gravure/lcms2/colortype.pyx":304
  *     # Colorimetric
  *     XYZ_16 = TYPE_XYZ_16
  *     Lab_8 = TYPE_Lab_8             # <<<<<<<<<<<<<<
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_8, __pyx_t_4) < 0) __PYX_ERR(0, 273, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_8, __pyx_t_4) < 0) __PYX_ERR(0, 304, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":274
+  /* "gravure/lcms2/colortype.pyx":305
  *     XYZ_16 = TYPE_XYZ_16
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8             # <<<<<<<<<<<<<<
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabV2_8, __pyx_t_4) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabV2_8, __pyx_t_4) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":275
+  /* "gravure/lcms2/colortype.pyx":306
  *     Lab_8 = TYPE_Lab_8
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8             # <<<<<<<<<<<<<<
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALab_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ALab_8, __pyx_t_4) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ALab_8, __pyx_t_4) < 0) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":276
+  /* "gravure/lcms2/colortype.pyx":307
  *     LabV2_8 = TYPE_LabV2_8
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8             # <<<<<<<<<<<<<<
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ALabV2_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ALabV2_8, __pyx_t_4) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ALabV2_8, __pyx_t_4) < 0) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":277
+  /* "gravure/lcms2/colortype.pyx":308
  *     ALab_8 = TYPE_ALab_8
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16             # <<<<<<<<<<<<<<
  *     LabV2_16 = TYPE_LabV2_16
  *     Yxy_16 = TYPE_Yxy_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_16, __pyx_t_4) < 0) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_16, __pyx_t_4) < 0) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":278
+  /* "gravure/lcms2/colortype.pyx":309
  *     ALabV2_8 = TYPE_ALabV2_8
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16             # <<<<<<<<<<<<<<
  *     Yxy_16 = TYPE_Yxy_16
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabV2_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabV2_16, __pyx_t_4) < 0) __PYX_ERR(0, 278, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabV2_16, __pyx_t_4) < 0) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":279
+  /* "gravure/lcms2/colortype.pyx":310
  *     Lab_16 = TYPE_Lab_16
  *     LabV2_16 = TYPE_LabV2_16
  *     Yxy_16 = TYPE_Yxy_16             # <<<<<<<<<<<<<<
  * 
  *     # YCbCr
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Yxy_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Yxy_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Yxy_16, __pyx_t_4) < 0) __PYX_ERR(0, 279, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Yxy_16, __pyx_t_4) < 0) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":282
+  /* "gravure/lcms2/colortype.pyx":313
  * 
  *     # YCbCr
  *     YCbCr_8 = TYPE_YCbCr_8             # <<<<<<<<<<<<<<
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_8, __pyx_t_4) < 0) __PYX_ERR(0, 282, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_8, __pyx_t_4) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":283
+  /* "gravure/lcms2/colortype.pyx":314
  *     # YCbCr
  *     YCbCr_8 = TYPE_YCbCr_8
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR             # <<<<<<<<<<<<<<
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 314, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 314, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":284
+  /* "gravure/lcms2/colortype.pyx":315
  *     YCbCr_8 = TYPE_YCbCr_8
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16             # <<<<<<<<<<<<<<
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16, __pyx_t_4) < 0) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16, __pyx_t_4) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":285
+  /* "gravure/lcms2/colortype.pyx":316
  *     YCbCr_8_PLANAR = TYPE_YCbCr_8_PLANAR
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR             # <<<<<<<<<<<<<<
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 285, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 285, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":286
+  /* "gravure/lcms2/colortype.pyx":317
  *     YCbCr_16 = TYPE_YCbCr_16
  *     YCbCr_16_PLANAR = TYPE_YCbCr_16_PLANAR
  *     YCbCr_16_SE = TYPE_YCbCr_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # YUV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 286, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YCbCr_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 286, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YCbCr_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 317, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":289
+  /* "gravure/lcms2/colortype.pyx":320
  * 
  *     # YUV
  *     YUV_8 = TYPE_YUV_8             # <<<<<<<<<<<<<<
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_8, __pyx_t_4) < 0) __PYX_ERR(0, 289, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_8, __pyx_t_4) < 0) __PYX_ERR(0, 320, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":290
+  /* "gravure/lcms2/colortype.pyx":321
  *     # YUV
  *     YUV_8 = TYPE_YUV_8
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR             # <<<<<<<<<<<<<<
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":291
+  /* "gravure/lcms2/colortype.pyx":322
  *     YUV_8 = TYPE_YUV_8
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16             # <<<<<<<<<<<<<<
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  *     YUV_16_SE = TYPE_YUV_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16, __pyx_t_4) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16, __pyx_t_4) < 0) __PYX_ERR(0, 322, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":292
+  /* "gravure/lcms2/colortype.pyx":323
  *     YUV_8_PLANAR = TYPE_YUV_8_PLANAR
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR             # <<<<<<<<<<<<<<
  *     YUV_16_SE = TYPE_YUV_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 292, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 292, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":293
+  /* "gravure/lcms2/colortype.pyx":324
  *     YUV_16 = TYPE_YUV_16
  *     YUV_16_PLANAR = TYPE_YUV_16_PLANAR
  *     YUV_16_SE = TYPE_YUV_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # HLS
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_YUV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 324, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 293, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_YUV_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 324, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":296
+  /* "gravure/lcms2/colortype.pyx":327
  * 
  *     # HLS
  *     HLS_8 = TYPE_HLS_8             # <<<<<<<<<<<<<<
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 296, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_8, __pyx_t_4) < 0) __PYX_ERR(0, 296, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_8, __pyx_t_4) < 0) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":297
+  /* "gravure/lcms2/colortype.pyx":328
  *     # HLS
  *     HLS_8 = TYPE_HLS_8
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR             # <<<<<<<<<<<<<<
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 297, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":298
+  /* "gravure/lcms2/colortype.pyx":329
  *     HLS_8 = TYPE_HLS_8
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16             # <<<<<<<<<<<<<<
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  *     HLS_16_SE = TYPE_HLS_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16, __pyx_t_4) < 0) __PYX_ERR(0, 298, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16, __pyx_t_4) < 0) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":299
+  /* "gravure/lcms2/colortype.pyx":330
  *     HLS_8_PLANAR = TYPE_HLS_8_PLANAR
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR             # <<<<<<<<<<<<<<
  *     HLS_16_SE = TYPE_HLS_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 299, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":300
+  /* "gravure/lcms2/colortype.pyx":331
  *     HLS_16 = TYPE_HLS_16
  *     HLS_16_PLANAR = TYPE_HLS_16_PLANAR
  *     HLS_16_SE = TYPE_HLS_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # HSV
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HLS_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HLS_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":303
+  /* "gravure/lcms2/colortype.pyx":334
  * 
  *     # HSV
  *     HSV_8 = TYPE_HSV_8             # <<<<<<<<<<<<<<
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_8, __pyx_t_4) < 0) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_8, __pyx_t_4) < 0) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":304
+  /* "gravure/lcms2/colortype.pyx":335
  *     # HSV
  *     HSV_8 = TYPE_HSV_8
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR             # <<<<<<<<<<<<<<
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_8_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 304, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_8_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":305
+  /* "gravure/lcms2/colortype.pyx":336
  *     HSV_8 = TYPE_HSV_8
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16             # <<<<<<<<<<<<<<
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  *     HSV_16_SE = TYPE_HSV_16_SE
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 336, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16, __pyx_t_4) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16, __pyx_t_4) < 0) __PYX_ERR(0, 336, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":306
+  /* "gravure/lcms2/colortype.pyx":337
  *     HSV_8_PLANAR = TYPE_HSV_8_PLANAR
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR             # <<<<<<<<<<<<<<
  *     HSV_16_SE = TYPE_HSV_16_SE
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_PLANAR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16_PLANAR, __pyx_t_4) < 0) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":307
+  /* "gravure/lcms2/colortype.pyx":338
  *     HSV_16 = TYPE_HSV_16
  *     HSV_16_PLANAR = TYPE_HSV_16_PLANAR
  *     HSV_16_SE = TYPE_HSV_16_SE             # <<<<<<<<<<<<<<
  * 
  *     # Named color index.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 307, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_HSV_16_SE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 338, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 307, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_HSV_16_SE, __pyx_t_4) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":311
+  /* "gravure/lcms2/colortype.pyx":342
  *     # Named color index.
  *     # Only 16 bits allowed (don't check colorspace)
  *     NAMED_COLOR_INDEX = TYPE_NAMED_COLOR_INDEX             # <<<<<<<<<<<<<<
  * 
  *     # Float formatters.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_NAMED_COLOR_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_NAMED_COLOR_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_NAMED_COLOR_INDEX, __pyx_t_4) < 0) __PYX_ERR(0, 311, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_NAMED_COLOR_INDEX, __pyx_t_4) < 0) __PYX_ERR(0, 342, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":314
+  /* "gravure/lcms2/colortype.pyx":345
  * 
  *     # Float formatters.
  *     XYZ_FLT = TYPE_XYZ_FLT             # <<<<<<<<<<<<<<
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 345, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 314, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 345, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":315
+  /* "gravure/lcms2/colortype.pyx":346
  *     # Float formatters.
  *     XYZ_FLT = TYPE_XYZ_FLT
  *     Lab_FLT = TYPE_Lab_FLT             # <<<<<<<<<<<<<<
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 346, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 346, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":316
+  /* "gravure/lcms2/colortype.pyx":347
  *     XYZ_FLT = TYPE_XYZ_FLT
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT             # <<<<<<<<<<<<<<
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_LabA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 347, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 316, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_LabA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 347, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":317
+  /* "gravure/lcms2/colortype.pyx":348
  *     Lab_FLT = TYPE_Lab_FLT
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT             # <<<<<<<<<<<<<<
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 317, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":318
+  /* "gravure/lcms2/colortype.pyx":349
  *     LabA_FLT = TYPE_LabA_FLT
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT             # <<<<<<<<<<<<<<
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 318, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":319
+  /* "gravure/lcms2/colortype.pyx":350
  *     GRAY_FLT = TYPE_GRAY_FLT
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT             # <<<<<<<<<<<<<<
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 319, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":320
+  /* "gravure/lcms2/colortype.pyx":351
  *     RGB_FLT = TYPE_RGB_FLT
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT             # <<<<<<<<<<<<<<
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 320, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":321
+  /* "gravure/lcms2/colortype.pyx":352
  *     RGBA_FLT = TYPE_RGBA_FLT
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT             # <<<<<<<<<<<<<<
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 321, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 321, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":322
+  /* "gravure/lcms2/colortype.pyx":353
  *     ARGB_FLT = TYPE_ARGB_FLT
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT             # <<<<<<<<<<<<<<
  *     ABGR_FLT = TYPE_ABGR_FLT
  *     CMYK_FLT = TYPE_CMYK_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 322, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":323
+  /* "gravure/lcms2/colortype.pyx":354
  *     BGR_FLT = TYPE_BGR_FLT
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT             # <<<<<<<<<<<<<<
  *     CMYK_FLT = TYPE_CMYK_FLT
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 323, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":324
+  /* "gravure/lcms2/colortype.pyx":355
  *     BGRA_FLT = TYPE_BGRA_FLT
  *     ABGR_FLT = TYPE_ABGR_FLT
  *     CMYK_FLT = TYPE_CMYK_FLT             # <<<<<<<<<<<<<<
  * 
  *     # Floating point formatters.
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 324, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 324, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 355, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":329
+  /* "gravure/lcms2/colortype.pyx":360
  *     # NOTE THAT 'BYTES' FIELD IS SET TO ZERO
  *     # ON DLB because 8 bytes overflows the bitfield
  *     XYZ_DBL = TYPE_XYZ_DBL             # <<<<<<<<<<<<<<
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_XYZ_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 360, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 329, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_XYZ_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 360, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":330
+  /* "gravure/lcms2/colortype.pyx":361
  *     # ON DLB because 8 bytes overflows the bitfield
  *     XYZ_DBL = TYPE_XYZ_DBL
  *     Lab_DBL = TYPE_Lab_DBL             # <<<<<<<<<<<<<<
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_Lab_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 361, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 330, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_Lab_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 361, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":331
+  /* "gravure/lcms2/colortype.pyx":362
  *     XYZ_DBL = TYPE_XYZ_DBL
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL             # <<<<<<<<<<<<<<
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":332
+  /* "gravure/lcms2/colortype.pyx":363
  *     Lab_DBL = TYPE_Lab_DBL
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL             # <<<<<<<<<<<<<<
  *     BGR_DBL = TYPE_BGR_DBL
  *     CMYK_DBL = TYPE_CMYK_DBL
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 363, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 332, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 363, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":333
+  /* "gravure/lcms2/colortype.pyx":364
  *     GRAY_DBL = TYPE_GRAY_DBL
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL             # <<<<<<<<<<<<<<
  *     CMYK_DBL = TYPE_CMYK_DBL
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 333, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 333, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":334
+  /* "gravure/lcms2/colortype.pyx":365
  *     RGB_DBL = TYPE_RGB_DBL
  *     BGR_DBL = TYPE_BGR_DBL
  *     CMYK_DBL = TYPE_CMYK_DBL             # <<<<<<<<<<<<<<
  * 
  *     # IEEE 754-2008 "half"
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_DBL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_DBL, __pyx_t_4) < 0) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":337
+  /* "gravure/lcms2/colortype.pyx":368
  * 
  *     # IEEE 754-2008 "half"
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT             # <<<<<<<<<<<<<<
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_GRAY_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 337, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_GRAY_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":338
+  /* "gravure/lcms2/colortype.pyx":369
  *     # IEEE 754-2008 "half"
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT             # <<<<<<<<<<<<<<
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 338, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":339
+  /* "gravure/lcms2/colortype.pyx":370
  *     GRAY_HALF_FLT = TYPE_GRAY_HALF_FLT
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT             # <<<<<<<<<<<<<<
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_RGBA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 339, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_RGBA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":340
+  /* "gravure/lcms2/colortype.pyx":371
  *     RGB_HALF_FLT = TYPE_RGB_HALF_FLT
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT             # <<<<<<<<<<<<<<
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_CMYK_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_CMYK_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 371, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":341
+  /* "gravure/lcms2/colortype.pyx":372
  *     RGBA_HALF_FLT = TYPE_RGBA_HALF_FLT
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT             # <<<<<<<<<<<<<<
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 341, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ARGB_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 372, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 341, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ARGB_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 372, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":342
+  /* "gravure/lcms2/colortype.pyx":373
  *     CMYK_HALF_FLT = TYPE_CMYK_HALF_FLT
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT             # <<<<<<<<<<<<<<
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 342, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 373, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 342, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 373, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":343
+  /* "gravure/lcms2/colortype.pyx":374
  *     ARGB_HALF_FLT = TYPE_ARGB_HALF_FLT
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT             # <<<<<<<<<<<<<<
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 343, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_BGRA_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 374, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 343, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_BGRA_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 374, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":344
+  /* "gravure/lcms2/colortype.pyx":375
  *     BGR_HALF_FLT = TYPE_BGR_HALF_FLT
  *     BGRA_HALF_FLT = TYPE_BGRA_HALF_FLT
  *     ABGR_HALF_FLT = TYPE_ABGR_HALF_FLT             # <<<<<<<<<<<<<<
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(TYPE_ABGR_HALF_FLT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 344, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_ABGR_HALF_FLT, __pyx_t_4) < 0) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "gravure/lcms2/colortype.pyx":145
+  /* "gravure/lcms2/colortype.pyx":176
  * 
  * 
  * class Type(ColorTypeEnum):             # <<<<<<<<<<<<<<
  *     GRAY_8 = TYPE_GRAY_8
  *     GRAY_8_REV = TYPE_GRAY_8_REV
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_Type, __pyx_t_2, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_Type, __pyx_t_2, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Type, __pyx_t_4) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Type, __pyx_t_4) < 0) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6325,32 +7237,6 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
 #endif
     }
     return result;
-}
-
-/* RaiseArgTupleInvalid */
-static void __Pyx_RaiseArgtupleInvalid(
-    const char* func_name,
-    int exact,
-    Py_ssize_t num_min,
-    Py_ssize_t num_max,
-    Py_ssize_t num_found)
-{
-    Py_ssize_t num_expected;
-    const char *more_or_less;
-    if (num_found < num_min) {
-        num_expected = num_min;
-        more_or_less = "at least";
-    } else {
-        num_expected = num_max;
-        more_or_less = "at most";
-    }
-    if (exact) {
-        more_or_less = "exactly";
-    }
-    PyErr_Format(PyExc_TypeError,
-                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                 func_name, more_or_less, num_expected,
-                 (num_expected == 1) ? "" : "s", num_found);
 }
 
 /* RaiseDoubleKeywords */
@@ -6467,6 +7353,32 @@ invalid_keyword:
     #endif
 bad:
     return -1;
+}
+
+/* RaiseArgTupleInvalid */
+static void __Pyx_RaiseArgtupleInvalid(
+    const char* func_name,
+    int exact,
+    Py_ssize_t num_min,
+    Py_ssize_t num_max,
+    Py_ssize_t num_found)
+{
+    Py_ssize_t num_expected;
+    const char *more_or_less;
+    if (num_found < num_min) {
+        num_expected = num_min;
+        more_or_less = "at least";
+    } else {
+        num_expected = num_max;
+        more_or_less = "at most";
+    }
+    if (exact) {
+        more_or_less = "exactly";
+    }
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                 func_name, more_or_less, num_expected,
+                 (num_expected == 1) ? "" : "s", num_found);
 }
 
 /* PyCFunctionFastCall */
@@ -6874,6 +7786,244 @@ bad:
 }
 #endif
 
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
+        return NULL;
+    }
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+#endif
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+    PyErr_Clear();
+#endif
+    return __Pyx_GetBuiltinName(name);
+}
+
+/* CIntToDigits */
+static const char DIGIT_PAIRS_10[2*10*10+1] = {
+    "00010203040506070809"
+    "10111213141516171819"
+    "20212223242526272829"
+    "30313233343536373839"
+    "40414243444546474849"
+    "50515253545556575859"
+    "60616263646566676869"
+    "70717273747576777879"
+    "80818283848586878889"
+    "90919293949596979899"
+};
+static const char DIGIT_PAIRS_8[2*8*8+1] = {
+    "0001020304050607"
+    "1011121314151617"
+    "2021222324252627"
+    "3031323334353637"
+    "4041424344454647"
+    "5051525354555657"
+    "6061626364656667"
+    "7071727374757677"
+};
+static const char DIGITS_HEX[2*16+1] = {
+    "0123456789abcdef"
+    "0123456789ABCDEF"
+};
+
+/* BuildPyUnicode */
+static PyObject* __Pyx_PyUnicode_BuildFromAscii(Py_ssize_t ulength, char* chars, int clength,
+                                                int prepend_sign, char padding_char) {
+    PyObject *uval;
+    Py_ssize_t uoffset = ulength - clength;
+#if CYTHON_USE_UNICODE_INTERNALS
+    Py_ssize_t i;
+#if CYTHON_PEP393_ENABLED
+    void *udata;
+    uval = PyUnicode_New(ulength, 127);
+    if (unlikely(!uval)) return NULL;
+    udata = PyUnicode_DATA(uval);
+#else
+    Py_UNICODE *udata;
+    uval = PyUnicode_FromUnicode(NULL, ulength);
+    if (unlikely(!uval)) return NULL;
+    udata = PyUnicode_AS_UNICODE(uval);
+#endif
+    if (uoffset > 0) {
+        i = 0;
+        if (prepend_sign) {
+            __Pyx_PyUnicode_WRITE(PyUnicode_1BYTE_KIND, udata, 0, '-');
+            i++;
+        }
+        for (; i < uoffset; i++) {
+            __Pyx_PyUnicode_WRITE(PyUnicode_1BYTE_KIND, udata, i, padding_char);
+        }
+    }
+    for (i=0; i < clength; i++) {
+        __Pyx_PyUnicode_WRITE(PyUnicode_1BYTE_KIND, udata, uoffset+i, chars[i]);
+    }
+#else
+    {
+        PyObject *sign = NULL, *padding = NULL;
+        uval = NULL;
+        if (uoffset > 0) {
+            prepend_sign = !!prepend_sign;
+            if (uoffset > prepend_sign) {
+                padding = PyUnicode_FromOrdinal(padding_char);
+                if (likely(padding) && uoffset > prepend_sign + 1) {
+                    PyObject *tmp;
+                    PyObject *repeat = PyInt_FromSize_t(uoffset - prepend_sign);
+                    if (unlikely(!repeat)) goto done_or_error;
+                    tmp = PyNumber_Multiply(padding, repeat);
+                    Py_DECREF(repeat);
+                    Py_DECREF(padding);
+                    padding = tmp;
+                }
+                if (unlikely(!padding)) goto done_or_error;
+            }
+            if (prepend_sign) {
+                sign = PyUnicode_FromOrdinal('-');
+                if (unlikely(!sign)) goto done_or_error;
+            }
+        }
+        uval = PyUnicode_DecodeASCII(chars, clength, NULL);
+        if (likely(uval) && padding) {
+            PyObject *tmp = PyNumber_Add(padding, uval);
+            Py_DECREF(uval);
+            uval = tmp;
+        }
+        if (likely(uval) && sign) {
+            PyObject *tmp = PyNumber_Add(sign, uval);
+            Py_DECREF(uval);
+            uval = tmp;
+        }
+done_or_error:
+        Py_XDECREF(padding);
+        Py_XDECREF(sign);
+    }
+#endif
+    return uval;
+}
+
+/* CIntToPyUnicode */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_From_int(int value, Py_ssize_t width, char padding_char, char format_char) {
+    char digits[sizeof(int)*3+2];
+    char *dpos, *end = digits + sizeof(int)*3+2;
+    const char *hex_digits = DIGITS_HEX;
+    Py_ssize_t length, ulength;
+    int prepend_sign, last_one_off;
+    int remaining;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const int neg_one = (int) -1, const_zero = (int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (format_char == 'X') {
+        hex_digits += 16;
+        format_char = 'x';
+    }
+    remaining = value;
+    last_one_off = 0;
+    dpos = end;
+    do {
+        int digit_pos;
+        switch (format_char) {
+        case 'o':
+            digit_pos = abs((int)(remaining % (8*8)));
+            remaining = (int) (remaining / (8*8));
+            dpos -= 2;
+            memcpy(dpos, DIGIT_PAIRS_8 + digit_pos * 2, 2);
+            last_one_off = (digit_pos < 8);
+            break;
+        case 'd':
+            digit_pos = abs((int)(remaining % (10*10)));
+            remaining = (int) (remaining / (10*10));
+            dpos -= 2;
+            memcpy(dpos, DIGIT_PAIRS_10 + digit_pos * 2, 2);
+            last_one_off = (digit_pos < 10);
+            break;
+        case 'x':
+            *(--dpos) = hex_digits[abs((int)(remaining % 16))];
+            remaining = (int) (remaining / 16);
+            break;
+        default:
+            assert(0);
+            break;
+        }
+    } while (unlikely(remaining != 0));
+    if (last_one_off) {
+        assert(*dpos == '0');
+        dpos++;
+    }
+    length = end - dpos;
+    ulength = length;
+    prepend_sign = 0;
+    if (!is_unsigned && value <= neg_one) {
+        if (padding_char == ' ' || width <= length + 1) {
+            *(--dpos) = '-';
+            ++length;
+        } else {
+            prepend_sign = 1;
+        }
+        ++ulength;
+    }
+    if (width > ulength) {
+        ulength = width;
+    }
+    if (ulength == 1) {
+        return PyUnicode_FromOrdinal(*dpos);
+    }
+    return __Pyx_PyUnicode_BuildFromAscii(ulength, dpos, (int) length, prepend_sign, padding_char);
+}
+
 /* JoinPyUnicode */
 static PyObject* __Pyx_PyUnicode_Join(PyObject* value_tuple, Py_ssize_t value_count, Py_ssize_t result_ulength,
                                       CYTHON_UNUSED Py_UCS4 max_char) {
@@ -6936,65 +8086,138 @@ bad:
 #endif
 }
 
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
+/* PyIntCompare */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_NeObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED long inplace) {
+    if (op1 == op2) {
+        Py_RETURN_FALSE;
     }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
-}
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long a = PyInt_AS_LONG(op1);
+        if (a != b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        int unequal;
+        unsigned long uintval;
+        Py_ssize_t size = Py_SIZE(op1);
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        if (intval == 0) {
+            if (size != 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+        } else if (intval < 0) {
+            if (size >= 0)
+                Py_RETURN_TRUE;
+            intval = -intval;
+            size = -size;
+        } else {
+            if (size <= 0)
+                Py_RETURN_TRUE;
+        }
+        uintval = (unsigned long) intval;
+#if PyLong_SHIFT * 4 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 4)) {
+            unequal = (size != 5) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[4] != ((uintval >> (4 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
 #endif
+#if PyLong_SHIFT * 3 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 3)) {
+            unequal = (size != 4) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+#if PyLong_SHIFT * 2 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 2)) {
+            unequal = (size != 3) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+#if PyLong_SHIFT * 1 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 1)) {
+            unequal = (size != 2) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+            unequal = (size != 1) || (((unsigned long) digits[0]) != (uintval & (unsigned long) PyLong_MASK));
+        if (unequal != 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+        if ((double)a != (double)b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+    }
+    return (
+        PyObject_RichCompare(op1, op2, Py_NE));
+}
 
-/* GetModuleGlobalName */
-#if CYTHON_USE_DICT_VERSIONS
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
-#else
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
-#endif
-{
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    } else if (unlikely(PyErr_Occurred())) {
-        return NULL;
+/* PyIntCompare */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED long inplace) {
+    if (op1 == op2) {
+        Py_RETURN_TRUE;
     }
-#else
-    result = PyDict_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long a = PyInt_AS_LONG(op1);
+        if (a == b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        int unequal;
+        unsigned long uintval;
+        Py_ssize_t size = Py_SIZE(op1);
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        if (intval == 0) {
+            if (size == 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+        } else if (intval < 0) {
+            if (size >= 0)
+                Py_RETURN_FALSE;
+            intval = -intval;
+            size = -size;
+        } else {
+            if (size <= 0)
+                Py_RETURN_FALSE;
+        }
+        uintval = (unsigned long) intval;
+#if PyLong_SHIFT * 4 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 4)) {
+            unequal = (size != 5) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[4] != ((uintval >> (4 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
 #endif
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
+#if PyLong_SHIFT * 3 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 3)) {
+            unequal = (size != 4) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[3] != ((uintval >> (3 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+#if PyLong_SHIFT * 2 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 2)) {
+            unequal = (size != 3) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK)) | (digits[2] != ((uintval >> (2 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+#if PyLong_SHIFT * 1 < SIZEOF_LONG*8
+        if (uintval >> (PyLong_SHIFT * 1)) {
+            unequal = (size != 2) || (digits[0] != (uintval & (unsigned long) PyLong_MASK))
+                 | (digits[1] != ((uintval >> (1 * PyLong_SHIFT)) & (unsigned long) PyLong_MASK));
+        } else
+#endif
+            unequal = (size != 1) || (((unsigned long) digits[0]) != (uintval & (unsigned long) PyLong_MASK));
+        if (unequal == 0) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     }
-    PyErr_Clear();
-#endif
-    return __Pyx_GetBuiltinName(name);
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+        if ((double)a == (double)b) Py_RETURN_TRUE; else Py_RETURN_FALSE;
+    }
+    return (
+        PyObject_RichCompare(op1, op2, Py_EQ));
 }
 
 /* PyObjectCall2Args */
@@ -8084,6 +9307,86 @@ bad:
     Py_XDECREF(py_frame);
 }
 
+/* BaseCaseSigned */
+static CYTHON_INLINE long __Pyx_add_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) + ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) + ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return r;
+#endif
+    } else {
+        long r = (long) ((unsigned long) a + (unsigned long) b);
+        long sign_a = __PYX_SIGN_BIT(long) & a;
+        long sign_b = __PYX_SIGN_BIT(long) & b;
+        long sign_r = __PYX_SIGN_BIT(long) & r;
+        *overflow |= (sign_a == sign_b) & (sign_a != sign_r);
+        return r;
+    }
+}
+static CYTHON_INLINE long __Pyx_add_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 0) {
+        *overflow |= a > __PYX_MAX(long) - b;
+    } else if (b < 0) {
+        *overflow |= a < __PYX_MIN(long) - b;
+    }
+    return a + b;
+}
+static CYTHON_INLINE long __Pyx_sub_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_sub_const_long_checking_overflow(long a, long b, int *overflow) {
+    *overflow |= b == __PYX_MIN(long);
+    return __Pyx_add_const_long_checking_overflow(a, -b, overflow);
+}
+static CYTHON_INLINE long __Pyx_mul_long_checking_overflow(long a, long b, int *overflow) {
+    if ((sizeof(long) < sizeof(long))) {
+        long big_r = ((long) a) * ((long) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#ifdef HAVE_LONG_LONG
+    } else if ((sizeof(long) < sizeof(PY_LONG_LONG))) {
+        PY_LONG_LONG big_r = ((PY_LONG_LONG) a) * ((PY_LONG_LONG) b);
+        long r = (long) big_r;
+        *overflow |= big_r != r;
+        return (long) r;
+#endif
+    } else {
+        long prod = a * b;
+        double dprod = ((double) a) * ((double) b);
+        *overflow |= fabs(dprod - prod) > (__PYX_MAX(long) / 2);
+        return prod;
+    }
+}
+static CYTHON_INLINE long __Pyx_mul_const_long_checking_overflow(long a, long b, int *overflow) {
+    if (b > 1) {
+        *overflow |= a > __PYX_MAX(long) / b;
+        *overflow |= a < __PYX_MIN(long) / b;
+    } else if (b == -1) {
+        *overflow |= a == __PYX_MIN(long);
+    } else if (b < -1) {
+        *overflow |= a > __PYX_MIN(long) / b;
+        *overflow |= a < __PYX_MAX(long) / b;
+    }
+    return a * b;
+}
+static CYTHON_INLINE long __Pyx_div_long_checking_overflow(long a, long b, int *overflow) {
+    if (b == 0) {
+        *overflow |= 1;
+        return 0;
+    }
+    *overflow |= (a == __PYX_MIN(long)) & (b == -1);
+    return a / b;
+}
+
 /* CIntFromPyVerify */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -8142,6 +9445,278 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
         return _PyLong_FromByteArray(bytes, sizeof(int),
                                      little, !is_unsigned);
     }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const long neg_one = (long) -1, const_zero = (long) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(unsigned int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(unsigned int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(unsigned int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(unsigned int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(unsigned int),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntFromPy */
+static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const int neg_one = (int) -1, const_zero = (int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(int) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(int, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (int) val;
+        }
+    } else
+#endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (int) 0;
+                case  1: __PYX_VERIFY_RETURN_INT(int, digit, digits[0])
+                case 2:
+                    if (8 * sizeof(int) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) >= 2 * PyLong_SHIFT) {
+                            return (int) (((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(int) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) >= 3 * PyLong_SHIFT) {
+                            return (int) (((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(int) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) >= 4 * PyLong_SHIFT) {
+                            return (int) (((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
+                        }
+                    }
+                    break;
+            }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+#else
+            {
+                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+                if (unlikely(result < 0))
+                    return (int) -1;
+                if (unlikely(result == 1))
+                    goto raise_neg_overflow;
+            }
+#endif
+            if (sizeof(int) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(int, unsigned long, PyLong_AsUnsignedLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(int, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+#endif
+            }
+        } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (int) 0;
+                case -1: __PYX_VERIFY_RETURN_INT(int, sdigit, (sdigit) (-(sdigit)digits[0]))
+                case  1: __PYX_VERIFY_RETURN_INT(int,  digit, +digits[0])
+                case -2:
+                    if (8 * sizeof(int) - 1 > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
+                            return (int) (((int)-1)*(((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if (8 * sizeof(int) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
+                            return (int) ((((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
+                            return (int) (((int)-1)*(((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(int) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
+                            return (int) ((((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 4 * PyLong_SHIFT) {
+                            return (int) (((int)-1)*(((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(int) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(int) - 1 > 4 * PyLong_SHIFT) {
+                            return (int) ((((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
+                        }
+                    }
+                    break;
+            }
+#endif
+            if (sizeof(int) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(int, long, PyLong_AsLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(int, PY_LONG_LONG, PyLong_AsLongLong(x))
+#endif
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            int val;
+            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (int) -1;
+        }
+    } else {
+        int val;
+        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
+        if (!tmp) return (int) -1;
+        val = __Pyx_PyInt_As_int(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to int");
+    return (int) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to int");
+    return (int) -1;
 }
 
 /* CIntFromPy */
@@ -8340,44 +9915,6 @@ raise_neg_overflow:
     return (unsigned int) -1;
 }
 
-/* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-    const long neg_one = (long) -1, const_zero = (long) 0;
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic pop
-#endif
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
-}
-
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -8572,202 +10109,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to long");
     return (long) -1;
-}
-
-/* CIntFromPy */
-static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-    const int neg_one = (int) -1, const_zero = (int) 0;
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic pop
-#endif
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(int) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(int, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (int) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (int) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(int, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(int) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) >= 2 * PyLong_SHIFT) {
-                            return (int) (((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(int) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) >= 3 * PyLong_SHIFT) {
-                            return (int) (((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(int) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) >= 4 * PyLong_SHIFT) {
-                            return (int) (((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (int) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(int) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(int, unsigned long, PyLong_AsUnsignedLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(int, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-#endif
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (int) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(int, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(int,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(int) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
-                            return (int) (((int)-1)*(((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(int) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
-                            return (int) ((((((int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(int) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
-                            return (int) (((int)-1)*(((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(int) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
-                            return (int) ((((((((int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(int) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 4 * PyLong_SHIFT) {
-                            return (int) (((int)-1)*(((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(int) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(int) - 1 > 4 * PyLong_SHIFT) {
-                            return (int) ((((((((((int)digits[3]) << PyLong_SHIFT) | (int)digits[2]) << PyLong_SHIFT) | (int)digits[1]) << PyLong_SHIFT) | (int)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(int) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(int, long, PyLong_AsLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(int, PY_LONG_LONG, PyLong_AsLongLong(x))
-#endif
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            int val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (int) -1;
-        }
-    } else {
-        int val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (int) -1;
-        val = __Pyx_PyInt_As_int(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to int");
-    return (int) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to int");
-    return (int) -1;
 }
 
 /* FastTypeChecks */
